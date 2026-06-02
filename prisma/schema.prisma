@@ -1,0 +1,133 @@
+// Prisma schema — MeuBlog
+// Banco: PostgreSQL (Render). Camada de infraestrutura; o domínio não depende disto.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum PostType {
+  STANDARD
+  PROJECTS
+}
+
+enum EventFormat {
+  PRESENTIAL
+  ONLINE
+  HYBRID
+}
+
+enum SessionStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  posts Post[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  // chave da variante visual do badge (news | tec | saude | tut | eventos)
+  variant   String   @default("tec")
+  createdAt DateTime @default(now())
+
+  posts Post[]
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  excerpt     String?
+  content     String     @default("")
+  coverImage  String?
+  status      PostStatus @default(DRAFT)
+  type        PostType   @default(STANDARD)
+  readingTime Int        @default(5)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  // Para posts do tipo PROJECTS: galeria de itens que apontam para outros posts.
+  galleryItems ProjectItem[] @relation("GalleryOwner")
+  referencedBy ProjectItem[] @relation("LinkedPost")
+
+  @@index([status])
+  @@index([categoryId])
+}
+
+model ProjectItem {
+  id       String  @id @default(cuid())
+  image    String?
+  caption  String?
+  position Int     @default(0)
+
+  ownerPostId String
+  ownerPost   Post   @relation("GalleryOwner", fields: [ownerPostId], references: [id], onDelete: Cascade)
+
+  linkedPostId String?
+  linkedPost   Post?   @relation("LinkedPost", fields: [linkedPostId], references: [id])
+
+  @@index([ownerPostId])
+}
+
+model ProgramSession {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  speaker     String?
+  speakerRole String?
+  category    String?
+  startsAt    DateTime
+  durationMin Int           @default(60)
+  status      SessionStatus @default(SCHEDULED)
+  link        String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([startsAt])
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  description String?
+  coverImage  String?
+  category    String?
+  format      EventFormat @default(PRESENTIAL)
+  location    String?
+  startsAt    DateTime
+  capacity    Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([startsAt])
+}

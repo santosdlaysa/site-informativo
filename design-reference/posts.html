@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeuBlog — Posts</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .posts-layout{display:grid;grid-template-columns:1fr 290px;gap:34px;align-items:start;padding:42px 0 56px;}
+  .sidebar-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:var(--shadow-sm);}
+  .sidebar-box + .sidebar-box{margin-top:22px;}
+  .sidebar-box h3{font-size:18px;font-weight:800;margin-bottom:6px;}
+  .cat-links{list-style:none;margin:8px 0 0;padding:0;}
+  .cat-links li{border-bottom:1px solid var(--line-soft);}
+  .cat-links li:last-child{border-bottom:none;}
+  .cat-links a{display:flex;justify-content:space-between;padding:12px 0;color:var(--body);font-size:15px;transition:color .15s,padding .15s;}
+  .cat-links a:hover{color:var(--blue);padding-left:6px;}
+  .cat-links .count{color:var(--faint);font-size:13px;}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px;}
+  .tag{padding:6px 12px;border-radius:999px;background:#f3f4f6;color:var(--body);font-size:13px;}
+  .tag:hover{background:#e0e7ff;color:var(--blue);cursor:pointer;}
+  .pager{display:flex;justify-content:center;gap:8px;margin-top:42px;}
+  .pager button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--body);font-weight:600;cursor:pointer;transition:.15s;}
+  .pager button:hover{border-color:var(--blue);color:var(--blue);}
+  .pager button.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+  @media(max-width:980px){.posts-layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      MeuBlog
+    </a>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a class="active" href="posts.html">Posts</a></li>
+      <li><a href="programacao.html">Programação</a></li>
+      <li><a href="eventos.html">Eventos</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Blog</p>
+    <h1>Todos os Posts</h1>
+    <p>Artigos, tutoriais e notícias sobre tecnologia, saúde e desenvolvimento web.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="posts-layout">
+    <main>
+      <div class="chips">
+        <button class="chip active">Todos</button>
+        <button class="chip">Notícias</button>
+        <button class="chip">Tecnologia</button>
+        <button class="chip">Saúde</button>
+        <button class="chip">Tutoriais</button>
+      </div>
+
+      <div class="cards-3">
+        <a class="card" href="post.html"><div class="thumb"><image-slot id="p-1" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>Como usar Prisma com PostgreSQL no Next.js</h3><p>Aprenda a integrar o Prisma ORM com PostgreSQL de forma simples.</p><span class="date">20 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-2" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>Entendendo Server Components no Next.js</h3><p>Veja como os Server Components funcionam e quando usar.</p><span class="date">20 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-3" placeholder="img" shape="rect"></image-slot><span class="badge badge--news on-img">Notícias</span></div><div class="body"><h3>Governo anuncia novas medidas econômicas</h3><p>Pacote busca estimular a economia no próximo trimestre.</p><span class="date">20 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-4" placeholder="img" shape="rect"></image-slot><span class="badge badge--saude on-img">Saúde</span></div><div class="body"><h3>5 hábitos para melhorar sua saúde mental</h3><p>Pequenas mudanças que fazem grande diferença no dia a dia.</p><span class="date">19 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-5" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>API Routes no Next.js: Guia Completo</h3><p>Aprenda a criar APIs eficientes usando Next.js.</p><span class="date">19 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-6" placeholder="img" shape="rect"></image-slot><span class="badge badge--saude on-img">Saúde</span></div><div class="body"><h3>Mindfulness: o que é e como praticar</h3><p>Descubra os benefícios do mindfulness no seu dia a dia.</p><span class="date">19 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-7" placeholder="img" shape="rect"></image-slot><span class="badge badge--tut on-img">Tutoriais</span></div><div class="body"><h3>Como criar um blog com Next.js e Tailwind CSS</h3><p>Monte um blog moderno do zero com as melhores ferramentas.</p><span class="date">18 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-8" placeholder="img" shape="rect"></image-slot><span class="badge badge--tut on-img">Tutoriais</span></div><div class="body"><h3>Deploy de aplicações Next.js na Vercel</h3><p>Passo a passo para publicar seu projeto na Vercel.</p><span class="date">17 de Maio, 2024</span></div></a>
+        <a class="card" href="#"><div class="thumb"><image-slot id="p-9" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>TypeScript na prática: dicas essenciais</h3><p>Escreva código mais seguro e legível com TypeScript.</p><span class="date">16 de Maio, 2024</span></div></a>
+      </div>
+
+      <div class="pager">
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>→</button>
+      </div>
+    </main>
+
+    <aside>
+      <div class="sidebar-box">
+        <h3>Categorias</h3>
+        <ul class="cat-links">
+          <li><a href="#">Notícias <span class="count">8</span></a></li>
+          <li><a href="#">Tecnologia <span class="count">24</span></a></li>
+          <li><a href="#">Saúde <span class="count">11</span></a></li>
+          <li><a href="#">Tutoriais <span class="count">17</span></a></li>
+        </ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Tags populares</h3>
+        <div class="tag-cloud">
+          <span class="tag">Next.js</span><span class="tag">Prisma</span><span class="tag">React</span>
+          <span class="tag">PostgreSQL</span><span class="tag">CSS</span><span class="tag">Saúde</span>
+          <span class="tag">Vercel</span><span class="tag">TypeScript</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script>
+  document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  }));
+  document.querySelectorAll('.pager button').forEach(b=>b.addEventListener('click',()=>{
+    if(b.textContent==='→')return;
+    document.querySelectorAll('.pager button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  }));
+</script>
+</body>
+</html>

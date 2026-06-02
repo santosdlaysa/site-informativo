@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como usar Prisma com PostgreSQL no Next.js — MeuBlog</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .article-wrap{max-width:780px;margin:0 auto;padding:34px 28px 10px;}
+  .crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-bottom:22px;flex-wrap:wrap;}
+  .crumb a{color:var(--blue);}
+  .crumb .sep{color:var(--faint);}
+  .crumb .cur{color:var(--muted);}
+  .article h1{font-size:40px;font-weight:800;letter-spacing:-.02em;margin:14px 0 18px;}
+  .article .meta{margin-bottom:26px;}
+  .cover{width:100%;height:420px;border-radius:16px;overflow:hidden;background:#0f172a;box-shadow:var(--shadow-md);margin-bottom:30px;}
+  .cover image-slot{width:100%;height:100%;}
+  .article .body{font-size:17.5px;line-height:1.75;color:#1f2937;}
+  .article .body p{margin:0 0 22px;}
+  .article .body h2{font-size:24px;font-weight:700;margin:36px 0 14px;}
+  .article .body pre{
+    background:#f6f8fa;border:1px solid var(--line);border-radius:10px;padding:18px 20px;overflow:auto;
+    margin:0 0 26px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px;line-height:1.7;color:#1f2937;
+  }
+  .article .body pre .c-key{color:#0550ae;}
+  .article .body pre .c-str{color:#0a7d3d;}
+  .article .body pre .c-com{color:#6b7280;}
+
+  .share{display:flex;align-items:center;gap:14px;margin:34px 0 10px;padding-top:26px;border-top:1px solid var(--line);}
+  .share .lbl{font-weight:600;color:var(--ink);font-size:15px;}
+  .share .btns{display:flex;gap:10px;}
+  .share a{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .15s;}
+  .share a:hover{transform:translateY(-3px);}
+  .share .fb{background:#1877f2;}.share .tw{background:#1da1f2;}.share .li{background:#0a66c2;}.share .wa{background:#25d366;}
+  .share svg{width:18px;height:18px;}
+
+  .author-box{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin:30px 0 0;box-shadow:var(--shadow-sm);}
+  .author-box .av{width:58px;height:58px;border-radius:50%;background:#cbd5e1 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6z"/></svg>') center/cover;flex:none;}
+  .author-box h4{font-size:16px;font-weight:700;}
+  .author-box p{margin:4px 0 0;color:var(--muted);font-size:14px;}
+
+  .related{padding:50px 0 10px;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>MeuBlog</a>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="posts.html">Posts</a></li>
+      <li><a href="programacao.html">Programação</a></li>
+      <li><a href="eventos.html">Eventos</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<article class="article">
+  <div class="article-wrap">
+    <nav class="crumb">
+      <a href="index.html">Home</a><span class="sep">›</span>
+      <a href="posts.html">Tecnologia</a><span class="sep">›</span>
+      <span class="cur">Como usar Prisma com PostgreSQL no Next.js</span>
+    </nav>
+
+    <span class="badge badge--tec-soft">Tecnologia</span>
+    <h1>Como usar Prisma com PostgreSQL no Next.js</h1>
+    <div class="meta">
+      <span class="avatar"></span><span>Admin</span><span class="dot"></span>
+      <span>20 de Maio, 2024</span><span class="dot"></span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 1.5"/></svg> 5 min de leitura</span>
+    </div>
+
+    <div class="cover"><image-slot id="post-cover" placeholder="Imagem de capa do post" shape="rect"></image-slot></div>
+
+    <div class="body">
+      <p>O Prisma é um ORM moderno e intuitivo que torna o trabalho com bancos de dados muito mais agradável. Neste post, vamos ver como integrá-lo com PostgreSQL em um projeto Next.js.</p>
+
+      <h2>1. Instalando o Prisma</h2>
+      <p>Primeiro, instale o Prisma e o cliente:</p>
+      <pre><span class="c-com"># instale as dependências</span>
+npm install prisma @prisma/client
+npx prisma init</pre>
+
+      <h2>2. Configurando o banco de dados</h2>
+      <p>Edite o arquivo <code>.env</code> e adicione sua conexão com PostgreSQL:</p>
+      <pre>DATABASE_URL=<span class="c-str">"postgresql://usuario:senha@localhost:5432/meublog"</span></pre>
+
+      <h2>3. Criando seu primeiro modelo</h2>
+      <p>Edite o arquivo <code>schema.prisma</code>:</p>
+      <pre><span class="c-key">model</span> Post {
+  id         Int       <span class="c-key">@id @default</span>(autoincrement())
+  title      String
+  content    String
+  createdAt  DateTime  <span class="c-key">@default</span>(now())
+}</pre>
+
+      <p>Pronto! Agora é só rodar as migrations:</p>
+      <pre>npx prisma migrate dev --name init</pre>
+
+      <p>Com isso seu banco está pronto para uso. A partir daqui você pode importar o cliente do Prisma em qualquer rota da sua aplicação e começar a criar, ler e atualizar registros com poucas linhas de código.</p>
+    </div>
+
+    <div class="share">
+      <span class="lbl">Compartilhe:</span>
+      <div class="btns">
+        <a class="fb" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1z"/></svg></a>
+        <a class="tw" href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.7 4.6a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5a4 4 0 0 0 3.2 4 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18.1a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2.2z"/></svg></a>
+        <a class="li" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8H4V20h2.9V8zM5.4 3.5a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4zM20 20h-2.9v-5.9c0-1.4-.5-2.3-1.7-2.3-1 0-1.5.6-1.8 1.3-.1.2-.1.5-.1.8V20H10.6V8h2.8v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V20z"/></svg></a>
+        <a class="wa" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.5 1 2.6c.1.2 1.8 2.7 4.3 3.7 1.6.6 2.2.7 2.9.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.1z"/></svg></a>
+      </div>
+    </div>
+
+    <div class="author-box">
+      <span class="av"></span>
+      <div><h4>Admin</h4><p>Editor do MeuBlog. Escreve sobre desenvolvimento web, performance e boas práticas.</p></div>
+    </div>
+  </div>
+</article>
+
+<div class="wrap">
+  <section class="related">
+    <div class="section-head"><h2 style="font-size:24px;">Posts relacionados</h2><a class="see-all" href="posts.html">Ver todos →</a></div>
+    <div class="cards-3">
+      <a class="card" href="#"><div class="thumb"><image-slot id="rel-1" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>Entendendo Server Components no Next.js</h3><p>Veja como os Server Components funcionam e quando usar.</p><span class="date">20 de Maio, 2024</span></div></a>
+      <a class="card" href="#"><div class="thumb"><image-slot id="rel-2" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div><div class="body"><h3>API Routes no Next.js: Guia Completo</h3><p>Aprenda a criar APIs eficientes usando Next.js.</p><span class="date">19 de Maio, 2024</span></div></a>
+      <a class="card" href="#"><div class="thumb"><image-slot id="rel-3" placeholder="img" shape="rect"></image-slot><span class="badge badge--tut on-img">Tutoriais</span></div><div class="body"><h3>Deploy de aplicações Next.js na Vercel</h3><p>Passo a passo para publicar seu projeto na Vercel.</p><span class="date">17 de Maio, 2024</span></div></a>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+</body>
+</html>

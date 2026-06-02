@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeuBlog — Eventos</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* featured event */
+  .feat{display:grid;grid-template-columns:1.15fr 1fr;gap:0;background:#fff;border:1px solid var(--line);
+    border-radius:18px;overflow:hidden;box-shadow:var(--shadow-md);margin:36px 0 12px;}
+  .feat .media{position:relative;min-height:360px;background:#0f172a;}
+  .feat .media image-slot{position:absolute;inset:0;width:100%;height:100%;}
+  .feat .media .tag-feat{position:absolute;top:18px;left:18px;}
+  .feat .content{padding:40px;display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .feat .content h2{font-size:32px;font-weight:800;letter-spacing:-.02em;}
+  .feat .content p{margin:0;color:var(--muted);font-size:16px;}
+  .ev-info{display:flex;flex-direction:column;gap:12px;margin:6px 0 4px;}
+  .ev-info .row{display:flex;align-items:center;gap:11px;color:var(--body);font-size:15px;}
+  .ev-info .row svg{width:19px;height:19px;color:var(--blue);flex:none;}
+  .ev-cta{display:flex;gap:12px;margin-top:6px;}
+  .btn-primary{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-weight:600;font-size:15px;cursor:pointer;transition:.15s;}
+  .btn-primary:hover{background:var(--blue-dark);}
+  .btn-outline{background:#fff;color:var(--body);border:1px solid var(--line);border-radius:10px;padding:13px 24px;font-weight:600;font-size:15px;cursor:pointer;transition:.15s;}
+  .btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+
+  /* event cards */
+  .ev-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s;}
+  .ev-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+  .ev-card .media{position:relative;height:170px;background:#0f172a;}
+  .ev-card .media image-slot{width:100%;height:100%;}
+  .ev-card .datechip{position:absolute;top:14px;left:14px;background:#fff;border-radius:10px;text-align:center;
+    padding:8px 12px;box-shadow:var(--shadow-sm);line-height:1;}
+  .ev-card .datechip .d{display:block;font-size:20px;font-weight:800;color:var(--ink);}
+  .ev-card .datechip .m{display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--blue);letter-spacing:.06em;margin-top:3px;}
+  .ev-card .body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:9px;flex:1;}
+  .ev-card .fmt{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted);}
+  .ev-card .fmt.online{color:var(--c-saude);}
+  .ev-card .fmt svg{width:14px;height:14px;}
+  .ev-card h3{font-size:18px;font-weight:700;line-height:1.3;}
+  .ev-card p{margin:0;color:var(--muted);font-size:14px;}
+  .ev-card .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;}
+  .ev-card .price{font-weight:700;color:var(--ink);font-size:15px;}
+  .ev-card .price.free{color:var(--c-saude);}
+  .ev-card .signup{font-size:14px;font-weight:600;color:var(--blue);}
+
+  @media(max-width:820px){.feat{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      MeuBlog
+    </a>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="posts.html">Posts</a></li>
+      <li><a href="programacao.html">Programação</a></li>
+      <li><a class="active" href="eventos.html">Eventos</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Comunidade</p>
+    <h1>Eventos</h1>
+    <p>Encontros, workshops e meetups da comunidade MeuBlog. Participe presencialmente ou online.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <!-- FEATURED -->
+  <article class="feat">
+    <div class="media">
+      <image-slot id="ev-feat" placeholder="Imagem do evento" shape="rect"></image-slot>
+      <span class="badge badge--eventos on-img tag-feat">Em destaque</span>
+    </div>
+    <div class="content">
+      <span class="badge badge--tec-soft" style="align-self:flex-start;">Tecnologia</span>
+      <h2>MeuBlog Conf 2024</h2>
+      <p>Um dia inteiro de palestras sobre Next.js, performance web e o futuro do desenvolvimento full-stack.</p>
+      <div class="ev-info">
+        <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> 15 de Junho, 2024 · 09h às 18h</div>
+        <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Centro de Convenções · São Paulo, SP</div>
+      </div>
+      <div class="ev-cta">
+        <button class="btn-outline">Ver detalhes</button>
+      </div>
+    </div>
+  </article>
+</div>
+
+<div class="wrap">
+  <section class="section">
+    <div class="section-head"><h2>Próximos eventos</h2></div>
+    <div class="chips">
+      <button class="chip active">Todos</button>
+      <button class="chip">Online</button>
+      <button class="chip">Presencial</button>
+    </div>
+
+    <div class="cards-3">
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-1" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">22</span><span class="m">Mai</span></span></div>
+        <div class="body">
+          <span class="fmt online"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8"/></svg> Online</span>
+          <h3>Workshop: API Routes no Next.js</h3>
+          <p>Mão na massa criando endpoints seguros e performáticos.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-2" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">28</span><span class="m">Mai</span></span></div>
+        <div class="body">
+          <span class="fmt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> São Paulo, SP</span>
+          <h3>Meetup MeuBlog · Edição Front-end</h3>
+          <p>Networking e talks rápidas sobre React, CSS e design systems.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-3" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">04</span><span class="m">Jun</span></span></div>
+        <div class="body">
+          <span class="fmt online"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8"/></svg> Online</span>
+          <h3>Live: Banco de dados com Prisma</h3>
+          <p>Modelagem, migrations e boas práticas com PostgreSQL.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-4" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">11</span><span class="m">Jun</span></span></div>
+        <div class="body">
+          <span class="fmt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Rio de Janeiro, RJ</span>
+          <h3>Saúde do Dev: corpo e mente</h3>
+          <p>Painel sobre ergonomia, foco e equilíbrio na rotina de quem programa.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-5" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">18</span><span class="m">Jun</span></span></div>
+        <div class="body">
+          <span class="fmt online"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8"/></svg> Online</span>
+          <h3>Bootcamp: Deploy na Vercel</h3>
+          <p>Sessão prática publicando uma aplicação completa do zero.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+
+      <article class="ev-card">
+        <div class="media"><image-slot id="ev-6" placeholder="img" shape="rect"></image-slot><span class="datechip"><span class="d">25</span><span class="m">Jun</span></span></div>
+        <div class="body">
+          <span class="fmt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Belo Horizonte, MG</span>
+          <h3>Hackathon MeuBlog</h3>
+          <p>24 horas construindo projetos em equipe com mentoria ao vivo.</p>
+          <div class="foot"><span class="signup">Ver detalhes →</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script>
+  document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  }));
+</script>
+</body>
+</html>

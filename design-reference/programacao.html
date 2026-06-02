@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeuBlog — Programação</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .day-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:38px 0 30px;}
+  .day-tab{
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 20px;cursor:pointer;
+    text-align:center;min-width:104px;transition:.15s;
+  }
+  .day-tab:hover{border-color:var(--blue);}
+  .day-tab .dow{display:block;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .day-tab .dnum{display:block;font-size:20px;font-weight:800;color:var(--ink);margin-top:3px;}
+  .day-tab.active{background:var(--blue);border-color:var(--blue);}
+  .day-tab.active .dow,.day-tab.active .dnum{color:#fff;}
+
+  .day-panel{display:none;}
+  .day-panel.active{display:block;}
+
+  .timeline{display:flex;flex-direction:column;gap:16px;padding-bottom:56px;}
+  .slot{
+    display:grid;grid-template-columns:120px 1fr;gap:24px;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:22px 24px;box-shadow:var(--shadow-sm);transition:transform .16s,box-shadow .16s;
+  }
+  .slot:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+  .slot.live{border-color:#fecaca;}
+  .slot-time{display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--line-soft);padding-right:24px;}
+  .slot-time .hr{font-size:20px;font-weight:800;color:var(--ink);}
+  .slot-time .dur{font-size:13px;color:var(--muted);}
+  .live-pill{display:inline-flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:999px;align-self:flex-start;}
+  .live-pill .blink{width:7px;height:7px;border-radius:50%;background:#dc2626;animation:blink 1.2s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+  .slot-body{display:flex;flex-direction:column;gap:10px;}
+  .slot-body .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .slot-body h3{font-size:19px;font-weight:700;}
+  .slot-body p{margin:0;color:var(--muted);font-size:14.5px;}
+  .speaker{display:flex;align-items:center;gap:10px;margin-top:4px;}
+  .speaker .avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;background:#cbd5e1;flex:none;}
+  .speaker .avatar image-slot{width:100%;height:100%;}
+  .speaker .nm{font-size:14px;font-weight:600;color:var(--ink);}
+  .speaker .rl{font-size:13px;color:var(--muted);}
+  .slot-action{display:flex;align-items:center;}
+  .btn-join{margin-left:auto;background:var(--blue);color:#fff;border:none;border-radius:9px;padding:10px 18px;font-weight:600;font-size:14px;cursor:pointer;transition:.15s;}
+  .btn-join:hover{background:var(--blue-dark);}
+  .btn-remind{margin-left:auto;background:#fff;color:var(--body);border:1px solid var(--line);border-radius:9px;padding:10px 18px;font-weight:600;font-size:14px;cursor:pointer;transition:.15s;}
+  .btn-remind:hover{border-color:var(--blue);color:var(--blue);}
+  @media(max-width:640px){.slot{grid-template-columns:1fr;gap:14px;}.slot-time{border-right:none;border-bottom:1px solid var(--line-soft);padding:0 0 12px;flex-direction:row;align-items:center;gap:12px;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      MeuBlog
+    </a>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="posts.html">Posts</a></li>
+      <li><a class="active" href="programacao.html">Programação</a></li>
+      <li><a href="eventos.html">Eventos</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Ao vivo</p>
+    <h1>Programação</h1>
+    <p>Acompanhe nossas lives, workshops e bate-papos. Escolha um dia para ver a agenda completa.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="day-tabs">
+    <button class="day-tab active" data-day="0"><span class="dow">Seg</span><span class="dnum">20</span></button>
+    <button class="day-tab" data-day="1"><span class="dow">Ter</span><span class="dnum">21</span></button>
+    <button class="day-tab" data-day="2"><span class="dow">Qua</span><span class="dnum">22</span></button>
+    <button class="day-tab" data-day="3"><span class="dow">Qui</span><span class="dnum">23</span></button>
+    <button class="day-tab" data-day="4"><span class="dow">Sex</span><span class="dnum">24</span></button>
+  </div>
+
+  <!-- DIA 1 -->
+  <div class="day-panel active" data-day="0">
+    <div class="timeline">
+      <article class="slot live">
+        <div class="slot-time"><span class="hr">10:00</span><span class="dur">60 min</span><span class="live-pill"><span class="blink"></span>Ao vivo</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tec-soft">Tecnologia</span></div>
+          <h3>Prisma + PostgreSQL na prática</h3>
+          <p>Configurando um banco de dados do zero em um projeto Next.js, com migrations e seeds.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-1" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Ana Martins</div><div class="rl">Engenheira de Software</div></div><button class="btn-join">Entrar na live</button></div>
+        </div>
+      </article>
+      <article class="slot">
+        <div class="slot-time"><span class="hr">14:00</span><span class="dur">45 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tut-soft">Tutoriais</span></div>
+          <h3>Workshop: criando um blog com Tailwind CSS</h3>
+          <p>Do layout aos componentes — construa uma interface moderna passo a passo.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-2" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Carlos Lima</div><div class="rl">Designer & Dev Front-end</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+      <article class="slot">
+        <div class="slot-time"><span class="hr">16:30</span><span class="dur">30 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--saude-soft">Saúde</span></div>
+          <h3>Pausa mental: mindfulness para quem programa</h3>
+          <p>Técnicas rápidas de respiração e foco para manter a produtividade saudável.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-3" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Júlia Souza</div><div class="rl">Psicóloga</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- DIA 2 -->
+  <div class="day-panel" data-day="1">
+    <div class="timeline">
+      <article class="slot">
+        <div class="slot-time"><span class="hr">09:30</span><span class="dur">50 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tec-soft">Tecnologia</span></div>
+          <h3>Server Components: o que muda no seu projeto</h3>
+          <p>Entenda o novo modelo de renderização do Next.js e quando aplicá-lo.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-4" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Pedro Alves</div><div class="rl">Tech Lead</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+      <article class="slot">
+        <div class="slot-time"><span class="hr">15:00</span><span class="dur">60 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--news">Notícias</span></div>
+          <h3>Roda de notícias: o que rolou na semana tech</h3>
+          <p>Comentamos os principais lançamentos e novidades do mundo do desenvolvimento.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-5" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Equipe MeuBlog</div><div class="rl">Redação</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- DIA 3 -->
+  <div class="day-panel" data-day="2">
+    <div class="timeline">
+      <article class="slot">
+        <div class="slot-time"><span class="hr">11:00</span><span class="dur">90 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tut-soft">Tutoriais</span></div>
+          <h3>Deploy na Vercel do início ao fim</h3>
+          <p>Publique sua aplicação Next.js com domínio próprio e variáveis de ambiente.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-6" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Carlos Lima</div><div class="rl">Designer & Dev Front-end</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- DIA 4 -->
+  <div class="day-panel" data-day="3">
+    <div class="timeline">
+      <article class="slot">
+        <div class="slot-time"><span class="hr">13:00</span><span class="dur">45 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tec-soft">Tecnologia</span></div>
+          <h3>API Routes: construindo back-end no Next.js</h3>
+          <p>Crie rotas de API eficientes e seguras dentro do seu próprio projeto.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-7" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Ana Martins</div><div class="rl">Engenheira de Software</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+      <article class="slot">
+        <div class="slot-time"><span class="hr">17:00</span><span class="dur">30 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--saude-soft">Saúde</span></div>
+          <h3>Ergonomia no home office</h3>
+          <p>Ajustes simples no seu espaço de trabalho para evitar dores e lesões.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-8" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Júlia Souza</div><div class="rl">Psicóloga</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- DIA 5 -->
+  <div class="day-panel" data-day="4">
+    <div class="timeline">
+      <article class="slot">
+        <div class="slot-time"><span class="hr">10:00</span><span class="dur">120 min</span></div>
+        <div class="slot-body">
+          <div class="top"><span class="badge badge--tut-soft">Tutoriais</span></div>
+          <h3>Maratona: do projeto vazio ao deploy</h3>
+          <p>Sessão especial de fim de semana construindo uma aplicação completa ao vivo.</p>
+          <div class="speaker"><span class="avatar"><image-slot id="sp-9" placeholder="" shape="circle"></image-slot></span><div><div class="nm">Equipe MeuBlog</div><div class="rl">Todos os instrutores</div></div><button class="btn-remind">Lembrar-me</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script>
+  document.querySelectorAll('.day-tab').forEach(tab=>tab.addEventListener('click',()=>{
+    const d=tab.dataset.day;
+    document.querySelectorAll('.day-tab').forEach(x=>x.classList.toggle('active',x===tab));
+    document.querySelectorAll('.day-panel').forEach(p=>p.classList.toggle('active',p.dataset.day===d));
+  }));
+</script>
+</body>
+</html>

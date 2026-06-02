@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeuBlog — Home</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ===== Print ===== */
+  @page{ size:A4 portrait; margin:1cm; }
+  @media print{
+    html,body{ background:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .site-header{ position:static !important; }
+    .icon-btn{ display:none !important; }
+    *,*::before,*::after{
+      animation-delay:-99s !important; animation-duration:.001s !important;
+      animation-iteration-count:1 !important; animation-fill-mode:both !important;
+      animation-play-state:running !important; transition-duration:0s !important;
+    }
+    .card,.side-item,.cat-post,.sidebar-box{ break-inside:avoid; box-shadow:none !important; }
+    .section{ break-inside:avoid; padding:28px 0 !important; }
+    .hero-grid{ break-inside:avoid; }
+    .card:hover,.side-item:hover{ transform:none !important; }
+    .see-all{ color:var(--blue) !important; }
+  }
+  /* Home hero */
+  .hero-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;padding:36px 0 8px;}
+  .hero{
+    position:relative;border-radius:18px;overflow:hidden;min-height:520px;display:flex;align-items:flex-end;
+    box-shadow:var(--shadow-md);
+  }
+  .hero image-slot{position:absolute;inset:0;width:100%;height:100%;}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,.15) 0%,rgba(8,12,20,.55) 55%,rgba(8,12,20,.9) 100%);pointer-events:none;}
+  .hero .hero-content{position:relative;padding:38px 40px 40px;color:#fff;max-width:560px;}
+  .hero h1{color:#fff;font-size:42px;font-weight:800;letter-spacing:-.02em;margin:16px 0 16px;}
+  .hero .lead{color:rgba(255,255,255,.85);font-size:18px;margin:0 0 22px;}
+  .hero .meta{color:rgba(255,255,255,.8);}
+  .hero .meta .avatar{outline:2px solid rgba(255,255,255,.35);}
+
+  .side-list{display:flex;flex-direction:column;gap:18px;}
+  .side-item{
+    display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;
+    box-shadow:var(--shadow-sm);transition:transform .16s,box-shadow .16s;
+  }
+  .side-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+  .side-item .thumb{width:84px;height:84px;border-radius:10px;overflow:hidden;flex:none;background:#0f172a;}
+  .side-item .thumb image-slot{width:100%;height:100%;}
+  .side-item .info{display:flex;flex-direction:column;gap:7px;}
+  .side-item h4{font-size:15.5px;font-weight:700;line-height:1.3;}
+  .side-item .date{color:var(--faint);font-size:13px;}
+
+  /* category split section */
+  .split{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:start;}
+  .cat-list{display:flex;flex-direction:column;}
+  .cat-post{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid var(--line-soft);}
+  .cat-post:first-child{padding-top:0;}
+  .cat-post:last-child{border-bottom:none;}
+  .cat-post .thumb{width:140px;height:104px;border-radius:12px;overflow:hidden;flex:none;background:#0f172a;}
+  .cat-post .thumb image-slot{width:100%;height:100%;}
+  .cat-post h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+  .cat-post p{margin:0 0 8px;color:var(--muted);font-size:14px;}
+  .cat-post .date{color:var(--faint);font-size:13px;}
+  .cat-head{color:var(--blue);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;}
+
+  .sidebar-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:var(--shadow-sm);}
+  .sidebar-box h3{font-size:19px;font-weight:800;margin-bottom:8px;}
+  .cat-links{list-style:none;margin:8px 0 0;padding:0;}
+  .cat-links li{border-bottom:1px solid var(--line-soft);}
+  .cat-links li:last-child{border-bottom:none;}
+  .cat-links a{display:block;padding:13px 0;color:var(--body);font-size:15px;transition:color .15s,padding .15s;}
+  .cat-links a:hover{color:var(--blue);padding-left:6px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      MeuBlog
+    </a>
+    <ul class="menu">
+      <li><a class="active" href="index.html">Home</a></li>
+      <li><a href="posts.html">Posts</a></li>
+      <li><a href="programacao.html">Programação</a></li>
+      <li><a href="eventos.html">Eventos</a></li>
+      <li><a href="#">Contato</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<!-- HERO + SIDE LIST -->
+<div class="wrap">
+  <section class="hero-grid">
+    <article class="hero">
+      <image-slot id="home-hero" placeholder="Imagem de destaque" shape="rect"></image-slot>
+      <div class="scrim"></div>
+      <div class="hero-content">
+        <span class="badge badge--tec on-img">Tecnologia</span>
+        <h1>Como usar Prisma com PostgreSQL no Next.js</h1>
+        <p class="lead">Aprenda a integrar o Prisma ORM com PostgreSQL de forma simples e eficiente.</p>
+        <div class="meta">
+          <span class="avatar"></span>
+          <span>Admin</span><span class="dot"></span><span>20 de Maio, 2024</span>
+        </div>
+      </div>
+    </article>
+
+    <aside class="side-list">
+      <a class="side-item" href="#">
+        <span class="thumb"><image-slot id="home-side-1" placeholder="img" shape="rect"></image-slot></span>
+        <span class="info">
+          <span class="badge badge--news" style="align-self:flex-start;">Notícias</span>
+          <h4>Governo anuncia novas medidas econômicas</h4>
+          <span class="date">20 de Maio, 2024</span>
+        </span>
+      </a>
+      <a class="side-item" href="#">
+        <span class="thumb"><image-slot id="home-side-2" placeholder="img" shape="rect"></image-slot></span>
+        <span class="info">
+          <span class="badge badge--saude-soft" style="align-self:flex-start;">Saúde</span>
+          <h4>5 hábitos para melhorar sua saúde mental</h4>
+          <span class="date">19 de Maio, 2024</span>
+        </span>
+      </a>
+      <a class="side-item" href="#">
+        <span class="thumb"><image-slot id="home-side-3" placeholder="img" shape="rect"></image-slot></span>
+        <span class="info">
+          <span class="badge badge--tut-soft" style="align-self:flex-start;">Tutoriais</span>
+          <h4>Como criar um blog com Next.js e Tailwind CSS</h4>
+          <span class="date">18 de Maio, 2024</span>
+        </span>
+      </a>
+    </aside>
+  </section>
+</div>
+
+<!-- ÚLTIMOS POSTS -->
+<div class="wrap">
+  <section class="section">
+    <div class="section-head">
+      <h2>Últimos Posts</h2>
+      <a class="see-all" href="posts.html">Ver todos →</a>
+    </div>
+    <div class="cards-4">
+      <a class="card" href="#">
+        <div class="thumb"><image-slot id="home-last-1" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div>
+        <div class="body">
+          <h3>Entendendo Server Components no Next.js</h3>
+          <p>Veja como os Server Components funcionam e quando usar.</p>
+          <span class="date">20 de Maio, 2024</span>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="thumb"><image-slot id="home-last-2" placeholder="img" shape="rect"></image-slot><span class="badge badge--tec on-img">Tecnologia</span></div>
+        <div class="body">
+          <h3>API Routes no Next.js: Guia Completo</h3>
+          <p>Aprenda a criar APIs eficientes usando Next.js.</p>
+          <span class="date">19 de Maio, 2024</span>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="thumb"><image-slot id="home-last-3" placeholder="img" shape="rect"></image-slot><span class="badge badge--saude on-img">Saúde</span></div>
+        <div class="body">
+          <h3>Mindfulness: o que é e como praticar</h3>
+          <p>Descubra os benefícios do mindfulness no seu dia a dia.</p>
+          <span class="date">19 de Maio, 2024</span>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="thumb"><image-slot id="home-last-4" placeholder="img" shape="rect"></image-slot><span class="badge badge--tut on-img">Tutoriais</span></div>
+        <div class="body">
+          <h3>Deploy de aplicações Next.js na Vercel</h3>
+          <p>Passo a passo para publicar seu projeto na Vercel.</p>
+          <span class="date">17 de Maio, 2024</span>
+        </div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- CATEGORY SPLIT -->
+<div class="wrap">
+  <section class="section" style="padding-top:8px;">
+    <div class="split">
+      <div>
+        <div class="section-head"><span class="cat-head">Tecnologia</span><a class="see-all" href="posts.html">Ver todos →</a></div>
+        <div class="cat-list">
+          <article class="cat-post">
+            <span class="thumb"><image-slot id="home-cat-1" placeholder="img" shape="rect"></image-slot></span>
+            <div>
+              <h3>Como usar Prisma com PostgreSQL no Next.js</h3>
+              <p>Aprenda a integrar o Prisma ORM com PostgreSQL de forma simples e eficiente.</p>
+              <span class="date">20 de Maio, 2024</span>
+            </div>
+          </article>
+          <article class="cat-post">
+            <span class="thumb"><image-slot id="home-cat-2" placeholder="img" shape="rect"></image-slot></span>
+            <div>
+              <h3>Entendendo Server Components no Next.js</h3>
+              <p>Veja como os Server Components funcionam e quando usar.</p>
+              <span class="date">20 de Maio, 2024</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <aside class="sidebar-box">
+        <h3>Categorias</h3>
+        <ul class="cat-links">
+          <li><a href="posts.html">Notícias</a></li>
+          <li><a href="posts.html">Tecnologia</a></li>
+          <li><a href="posts.html">Saúde</a></li>
+          <li><a href="posts.html">Tutoriais</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script>
+  window.addEventListener('load', async ()=>{
+    try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+    setTimeout(()=>window.print(), 600);
+  });
+</script>
+</body>
+</html>

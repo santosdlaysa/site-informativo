@@ -1,0 +1,14 @@
+/* Reset mínimo do app. Os sistemas visuais completos vivem em
+   src/styles/public.css (área pública) e src/styles/admin.css (painel),
+   carregados pelos respectivos layouts de rota. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programação — MeuBlog Admin</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="name">MeuBlog</span></div>
+    <nav class="nav">
+      <a href="admin-posts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Posts</span></a>
+      <a href="Novo Post.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M9 9h6M9 13h4"/></svg><span>Novo Post</span></a>
+      <a class="active" href="admin-programacao.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v3l2 1"/></svg><span>Programação</span></a>
+      <a href="admin-eventos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v12H3z"/><path d="M3 11h18M8 3v4M16 3v4"/></svg><span>Eventos</span></a>
+      <div class="spacer"></div>
+      <a href="admin-login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span>Sair</span></a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="page-top">
+      <div><h1>Programação</h1><div class="sub">Cadastre lives, workshops e sessões da agenda</div></div>
+    </div>
+
+    <!-- FORM -->
+    <div class="panel" style="margin-bottom:28px;">
+      <div class="panel-head"><h2>Nova sessão</h2></div>
+      <div class="panel-pad">
+        <div class="form-grid">
+          <div class="stack">
+            <div class="field">
+              <label for="ses-titulo">Título da sessão</label>
+              <input id="ses-titulo" class="input" type="text" placeholder="Ex.: Prisma + PostgreSQL na prática">
+            </div>
+            <div class="field">
+              <label for="ses-desc">Descrição</label>
+              <textarea id="ses-desc" class="textarea" placeholder="Resumo do que será abordado na sessão"></textarea>
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label for="ses-pal">Palestrante</label>
+                <input id="ses-pal" class="input" type="text" placeholder="Nome do palestrante">
+              </div>
+              <div class="field">
+                <label for="ses-cargo">Cargo / função</label>
+                <input id="ses-cargo" class="input" type="text" placeholder="Ex.: Engenheira de Software">
+              </div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="field">
+              <label for="ses-cat">Categoria</label>
+              <div class="selnative">
+                <select id="ses-cat" class="select"><option>Tecnologia</option><option>Tutoriais</option><option>Saúde</option><option>Notícias</option></select>
+                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label for="ses-data">Data</label>
+                <div class="datewrap">
+                  <input id="ses-data" class="input" type="text" value="20/05/2024">
+                  <svg class="cal" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                </div>
+              </div>
+              <div class="field">
+                <label for="ses-hora">Horário</label>
+                <input id="ses-hora" class="input" type="text" value="10:00">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label for="ses-dur">Duração (min)</label>
+                <input id="ses-dur" class="input" type="text" value="60">
+              </div>
+              <div class="field">
+                <label for="ses-status">Status</label>
+                <div class="selnative">
+                  <select id="ses-status" class="select"><option>Agendada</option><option>Ao vivo</option><option>Encerrada</option></select>
+                  <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="ses-link">Link da transmissão</label>
+              <input id="ses-link" class="input" type="text" placeholder="https://...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-ghost" type="reset">Limpar</button>
+          <button class="btn btn-primary" id="addSes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Cadastrar sessão</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="panel">
+      <div class="panel-head"><h2>Sessões cadastradas</h2><span class="count" id="sesCount">3 sessões</span></div>
+      <table class="tbl">
+        <thead><tr><th>Sessão</th><th>Categoria</th><th>Data / Hora</th><th>Status</th><th style="width:96px;"></th></tr></thead>
+        <tbody id="sesRows">
+          <tr>
+            <td><div class="t-title">Prisma + PostgreSQL na prática<div class="t-sub">Ana Martins · Engenheira de Software</div></div></td>
+            <td><span class="pill pill-blue">Tecnologia</span></td>
+            <td><span class="timetag">20/05</span> · 10:00 <span style="color:var(--faint)">(60min)</span></td>
+            <td><span class="pill pill-pub">Ao vivo</span></td>
+            <td class="act-cell"></td>
+          </tr>
+          <tr>
+            <td><div class="t-title">Workshop: criando um blog com Tailwind CSS<div class="t-sub">Carlos Lima · Designer & Dev</div></div></td>
+            <td><span class="pill pill-blue">Tutoriais</span></td>
+            <td><span class="timetag">20/05</span> · 14:00 <span style="color:var(--faint)">(45min)</span></td>
+            <td><span class="pill pill-draft">Agendada</span></td>
+            <td class="act-cell"></td>
+          </tr>
+          <tr>
+            <td><div class="t-title">Pausa mental: mindfulness para quem programa<div class="t-sub">Júlia Souza · Psicóloga</div></div></td>
+            <td><span class="pill pill-blue">Saúde</span></td>
+            <td><span class="timetag">20/05</span> · 16:30 <span style="color:var(--faint)">(30min)</span></td>
+            <td><span class="pill pill-draft">Agendada</span></td>
+            <td class="act-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+  const actHTML = `<div class="act-inline" style="justify-content:flex-end;">
+      <button title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+      <button class="danger del" title="Excluir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+    </div>`;
+  function wire(){
+    document.querySelectorAll('.act-cell').forEach(c=>{if(!c.innerHTML.trim())c.innerHTML=actHTML;});
+    document.querySelectorAll('.del').forEach(b=>b.onclick=()=>{ if(confirm('Excluir esta sessão?')){b.closest('tr').remove();updateCount();} });
+  }
+  function updateCount(){const n=document.querySelectorAll('#sesRows tr').length;document.getElementById('sesCount').textContent=n+(n===1?' sessão':' sessões');}
+  wire();
+
+  // add session (demo)
+  document.getElementById('addSes').addEventListener('click',(e)=>{
+    e.preventDefault();
+    const t=document.getElementById('ses-titulo').value.trim()||'Nova sessão';
+    const pal=document.getElementById('ses-pal').value.trim()||'Palestrante';
+    const cargo=document.getElementById('ses-cargo').value.trim()||'—';
+    const cat=document.getElementById('ses-cat').value;
+    const data=document.getElementById('ses-data').value;
+    const hora=document.getElementById('ses-hora').value;
+    const dur=document.getElementById('ses-dur').value;
+    const st=document.getElementById('ses-status').value;
+    const pill = st==='Ao vivo'?'pill-pub':(st==='Encerrada'?'pill-blue':'pill-draft');
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="t-title">${t}<div class="t-sub">${pal} · ${cargo}</div></div></td>
+      <td><span class="pill pill-blue">${cat}</span></td>
+      <td><span class="timetag">${data.slice(0,5)}</span> · ${hora} <span style="color:var(--faint)">(${dur}min)</span></td>
+      <td><span class="pill ${pill}">${st}</span></td><td class="act-cell"></td>`;
+    document.getElementById('sesRows').prepend(tr);
+    wire();updateCount();
+  });
+</script>
+</body>
+</html>

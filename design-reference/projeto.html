@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nossos Projetos — MeuBlog</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .proj-hero{max-width:980px;margin:0 auto;padding:40px 28px 6px;}
+  .proj-hero .crumb{display:flex;gap:8px;font-size:14px;color:var(--muted);margin-bottom:20px;}
+  .proj-hero .crumb a{color:var(--blue);}
+  .proj-hero h1{font-size:40px;font-weight:800;letter-spacing:-.02em;margin:10px 0 14px;}
+  .proj-hero p{font-size:17.5px;color:var(--muted);max-width:640px;margin:0;}
+
+  .gallery{max-width:980px;margin:0 auto;padding:34px 28px 20px;}
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .proj-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:#0f172a;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;display:block;}
+  .proj-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+  .proj-card image-slot{position:absolute;inset:0;width:100%;height:100%;}
+  .proj-card .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,0) 30%,rgba(8,12,20,.82) 100%);pointer-events:none;}
+  .proj-card .cap{position:absolute;left:0;right:0;bottom:0;padding:18px;color:#fff;z-index:1;}
+  .proj-card .cap .k{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .proj-card .cap h3{color:#fff;font-size:17px;font-weight:700;line-height:1.3;}
+  .proj-card .arrow{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#111827;opacity:0;transform:translateY(-4px);transition:.2s;z-index:1;}
+  .proj-card:hover .arrow{opacity:1;transform:translateY(0);}
+  .proj-card .arrow svg{width:17px;height:17px;}
+  @media(max-width:820px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:520px){.gallery-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>MeuBlog</a>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="posts.html">Posts</a></li>
+      <li><a href="programacao.html">Programação</a></li>
+      <li><a href="eventos.html">Eventos</a></li>
+    </ul>
+    <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+  </div>
+</header>
+
+<section class="proj-hero">
+  <nav class="crumb"><a href="index.html">Home</a><span>›</span><a href="posts.html">Projetos</a><span>›</span><span>Nossos Projetos</span></nav>
+  <span class="badge badge--tec-soft">Projetos</span>
+  <h1>Nossos Projetos</h1>
+  <p>Uma seleção dos nossos principais projetos e tutoriais. Clique em qualquer card para ler o post completo.</p>
+</section>
+
+<section class="gallery">
+  <div class="gallery-grid">
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-1" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Integração com banco de dados</div><h3>Como usar Prisma com PostgreSQL no Next.js</h3></div>
+    </a>
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-2" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Renderização no servidor</div><h3>Entendendo Server Components no Next.js</h3></div>
+    </a>
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-3" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Publicação em produção</div><h3>Deploy de aplicações Next.js na Vercel</h3></div>
+    </a>
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-4" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Criando APIs</div><h3>API Routes no Next.js: Guia Completo</h3></div>
+    </a>
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-5" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Do zero ao deploy</div><h3>Como criar um blog com Next.js e Tailwind CSS</h3></div>
+    </a>
+    <a class="proj-card" href="post.html">
+      <image-slot id="proj-6" placeholder="img projeto" shape="rect"></image-slot>
+      <div class="ov"></div>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="cap"><div class="k"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Bem-estar do dev</div><h3>Mindfulness: o que é e como praticar</h3></div>
+    </a>
+  </div>
+</section>
+
+<footer class="site-footer" style="margin-top:36px;">
+  <div class="wrap">
+    <div class="footer-features">
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> 100% Responsivo</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Painel seguro e simples</div>
+      <div class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Publicação rápida e fácil</div>
+    </div>
+    <div class="footer-bottom">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> MeuBlog</span>
+      <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+</body>
+</html>
