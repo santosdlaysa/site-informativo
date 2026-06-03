@@ -250,8 +250,10 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
 .day-tab:hover{border-color:var(--blue);}
 .day-tab .dow{display:block;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
 .day-tab .dnum{display:block;font-size:20px;font-weight:800;color:var(--ink);margin-top:3px;}
+.day-tab .dyr{display:block;font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--muted);margin-top:2px;}
 .day-tab.active{background:var(--blue);border-color:var(--blue);}
 .day-tab.active .dow,.day-tab.active .dnum{color:#fff;}
+.day-tab.active .dyr{color:rgba(255,255,255,.8);}
 .timeline{display:flex;flex-direction:column;gap:16px;padding-bottom:56px;}
 .slot{display:grid;grid-template-columns:120px 1fr;gap:24px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow-sm);transition:transform .16s,box-shadow .16s;}
 .slot:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}

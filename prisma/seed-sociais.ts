@@ -24,6 +24,51 @@ const CATEGORIES = [
 const readingTime = (content: string) =>
   Math.max(1, Math.ceil(content.split(/\s+/).filter(Boolean).length / 200));
 
+// Gradientes por categoria (combinam com as cores dos badges).
+const GRAD: Record<string, [string, string]> = {
+  "acoes-sociais": ["#1d4ed8", "#1e3a8a"],
+  sustentabilidade: ["#059669", "#047857"],
+  educacao: ["#7c3aed", "#5b21b6"],
+  comunidade: ["#ea580c", "#c2410c"],
+  voluntariado: ["#0891b2", "#0e7490"],
+};
+
+const escapeXml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/** Gera uma capa SVG (1200x675) como data-URL: gradiente + rótulo + título. */
+function cover(title: string, label: string, slug: string): string {
+  const [c1, c2] = GRAD[slug] ?? GRAD["acoes-sociais"];
+  const words = title.split(/\s+/);
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    if ((cur + " " + w).trim().length > 24) {
+      if (cur) lines.push(cur.trim());
+      cur = w;
+    } else {
+      cur = (cur + " " + w).trim();
+    }
+  }
+  if (cur) lines.push(cur.trim());
+  const tspans = lines
+    .slice(0, 3)
+    .map((l, i) => `<tspan x="80" dy="${i === 0 ? 0 : 70}">${escapeXml(l)}</tspan>`)
+    .join("");
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">` +
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">` +
+    `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>` +
+    `</linearGradient></defs>` +
+    `<rect width="1200" height="675" fill="url(#g)"/>` +
+    `<circle cx="1030" cy="110" r="280" fill="#ffffff" fill-opacity="0.08"/>` +
+    `<circle cx="1090" cy="600" r="190" fill="#ffffff" fill-opacity="0.06"/>` +
+    `<text x="80" y="150" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff" fill-opacity="0.85" letter-spacing="3">${escapeXml(label.toUpperCase())}</text>` +
+    `<text x="80" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="800" fill="#ffffff">${tspans}</text>` +
+    `</svg>`;
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+
 async function main() {
   // Usa o usuário admin já existente como autor (não cria nem altera usuários).
   const admin =
@@ -117,16 +162,21 @@ async function main() {
     },
   ];
 
+  const catName: Record<string, string> = {};
+  for (const c of CATEGORIES) catName[c.slug] = c.name;
+
   const slugToId: Record<string, string> = {};
   for (const p of posts) {
+    const coverImage = cover(p.title, catName[p.categorySlug] ?? "Social", p.categorySlug);
     const created = await prisma.post.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: { coverImage },
       create: {
         title: p.title,
         slug: p.slug,
         excerpt: p.excerpt,
         content: p.content,
+        coverImage,
         status: p.status,
         readingTime: readingTime(p.content),
         publishedAt: p.status === PostStatus.PUBLISHED ? new Date() : null,
@@ -195,6 +245,7 @@ async function main() {
       description:
         "Um dia de serviços gratuitos à população: atualização cadastral, Tarifa Social, negociação de débitos e orientações sobre uso seguro e eficiente da energia.",
       categoryId: catId("comunidade"),
+      coverImage: cover("Feira de Cidadania", "Evento · Comunidade", "comunidade"),
       format: EventFormat.PRESENTIAL,
       location: "Praça central · Boa Vista, RR",
       startsAt: atDay(15, 8, 0),
@@ -206,6 +257,7 @@ async function main() {
       description:
         "Encontro online para esclarecer quem tem direito ao desconto na conta de luz e como solicitar o benefício.",
       categoryId: catId("acoes-sociais"),
+      coverImage: cover("Tarifa Social e seus direitos", "Webinar", "acoes-sociais"),
       format: EventFormat.ONLINE,
       location: "Transmissão ao vivo pela internet",
       startsAt: atDay(8, 19, 0),
@@ -217,6 +269,7 @@ async function main() {
       description:
         "Mutirão de colaboradores para reforma e pintura de um espaço comunitário, com arrecadação de alimentos.",
       categoryId: catId("voluntariado"),
+      coverImage: cover("Dia do Voluntariado", "Evento · Voluntariado", "voluntariado"),
       format: EventFormat.PRESENTIAL,
       location: "Centro comunitário do bairro · Boa Vista, RR",
       startsAt: atDay(22, 8, 30),
@@ -228,15 +281,17 @@ async function main() {
   }
 
   // 5) Coleção de Projetos sociais (post tipo PROJECTS + galeria apontando p/ posts)
+  const projectCover = cover("Nossos Projetos Sociais", "Coleção", "acoes-sociais");
   const projectPost = await prisma.post.upsert({
     where: { slug: "nossos-projetos-sociais" },
-    update: {},
+    update: { coverImage: projectCover },
     create: {
       title: "Nossos Projetos Sociais",
       slug: "nossos-projetos-sociais",
       excerpt:
         "Conheça as iniciativas que levam economia, cidadania e desenvolvimento às comunidades. Clique em um card para ler a matéria completa.",
       content: "",
+      coverImage: projectCover,
       type: PostType.PROJECTS,
       status: PostStatus.PUBLISHED,
       publishedAt: new Date(),
@@ -246,18 +301,18 @@ async function main() {
   });
   await prisma.projectItem.deleteMany({ where: { ownerPostId: projectPost.id } });
   const galleryItems = [
-    { caption: "Eficiência energética", linkedSlug: "programa-eficiencia-energetica-familias-baixa-renda" },
-    { caption: "Tarifa Social", linkedSlug: "tarifa-social-quem-tem-direito-ao-desconto" },
-    { caption: "Mutirão de Cidadania", linkedSlug: "mutirao-de-cidadania-servicos-gratuitos-bairros" },
-    { caption: "Educação ambiental", linkedSlug: "educacao-ambiental-nas-escolas-guardioes-da-energia" },
-    { caption: "Energia que transforma", linkedSlug: "energia-que-transforma-comunidades-isoladas" },
+    { caption: "Eficiência energética", linkedSlug: "programa-eficiencia-energetica-familias-baixa-renda", cat: "sustentabilidade" },
+    { caption: "Tarifa Social", linkedSlug: "tarifa-social-quem-tem-direito-ao-desconto", cat: "acoes-sociais" },
+    { caption: "Mutirão de Cidadania", linkedSlug: "mutirao-de-cidadania-servicos-gratuitos-bairros", cat: "comunidade" },
+    { caption: "Educação ambiental", linkedSlug: "educacao-ambiental-nas-escolas-guardioes-da-energia", cat: "educacao" },
+    { caption: "Energia que transforma", linkedSlug: "energia-que-transforma-comunidades-isoladas", cat: "acoes-sociais" },
   ];
   await prisma.projectItem.createMany({
     data: galleryItems.map((it, i) => ({
       ownerPostId: projectPost.id,
       linkedPostId: slugToId[it.linkedSlug] ?? null,
       caption: it.caption,
-      image: null,
+      image: cover(it.caption, "Projeto", it.cat),
       position: i,
     })),
   });

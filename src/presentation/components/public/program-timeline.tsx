@@ -21,6 +21,8 @@ export interface DayVM {
   key: string;
   dow: string;
   dnum: string;
+  month: string;
+  year: string;
   sessions: SlotVM[];
 }
 
@@ -44,6 +46,7 @@ export function ProgramTimeline({ days }: { days: DayVM[] }) {
           >
             <span className="dow">{d.dow}</span>
             <span className="dnum">{d.dnum}</span>
+            <span className="dyr">{d.month} {d.year}</span>
           </button>
         ))}
       </div>

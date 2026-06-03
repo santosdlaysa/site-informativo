@@ -4,30 +4,6 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="wrap">
-        <div className="footer-features">
-          <div className="feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="4" width="20" height="13" rx="2" />
-              <path d="M8 21h8M12 17v4" />
-            </svg>{" "}
-            100% Responsivo
-          </div>
-          <div className="feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>{" "}
-            Painel seguro e simples
-          </div>
-          <div className="feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-            </svg>{" "}
-            Publicação rápida e fácil
-          </div>
-        </div>
-
         <div className="footer-contact" id="contato">
           <div className="fc-about">
             <span className="brand">

@@ -6,7 +6,7 @@ import {
   type DayVM,
   type SlotVM,
 } from "@/presentation/components/public/program-timeline";
-import { hourMinute } from "@/presentation/lib/datetime";
+import { hourMinute, dayAndMonthAbbr } from "@/presentation/lib/datetime";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Programação" };
@@ -27,10 +27,13 @@ export default async function ProgramacaoPage() {
     const d = new Date(s.startsAt);
     const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     if (!dayMap.has(key)) {
+      const { day, month } = dayAndMonthAbbr(d);
       dayMap.set(key, {
         key,
         dow: WEEKDAYS[d.getDay()] ?? "",
-        dnum: String(d.getDate()).padStart(2, "0"),
+        dnum: day,
+        month,
+        year: String(d.getFullYear()),
         sessions: [],
       });
     }
