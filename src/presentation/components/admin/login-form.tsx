@@ -32,7 +32,7 @@ export function LoginForm() {
               <rect x="3" y="5" width="18" height="14" rx="2" />
               <path d="m3 7 9 6 9-6" />
             </svg>
-            <input id="email" name="email" type="email" placeholder="admin@meublog.com" defaultValue="admin@meublog.com" required />
+            <input id="email" name="email" type="email" placeholder="seu@email.com" required />
           </div>
         </div>
 

@@ -38,7 +38,7 @@ const escapeXml = (s: string) =>
 
 /** Gera uma capa SVG (1200x675) como data-URL: gradiente + rótulo + título. */
 function cover(title: string, label: string, slug: string): string {
-  const [c1, c2] = GRAD[slug] ?? GRAD["acoes-sociais"];
+  const [c1, c2] = GRAD[slug] ?? (["#1d4ed8", "#1e3a8a"] as [string, string]);
   const words = title.split(/\s+/);
   const lines: string[] = [];
   let cur = "";
