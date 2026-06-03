@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { AdminPostsTable } from "@/presentation/components/admin/admin-posts-table";
-import { PlusIcon } from "@/presentation/components/icons";
+import { PlusIcon, EyeIcon } from "@/presentation/components/icons";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Posts — Admin" };
@@ -20,9 +20,14 @@ export default async function AdminPostsPage() {
             publicações
           </div>
         </div>
-        <Link className="btn btn-primary" href="/admin/posts/novo">
-          <PlusIcon /> Novo Post
-        </Link>
+        <div style={{ display: "flex", gap: 10 }}>
+          <Link className="btn btn-ghost" href="/" target="_blank" rel="noopener noreferrer">
+            <EyeIcon /> Visualizar site
+          </Link>
+          <Link className="btn btn-primary" href="/admin/posts/novo">
+            <PlusIcon /> Novo Post
+          </Link>
+        </div>
       </div>
 
       <AdminPostsTable posts={posts} />

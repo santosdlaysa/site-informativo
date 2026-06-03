@@ -7,7 +7,7 @@ export interface ProgramSessionProps {
   description: string | null;
   speaker: string | null;
   speakerRole: string | null;
-  category: string | null;
+  categoryId: string | null;
   startsAt: Date;
   durationMin: number;
   status: SessionStatus;
@@ -22,7 +22,7 @@ export interface CreateSessionInput {
   description?: string | null;
   speaker?: string | null;
   speakerRole?: string | null;
-  category?: string | null;
+  categoryId?: string | null;
   startsAt: Date;
   durationMin?: number;
   status?: SessionStatus;
@@ -49,7 +49,7 @@ export class ProgramSession {
       description: input.description?.trim() || null,
       speaker: input.speaker?.trim() || null,
       speakerRole: input.speakerRole?.trim() || null,
-      category: input.category?.trim() || null,
+      categoryId: input.categoryId?.trim() || null,
       startsAt: input.startsAt,
       durationMin: input.durationMin && input.durationMin > 0 ? input.durationMin : 60,
       status: input.status ?? SessionStatus.Scheduled,
@@ -72,7 +72,7 @@ export class ProgramSession {
     if (patch.description !== undefined) this.props.description = patch.description?.trim() || null;
     if (patch.speaker !== undefined) this.props.speaker = patch.speaker?.trim() || null;
     if (patch.speakerRole !== undefined) this.props.speakerRole = patch.speakerRole?.trim() || null;
-    if (patch.category !== undefined) this.props.category = patch.category?.trim() || null;
+    if (patch.categoryId !== undefined) this.props.categoryId = patch.categoryId?.trim() || null;
     if (patch.startsAt !== undefined) {
       if (Number.isNaN(patch.startsAt.getTime())) throw new ValidationError("Data/hora inválida.");
       this.props.startsAt = patch.startsAt;

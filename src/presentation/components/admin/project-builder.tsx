@@ -24,6 +24,10 @@ interface ProjectBuilderProps {
   categories: CategoryView[];
   postOptions: PostOption[];
   isEdit?: boolean;
+  /** Esconde o cabeçalho próprio quando embutido em outro formulário (ex.: novo post). */
+  embedded?: boolean;
+  /** Para onde o botão "Cancelar" volta. Padrão: lista de posts. */
+  cancelHref?: string;
   initial?: {
     title: string;
     description: string;
@@ -41,6 +45,8 @@ export function ProjectBuilder({
   categories,
   postOptions,
   isEdit,
+  embedded,
+  cancelHref = "/admin/posts",
   initial,
 }: ProjectBuilderProps) {
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -60,12 +66,14 @@ export function ProjectBuilder({
 
   return (
     <form action={formAction}>
-      <div className="page-top">
-        <div>
-          <h1>{isEdit ? "Editar coleção" : "Nova coleção de Projetos"}</h1>
-          <div className="sub">Monte uma galeria de imagens que abrem posts existentes</div>
+      {!embedded && (
+        <div className="page-top">
+          <div>
+            <h1>{isEdit ? "Editar coleção" : "Nova coleção de Projetos"}</h1>
+            <div className="sub">Monte uma galeria de imagens que abrem posts existentes</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {state.error && <div className="form-error">{state.error}</div>}
 
@@ -183,7 +191,7 @@ export function ProjectBuilder({
       <input type="hidden" name="items" value={JSON.stringify(items)} />
 
       <div className="form-actions">
-        <Link className="btn btn-ghost" href="/admin/projetos">
+        <Link className="btn btn-ghost" href={cancelHref}>
           Cancelar
         </Link>
         <button className="btn btn-primary" type="submit" disabled={pending}>

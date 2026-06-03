@@ -25,5 +25,10 @@ export default async function AdminEventosPage() {
     date: formatShortDate(ev.startsAt),
   }));
 
-  return <AdminEventManager events={rows} categories={categories.map((c) => c.name)} />;
+  return (
+    <AdminEventManager
+      events={rows}
+      categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+    />
+  );
 }

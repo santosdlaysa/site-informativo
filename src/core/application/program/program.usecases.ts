@@ -12,7 +12,7 @@ export interface CreateSessionDTO {
   description?: string | null;
   speaker?: string | null;
   speakerRole?: string | null;
-  category?: string | null;
+  categoryId?: string | null;
   startsAt: Date;
   durationMin?: number;
   status?: SessionStatus;

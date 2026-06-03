@@ -12,6 +12,10 @@ import { ListPublishedPostsUseCase } from "@/core/application/posts/list-publish
 import { ListCategoriesUseCase } from "@/core/application/categories/list-categories.usecase";
 import { AuthenticateUseCase } from "@/core/application/auth/authenticate.usecase";
 import {
+  GetProfileUseCase,
+  UpdateProfileUseCase,
+} from "@/core/application/profile/profile.usecases";
+import {
   CreateSessionUseCase,
   DeleteSessionUseCase,
   ListSessionsUseCase,
@@ -25,9 +29,6 @@ import {
 } from "@/core/application/events/event.usecases";
 import {
   CreateProjectUseCase,
-  GetProjectBySlugUseCase,
-  GetProjectForEditUseCase,
-  ListProjectsUseCase,
   UpdateProjectUseCase,
 } from "@/core/application/projects/project.usecases";
 
@@ -72,15 +73,16 @@ export const container = {
   updateEvent: new UpdateEventUseCase(eventRepository),
   deleteEvent: new DeleteEventUseCase(eventRepository),
   listEvents: new ListEventsUseCase(eventRepository),
-  // projetos (galeria)
+  // galeria de imagens dos posts
   createProject: new CreateProjectUseCase(createPost, projectRepository),
   updateProject: new UpdateProjectUseCase(updatePost, projectRepository),
-  listProjects: new ListProjectsUseCase(postRepository),
-  getProjectBySlug: new GetProjectBySlugUseCase(postRepository, projectRepository),
-  getProjectForEdit: new GetProjectForEditUseCase(postRepository, projectRepository),
   // auth
   authenticate: new AuthenticateUseCase(userRepository, passwordHasher),
+  // perfil do autor
+  getProfile: new GetProfileUseCase(userRepository),
+  updateProfile: new UpdateProfileUseCase(userRepository),
   // acesso direto a read models pontuais
   postRepository,
   eventRepository,
+  projectRepository,
 } as const;

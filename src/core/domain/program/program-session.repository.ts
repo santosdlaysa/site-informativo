@@ -7,7 +7,8 @@ export interface SessionView {
   description: string | null;
   speaker: string | null;
   speakerRole: string | null;
-  category: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
   startsAt: Date;
   durationMin: number;
   status: SessionStatus;

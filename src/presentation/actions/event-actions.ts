@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
@@ -16,7 +17,7 @@ export interface EventFormState {
 const schema = z.object({
   title: z.string().trim().min(3, "Informe um nome com ao menos 3 caracteres."),
   description: z.string().trim().optional(),
-  category: z.string().trim().optional(),
+  categoryId: z.string().trim().optional(),
   format: z.nativeEnum(EventFormat).optional(),
   location: z.string().trim().optional(),
   date: z.string().trim(),
@@ -42,7 +43,7 @@ export async function createEventAction(
     await container.createEvent.execute({
       title: parsed.data.title,
       description: parsed.data.description || null,
-      category: parsed.data.category || null,
+      categoryId: parsed.data.categoryId || null,
       format: parsed.data.format,
       location: parsed.data.location || null,
       startsAt,
@@ -57,6 +58,42 @@ export async function createEventAction(
   revalidatePath("/admin/eventos");
   revalidatePath("/eventos");
   return { ok: true };
+}
+
+export async function updateEventAction(
+  id: string,
+  _prev: EventFormState,
+  formData: FormData,
+): Promise<EventFormState> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+
+  const parsed = schema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+
+  const startsAt = parseDateTime(parsed.data.date, parsed.data.time);
+  if (!startsAt) return { error: "Data ou horário inválidos (use dd/mm/aaaa e hh:mm)." };
+
+  try {
+    await container.updateEvent.execute({
+      id,
+      title: parsed.data.title,
+      description: parsed.data.description || null,
+      categoryId: parsed.data.categoryId || null,
+      format: parsed.data.format,
+      location: parsed.data.location || null,
+      startsAt,
+      capacity: parsed.data.capacity ?? null,
+      coverImage: parsed.data.coverImage || null,
+    });
+  } catch (error) {
+    if (error instanceof DomainError) return { error: error.message };
+    throw error;
+  }
+
+  revalidatePath("/admin/eventos");
+  revalidatePath("/eventos");
+  redirect("/admin/eventos");
 }
 
 export async function deleteEventAction(id: string): Promise<void> {

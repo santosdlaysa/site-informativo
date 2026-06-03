@@ -8,7 +8,7 @@ export interface EventProps {
   slug: Slug;
   description: string | null;
   coverImage: string | null;
-  category: string | null;
+  categoryId: string | null;
   format: EventFormat;
   location: string | null;
   startsAt: Date;
@@ -22,7 +22,7 @@ export interface CreateEventInput {
   title: string;
   description?: string | null;
   coverImage?: string | null;
-  category?: string | null;
+  categoryId?: string | null;
   format?: EventFormat;
   location?: string | null;
   startsAt: Date;
@@ -48,7 +48,7 @@ export class Event {
       slug: input.slug ? Slug.restore(input.slug) : Slug.fromText(title),
       description: input.description?.trim() || null,
       coverImage: input.coverImage ?? null,
-      category: input.category?.trim() || null,
+      categoryId: input.categoryId?.trim() || null,
       format: input.format ?? EventFormat.Presential,
       location: input.location?.trim() || null,
       startsAt: input.startsAt,
@@ -71,7 +71,7 @@ export class Event {
     }
     if (patch.description !== undefined) this.props.description = patch.description?.trim() || null;
     if (patch.coverImage !== undefined) this.props.coverImage = patch.coverImage ?? null;
-    if (patch.category !== undefined) this.props.category = patch.category?.trim() || null;
+    if (patch.categoryId !== undefined) this.props.categoryId = patch.categoryId?.trim() || null;
     if (patch.format !== undefined) this.props.format = patch.format;
     if (patch.location !== undefined) this.props.location = patch.location?.trim() || null;
     if (patch.startsAt !== undefined) {

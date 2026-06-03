@@ -1,12 +1,6 @@
 import { PostStatus, PostType } from "@/core/domain/post/post-status";
 import {
-  PostDetail,
-  PostListItem,
-  PostRepository,
-} from "@/core/domain/post/post.repository";
-import {
   GalleryItemInput,
-  GalleryItemView,
   ProjectRepository,
 } from "@/core/domain/project/project.repository";
 import { CreatePostUseCase } from "../posts/create-post.usecase";
@@ -26,11 +20,6 @@ export interface SaveProjectDTO {
   items: ProjectItemDTO[];
 }
 
-export interface ProjectGallery {
-  post: PostDetail;
-  items: GalleryItemView[];
-}
-
 function toGalleryInputs(items: ProjectItemDTO[]): GalleryItemInput[] {
   return items
     .filter((it) => it.image || it.linkedPostId)
@@ -42,6 +31,11 @@ function toGalleryInputs(items: ProjectItemDTO[]): GalleryItemInput[] {
     }));
 }
 
+/** Usa a primeira imagem da galeria como capa do post na listagem. */
+function coverFrom(items: ProjectItemDTO[]): string | null {
+  return items.find((it) => it.image)?.image ?? null;
+}
+
 export class CreateProjectUseCase {
   constructor(
     private readonly createPost: CreatePostUseCase,
@@ -49,13 +43,16 @@ export class CreateProjectUseCase {
   ) {}
 
   async execute(dto: SaveProjectDTO, authorId: string): Promise<{ id: string; slug: string }> {
+    // Post comum (Standard): aparece em /posts na sua categoria; a galeria é
+    // exibida como uma seção dentro da própria página do post.
     const created = await this.createPost.execute({
       title: dto.title,
       excerpt: dto.description ?? null,
       content: "",
+      coverImage: coverFrom(dto.items),
       categoryId: dto.categoryId ?? null,
       status: dto.status,
-      type: PostType.Projects,
+      type: PostType.Standard,
       authorId,
     });
     await this.projects.replaceGallery(created.id, toGalleryInputs(dto.items));
@@ -74,46 +71,11 @@ export class UpdateProjectUseCase {
       id,
       title: dto.title,
       excerpt: dto.description ?? null,
+      coverImage: coverFrom(dto.items),
       categoryId: dto.categoryId ?? null,
       status: dto.status,
-      type: PostType.Projects,
+      type: PostType.Standard,
     });
     await this.projects.replaceGallery(id, toGalleryInputs(dto.items));
-  }
-}
-
-export class ListProjectsUseCase {
-  constructor(private readonly posts: PostRepository) {}
-
-  execute(): Promise<PostListItem[]> {
-    return this.posts.list({ type: PostType.Projects });
-  }
-}
-
-export class GetProjectBySlugUseCase {
-  constructor(
-    private readonly posts: PostRepository,
-    private readonly projects: ProjectRepository,
-  ) {}
-
-  async execute(slug: string): Promise<ProjectGallery | null> {
-    const post = await this.posts.findDetailBySlug(slug);
-    if (!post || post.type !== PostType.Projects) return null;
-    const items = await this.projects.getGallery(post.id);
-    return { post, items };
-  }
-}
-
-export class GetProjectForEditUseCase {
-  constructor(
-    private readonly posts: PostRepository,
-    private readonly projects: ProjectRepository,
-  ) {}
-
-  async execute(id: string): Promise<ProjectGallery | null> {
-    const post = await this.posts.findDetailById(id);
-    if (!post) return null;
-    const items = await this.projects.getGallery(id);
-    return { post, items };
   }
 }

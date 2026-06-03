@@ -64,9 +64,9 @@ export async function createProjectAction(
     throw error;
   }
 
-  revalidatePath("/admin/projetos");
-  revalidatePath("/projetos");
-  redirect("/admin/projetos");
+  revalidatePath("/admin/posts");
+  revalidatePath("/posts");
+  redirect("/admin/posts");
 }
 
 export async function updateProjectAction(
@@ -93,15 +93,7 @@ export async function updateProjectAction(
     throw error;
   }
 
-  revalidatePath("/admin/projetos");
-  revalidatePath("/projetos");
-  redirect("/admin/projetos");
-}
-
-export async function deleteProjectAction(id: string): Promise<void> {
-  const session = await auth();
-  if (!session?.user?.id) return;
-  await container.deletePost.execute(id);
-  revalidatePath("/admin/projetos");
-  revalidatePath("/projetos");
+  revalidatePath("/admin/posts");
+  revalidatePath("/posts");
+  redirect("/admin/posts");
 }

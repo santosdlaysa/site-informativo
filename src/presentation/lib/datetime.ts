@@ -15,6 +15,13 @@ export function parseDateTime(dateStr: string, timeStr?: string): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+/** "20/05/2026" — formato aceito pelos inputs de data dos formulários. */
+export function dateInput(date: Date): string {
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return `${d}/${m}/${date.getFullYear()}`;
+}
+
 /** "20/05" (dia/mês) para chips e tags compactas. */
 export function dayMonth(date: Date): string {
   const d = String(date.getDate()).padStart(2, "0");

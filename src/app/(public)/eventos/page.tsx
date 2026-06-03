@@ -69,12 +69,12 @@ export default async function EventosPage({
               <span className="badge badge--eventos on-img tag-feat">Em destaque</span>
             </div>
             <div className="content">
-              {featured.category && (
+              {featured.categoryName && (
                 <span
-                  className={badgeClass(variantByName.get(featured.category.toLowerCase()), { soft: true })}
+                  className={badgeClass(variantByName.get(featured.categoryName.toLowerCase()), { soft: true })}
                   style={{ alignSelf: "flex-start" }}
                 >
-                  {featured.category}
+                  {featured.categoryName}
                 </span>
               )}
               <h2>{featured.title}</h2>

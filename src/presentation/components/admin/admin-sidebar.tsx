@@ -8,7 +8,7 @@ import {
   NewPostIcon,
   CalendarIcon,
   EventIcon,
-  GridIcon,
+  SettingsIcon,
   LogoutIcon,
 } from "../icons";
 import { logoutAction } from "@/presentation/actions/auth-actions";
@@ -16,9 +16,9 @@ import { logoutAction } from "@/presentation/actions/auth-actions";
 const NAV = [
   { href: "/admin/posts", label: "Posts", Icon: PostsIcon, match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
   { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, match: (p: string) => p.startsWith("/admin/posts/novo") },
-  { href: "/admin/projetos", label: "Projetos", Icon: GridIcon, match: (p: string) => p.startsWith("/admin/projetos") },
   { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/programacao") },
   { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, match: (p: string) => p.startsWith("/admin/eventos") },
+  { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
 export function AdminSidebar() {

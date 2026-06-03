@@ -37,6 +37,8 @@ async function main() {
       create: c,
     });
   }
+  const allCategories = await prisma.category.findMany();
+  const catId = (name: string) => allCategories.find((c) => c.name === name)?.id ?? null;
   const tec = await prisma.category.findUnique({ where: { slug: "tecnologia" } });
   const saude = await prisma.category.findUnique({ where: { slug: "saude" } });
 
@@ -104,7 +106,7 @@ async function main() {
       description: "Configurando um banco de dados do zero em um projeto Next.js.",
       speaker: "Ana Martins",
       speakerRole: "Engenheira de Software",
-      category: "Tecnologia",
+      categoryId: catId("Tecnologia"),
       startsAt: atDay(0, 10, 0),
       durationMin: 60,
       status: SessionStatus.LIVE,
@@ -115,7 +117,7 @@ async function main() {
       description: "Do layout aos componentes, passo a passo.",
       speaker: "Carlos Lima",
       speakerRole: "Designer & Dev Front-end",
-      category: "Tutoriais",
+      categoryId: catId("Tutoriais"),
       startsAt: atDay(0, 14, 0),
       durationMin: 45,
       status: SessionStatus.SCHEDULED,
@@ -126,7 +128,7 @@ async function main() {
       description: "Entenda o novo modelo de renderização do Next.js.",
       speaker: "Pedro Alves",
       speakerRole: "Tech Lead",
-      category: "Tecnologia",
+      categoryId: catId("Tecnologia"),
       startsAt: atDay(1, 9, 30),
       durationMin: 50,
       status: SessionStatus.SCHEDULED,
@@ -143,7 +145,7 @@ async function main() {
       title: "MeuBlog Conf 2024",
       description:
         "Um dia inteiro de palestras sobre Next.js, performance web e o futuro do desenvolvimento full-stack.",
-      category: "Tecnologia",
+      categoryId: catId("Tecnologia"),
       format: EventFormat.PRESENTIAL,
       location: "Centro de Convenções · São Paulo, SP",
       startsAt: atDay(13, 9, 0),
@@ -153,7 +155,7 @@ async function main() {
       slug: "workshop-api-routes",
       title: "Workshop: API Routes no Next.js",
       description: "Mão na massa criando endpoints seguros e performáticos.",
-      category: "Tutoriais",
+      categoryId: catId("Tutoriais"),
       format: EventFormat.ONLINE,
       location: "YouTube ao vivo",
       startsAt: atDay(5, 19, 0),

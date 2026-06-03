@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
+import { auth } from "@/infrastructure/auth/auth";
 import { PostStatus, PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
@@ -13,7 +14,12 @@ export const dynamic = "force-dynamic";
 
 async function loadPost(slug: string) {
   const post = await container.postRepository.findDetailBySlug(slug);
-  if (!post || post.status !== PostStatus.Published) return null;
+  if (!post) return null;
+  // Rascunhos só são visíveis para administradores autenticados (pré-visualização).
+  if (post.status !== PostStatus.Published) {
+    const session = await auth();
+    if (!session?.user?.id) return null;
+  }
   return post;
 }
 
@@ -37,8 +43,8 @@ export default async function PostPage({
   const post = await loadPost(slug);
   if (!post) notFound();
 
-  // Posts do tipo galeria têm sua própria página de coleção.
-  if (post.type === PostType.Projects) redirect(`/projetos/${slug}`);
+  // Galeria de imagens do post (vazia para posts sem galeria).
+  const gallery = await container.projectRepository.getGallery(post.id);
 
   const related = (
     await container.listPublishedPosts.execute({
@@ -95,11 +101,43 @@ export default async function PostPage({
             )}
           </div>
 
+          {gallery.length > 0 && (
+            <div className="post-gallery" style={{ marginTop: 36 }}>
+              <h2 style={{ fontSize: 22, marginBottom: 16 }}>Galeria</h2>
+              <div className="gallery-grid">
+                {gallery.map((it) => {
+                  const inner = (
+                    <>
+                      <ImageSlot src={it.image} placeholder="Imagem da galeria" rounded={false} />
+                      {it.caption && (
+                        <div className="cap">
+                          <h3>{it.caption}</h3>
+                        </div>
+                      )}
+                    </>
+                  );
+                  return it.linkedPostSlug ? (
+                    <Link className="proj-card" href={`/posts/${it.linkedPostSlug}`} key={it.id}>
+                      {inner}
+                    </Link>
+                  ) : (
+                    <figure className="proj-card" key={it.id}>
+                      {inner}
+                    </figure>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="author-box">
             <span className="av" />
             <div>
               <h4>{post.authorName}</h4>
-              <p>Editor do MeuBlog. Escreve sobre desenvolvimento web, performance e boas práticas.</p>
+              <p>
+                {post.authorBio ??
+                  "Editor do MeuBlog. Escreve sobre desenvolvimento web, performance e boas práticas."}
+              </p>
             </div>
           </div>
         </div>

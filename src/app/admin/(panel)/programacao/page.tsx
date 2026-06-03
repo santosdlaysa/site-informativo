@@ -29,12 +29,17 @@ export default async function AdminProgramacaoPage() {
       id: s.id,
       title: s.title,
       speakerLine: s.speakerRole ? `${speaker} · ${s.speakerRole}` : speaker,
-      category: s.category,
+      category: s.categoryName,
       dateTime: `${dayMonth(d)} · ${hourMinute(d)} (${s.durationMin}min)`,
       statusLabel: SESSION_STATUS_LABEL[s.status],
       statusClass: STATUS_CLASS[s.status],
     };
   });
 
-  return <AdminProgramManager sessions={rows} categories={categories.map((c) => c.name)} />;
+  return (
+    <AdminProgramManager
+      sessions={rows}
+      categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+    />
+  );
 }

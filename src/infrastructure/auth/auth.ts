@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
+import { authConfig } from "./auth.config";
 import { container } from "../container";
 
 const credentialsSchema = z.object({
@@ -9,9 +10,7 @@ const credentialsSchema = z.object({
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  trustHost: true,
-  session: { strategy: "jwt" },
-  pages: { signIn: "/admin/login" },
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -32,16 +31,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) token.role = user.role;
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user && typeof token.role === "string") {
-        session.user.role = token.role;
-      }
-      return session;
-    },
-  },
 });

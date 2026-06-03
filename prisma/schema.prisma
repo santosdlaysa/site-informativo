@@ -38,6 +38,7 @@ model User {
   email        String   @unique
   passwordHash String
   role         String   @default("admin")
+  bio          String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -52,7 +53,9 @@ model Category {
   variant   String   @default("tec")
   createdAt DateTime @default(now())
 
-  posts Post[]
+  posts    Post[]
+  sessions ProgramSession[]
+  events   Event[]
 }
 
 model Post {
@@ -104,7 +107,6 @@ model ProgramSession {
   description String?
   speaker     String?
   speakerRole String?
-  category    String?
   startsAt    DateTime
   durationMin Int           @default(60)
   status      SessionStatus @default(SCHEDULED)
@@ -112,7 +114,11 @@ model ProgramSession {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
   @@index([startsAt])
+  @@index([categoryId])
 }
 
 model Event {
@@ -121,7 +127,6 @@ model Event {
   slug        String      @unique
   description String?
   coverImage  String?
-  category    String?
   format      EventFormat @default(PRESENTIAL)
   location    String?
   startsAt    DateTime
@@ -129,5 +134,9 @@ model Event {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
   @@index([startsAt])
+  @@index([categoryId])
 }

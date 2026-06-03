@@ -1,4 +1,4 @@
-import type { ProgramSession as PrismaSession } from "@prisma/client";
+import type { ProgramSession as PrismaSession, Category as PrismaCategory } from "@prisma/client";
 import { ProgramSession } from "@/core/domain/program/program-session.entity";
 import {
   ProgramSessionRepository,
@@ -7,6 +7,8 @@ import {
 import { SessionStatus } from "@/core/domain/program/session-status";
 import { prisma } from "../prisma";
 
+type RowWithCategory = PrismaSession & { category: PrismaCategory | null };
+
 function toDomain(row: PrismaSession): ProgramSession {
   return ProgramSession.restore({
     id: row.id,
@@ -14,7 +16,7 @@ function toDomain(row: PrismaSession): ProgramSession {
     description: row.description,
     speaker: row.speaker,
     speakerRole: row.speakerRole,
-    category: row.category,
+    categoryId: row.categoryId,
     startsAt: row.startsAt,
     durationMin: row.durationMin,
     status: row.status as SessionStatus,
@@ -24,14 +26,15 @@ function toDomain(row: PrismaSession): ProgramSession {
   });
 }
 
-function toView(row: PrismaSession): SessionView {
+function toView(row: RowWithCategory): SessionView {
   return {
     id: row.id,
     title: row.title,
     description: row.description,
     speaker: row.speaker,
     speakerRole: row.speakerRole,
-    category: row.category,
+    categoryId: row.categoryId,
+    categoryName: row.category?.name ?? null,
     startsAt: row.startsAt,
     durationMin: row.durationMin,
     status: row.status as SessionStatus,
@@ -48,7 +51,7 @@ export class PrismaProgramSessionRepository implements ProgramSessionRepository 
       description: s.description,
       speaker: s.speaker,
       speakerRole: s.speakerRole,
-      category: s.category,
+      categoryId: s.categoryId,
       startsAt: s.startsAt,
       durationMin: s.durationMin,
       status: s.status,
@@ -69,7 +72,10 @@ export class PrismaProgramSessionRepository implements ProgramSessionRepository 
   }
 
   async list(): Promise<SessionView[]> {
-    const rows = await prisma.programSession.findMany({ orderBy: { startsAt: "asc" } });
+    const rows = await prisma.programSession.findMany({
+      orderBy: { startsAt: "asc" },
+      include: { category: true },
+    });
     return rows.map(toView);
   }
 }

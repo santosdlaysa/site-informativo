@@ -7,7 +7,8 @@ export interface EventView {
   slug: string;
   description: string | null;
   coverImage: string | null;
-  category: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
   format: EventFormat;
   location: string | null;
   startsAt: Date;

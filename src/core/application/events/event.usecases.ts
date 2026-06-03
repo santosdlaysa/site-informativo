@@ -9,7 +9,7 @@ export interface CreateEventDTO {
   title: string;
   description?: string | null;
   coverImage?: string | null;
-  category?: string | null;
+  categoryId?: string | null;
   format?: EventFormat;
   location?: string | null;
   startsAt: Date;

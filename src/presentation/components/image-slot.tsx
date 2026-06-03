@@ -33,7 +33,8 @@ async function fileToDataUrl(file: File): Promise<string> {
 /**
  * Substituto React do custom element <image-slot> dos protótipos.
  * Lê de `src` (read-only nas páginas públicas) e, quando `editable`,
- * aceita upload por clique ou drag-and-drop.
+ * aceita upload por clique ou drag-and-drop, convertendo a imagem para
+ * data-URL (armazenada no banco junto do registro).
  */
 export function ImageSlot({
   src,

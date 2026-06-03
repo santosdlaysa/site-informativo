@@ -1,9 +1,11 @@
-import type { Event as PrismaEvent } from "@prisma/client";
+import type { Event as PrismaEvent, Category as PrismaCategory } from "@prisma/client";
 import { Event } from "@/core/domain/event/event.entity";
 import { EventFormat } from "@/core/domain/event/event-format";
 import { EventRepository, EventView } from "@/core/domain/event/event.repository";
 import { Slug } from "@/core/domain/post/slug";
 import { prisma } from "../prisma";
+
+type RowWithCategory = PrismaEvent & { category: PrismaCategory | null };
 
 function toDomain(row: PrismaEvent): Event {
   return Event.restore({
@@ -12,7 +14,7 @@ function toDomain(row: PrismaEvent): Event {
     slug: Slug.restore(row.slug),
     description: row.description,
     coverImage: row.coverImage,
-    category: row.category,
+    categoryId: row.categoryId,
     format: row.format as EventFormat,
     location: row.location,
     startsAt: row.startsAt,
@@ -22,14 +24,15 @@ function toDomain(row: PrismaEvent): Event {
   });
 }
 
-function toView(row: PrismaEvent): EventView {
+function toView(row: RowWithCategory): EventView {
   return {
     id: row.id,
     title: row.title,
     slug: row.slug,
     description: row.description,
     coverImage: row.coverImage,
-    category: row.category,
+    categoryId: row.categoryId,
+    categoryName: row.category?.name ?? null,
     format: row.format as EventFormat,
     location: row.location,
     startsAt: row.startsAt,
@@ -46,7 +49,7 @@ export class PrismaEventRepository implements EventRepository {
       slug: s.slug.value,
       description: s.description,
       coverImage: s.coverImage,
-      category: s.category,
+      categoryId: s.categoryId,
       format: s.format,
       location: s.location,
       startsAt: s.startsAt,
@@ -78,12 +81,16 @@ export class PrismaEventRepository implements EventRepository {
     const rows = await prisma.event.findMany({
       where: filter.format ? { format: filter.format } : {},
       orderBy: { startsAt: "asc" },
+      include: { category: true },
     });
     return rows.map(toView);
   }
 
   async findViewBySlug(slug: string): Promise<EventView | null> {
-    const row = await prisma.event.findUnique({ where: { slug } });
+    const row = await prisma.event.findUnique({
+      where: { slug },
+      include: { category: true },
+    });
     return row ? toView(row) : null;
   }
 }
