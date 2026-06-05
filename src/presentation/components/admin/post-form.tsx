@@ -76,25 +76,44 @@ export function PostForm({
               />
             </div>
           </div>
-          <div className="field">
-            <label htmlFor="categoryId">Menu</label>
-            <div className="selnative">
-              <select
-                id="categoryId"
-                name="categoryId"
-                className="select"
-                defaultValue={currentCategoryId ?? ""}
-              >
-                <option value="">Selecione o menu</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-              <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+          <div className="stack">
+            <div className="field">
+              <label htmlFor="categoryId">Menu</label>
+              <div className="selnative">
+                <select
+                  id="categoryId"
+                  name="categoryId"
+                  className="select"
+                  defaultValue={currentCategoryId ?? ""}
+                >
+                  <option value="">Selecione o menu</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="status">Status</label>
+              <div className="selnative">
+                <select
+                  id="status"
+                  name="status"
+                  className="select"
+                  defaultValue={post?.status ?? PostStatus.Draft}
+                >
+                  <option value={PostStatus.Draft}>Rascunho</option>
+                  <option value={PostStatus.Published}>Publicado</option>
+                </select>
+                <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -123,41 +142,20 @@ export function PostForm({
           </div>
         </div>
 
-        <div className="form-grid" style={{ marginTop: 22 }}>
-          <div className="field">
-            <span className="lbl">Imagem de capa</span>
-            <div
-              className="dropzone"
-              style={{ position: "relative", height: 170, padding: 0, overflow: "hidden" }}
-            >
-              <ImageSlot
-                src={cover || null}
-                placeholder="Clique para enviar uma imagem ou arraste e solte"
-                editable
-                onChange={setCover}
-              />
-            </div>
-            <input type="hidden" name="coverImage" value={cover} />
+        <div className="field" style={{ marginTop: 22 }}>
+          <span className="lbl">Imagem de capa</span>
+          <div
+            className="dropzone"
+            style={{ position: "relative", height: 170, padding: 0, overflow: "hidden" }}
+          >
+            <ImageSlot
+              src={cover || null}
+              placeholder="Clique para enviar uma imagem ou arraste e solte"
+              editable
+              onChange={setCover}
+            />
           </div>
-          <div className="stack">
-            <div className="field">
-              <label htmlFor="status">Status</label>
-              <div className="selnative">
-                <select
-                  id="status"
-                  name="status"
-                  className="select"
-                  defaultValue={post?.status ?? PostStatus.Draft}
-                >
-                  <option value={PostStatus.Draft}>Rascunho</option>
-                  <option value={PostStatus.Published}>Publicado</option>
-                </select>
-                <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </div>
-          </div>
+          <input type="hidden" name="coverImage" value={cover} />
         </div>
 
         <GalleryItemsField postOptions={postOptions ?? []} initialItems={initialItems} />
