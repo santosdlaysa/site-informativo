@@ -14,20 +14,25 @@ export const metadata: Metadata = {
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ categoria?: string }>;
+  searchParams: Promise<{ categoria?: string; busca?: string }>;
 }) {
-  const { categoria } = await searchParams;
+  const { categoria, busca } = await searchParams;
+  const search = busca?.trim() || undefined;
 
   const [posts, categories] = await Promise.all([
-    container.listPublishedPosts.execute({ categorySlug: categoria, take: 24, type: PostType.Standard }),
+    container.listPublishedPosts.execute({
+      categorySlug: categoria,
+      search,
+      take: 24,
+      type: PostType.Standard,
+    }),
     container.listCategories.execute(),
   ]);
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero--brand">
         <div className="wrap">
-          <p className="eyebrow">Blog</p>
           <h1>Todos os Posts</h1>
           <p>Artigos, tutoriais e notícias sobre tecnologia, saúde e desenvolvimento web.</p>
         </div>
@@ -37,7 +42,7 @@ export default async function PostsPage({
         <div className="posts-layout">
           <main>
             <div className="chips">
-              <Link className={`chip${!categoria ? " active" : ""}`} href="/posts">
+              <Link className={`chip${!categoria && !search ? " active" : ""}`} href="/posts">
                 Todos
               </Link>
               {categories.map((c) => (
@@ -51,6 +56,13 @@ export default async function PostsPage({
               ))}
             </div>
 
+            {search && (
+              <p className="search-summary" style={{ margin: "0 0 18px", color: "var(--muted)" }}>
+                {posts.length} {posts.length === 1 ? "resultado" : "resultados"} para{" "}
+                <strong>“{search}”</strong> · <Link href="/posts">limpar busca</Link>
+              </p>
+            )}
+
             {posts.length > 0 ? (
               <div className="cards-3">
                 {posts.map((p) => (
@@ -59,7 +71,9 @@ export default async function PostsPage({
               </div>
             ) : (
               <div className="empty-state">
-                Nenhum post publicado nesta categoria por enquanto.
+                {search
+                  ? "Nenhum post encontrado para a sua busca."
+                  : "Nenhum post publicado nesta categoria por enquanto."}
               </div>
             )}
           </main>

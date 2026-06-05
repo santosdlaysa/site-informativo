@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SearchIcon } from "../icons";
 import logoHorizontal from "@/assets/Logo horizontal.png";
 
@@ -16,9 +17,27 @@ const LINKS = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  // Foca o campo assim que ele é exibido.
+  useEffect(() => {
+    if (searchOpen) inputRef.current?.focus();
+  }, [searchOpen]);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!searchOpen) {
+      setSearchOpen(true);
+      return;
+    }
+    const term = inputRef.current?.value.trim() ?? "";
+    router.push(term ? `/posts?busca=${encodeURIComponent(term)}` : "/posts");
+  }
 
   return (
     <header className="site-header">
@@ -41,9 +60,23 @@ export function SiteHeader() {
             </li>
           ))}
         </ul>
-        <button className="icon-btn" aria-label="Buscar">
-          <SearchIcon width={20} height={20} />
-        </button>
+        <form className="header-search" onSubmit={handleSubmit}>
+          {searchOpen && (
+            <input
+              ref={inputRef}
+              type="search"
+              name="busca"
+              placeholder="Buscar posts..."
+              className="header-search-input"
+              onBlur={(e) => {
+                if (!e.currentTarget.value.trim()) setSearchOpen(false);
+              }}
+            />
+          )}
+          <button className="icon-btn" type="submit" aria-label="Buscar">
+            <SearchIcon width={20} height={20} />
+          </button>
+        </form>
       </div>
     </header>
   );

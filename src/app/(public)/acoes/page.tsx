@@ -21,7 +21,6 @@ export default async function AcoesPage() {
     <>
       <section className="page-hero page-hero--brand">
         <div className="wrap">
-          <p className="eyebrow">Ações</p>
           <h1>Ações</h1>
           <p>
             Projetos e iniciativas sociais do Raros Boa Vista. Conheça as ações que transformam a

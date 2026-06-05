@@ -82,6 +82,7 @@ export class PrismaPostRepository implements PostRepository {
             OR: [
               { title: { contains: filter.search, mode: "insensitive" } },
               { excerpt: { contains: filter.search, mode: "insensitive" } },
+              { content: { contains: filter.search, mode: "insensitive" } },
             ],
           }
         : {}),

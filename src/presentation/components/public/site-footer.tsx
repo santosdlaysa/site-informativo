@@ -71,7 +71,7 @@ export function SiteFooter() {
           <span className="brand">
             <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={26} />
           </span>
-          <span>© 2016 Raros Boa Vista. Todos os direitos reservados.</span>
+          <span>© 2026 Raros Boa Vista. Todos os direitos reservados.</span>
         </div>
       </div>
     </footer>

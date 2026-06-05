@@ -53,9 +53,8 @@ export default async function EventosPage({
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero--brand">
         <div className="wrap">
-          <p className="eyebrow">Comunidade</p>
           <h1>Eventos</h1>
           <p>Encontros, workshops e meetups da comunidade Raros Boa Vista. Participe presencialmente ou online.</p>
         </div>

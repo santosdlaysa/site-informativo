@@ -57,9 +57,8 @@ export default async function ProgramacaoPage() {
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero--brand">
         <div className="wrap">
-          <p className="eyebrow">Ao vivo</p>
           <h1>Programação</h1>
           <p>
             Acompanhe nossas lives, workshops e bate-papos. Escolha um dia para ver a agenda
