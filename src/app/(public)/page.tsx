@@ -48,7 +48,7 @@ export default async function HomePage() {
             <div className="hero">
               <div className="scrim" />
               <div className="hero-content">
-                <h1>Bem-vindo ao MeuBlog</h1>
+                <h1>Bem-vindo ao Raros Boa Vista</h1>
                 <p className="lead">
                   Ainda não há posts publicados. Acesse o painel para criar o primeiro.
                 </p>

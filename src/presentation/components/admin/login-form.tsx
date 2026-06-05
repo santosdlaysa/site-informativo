@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState, useState } from "react";
 import { loginAction, type LoginState } from "@/presentation/actions/auth-actions";
-import { ShieldIcon, EyeIcon } from "../icons";
+import { EyeIcon } from "../icons";
+import logoHorizontal from "@/assets/Logo horizontal.png";
 
 const initial: LoginState = {};
 
@@ -14,10 +16,13 @@ export function LoginForm() {
     <div className="auth-screen auth-center">
       <form className="login-card" action={formAction}>
         <div className="login-logo">
-          <span className="mark">
-            <ShieldIcon width={20} height={20} stroke="#fff" />
-          </span>
-          MeuBlog
+          <Image
+            className="brand-logo"
+            src={logoHorizontal}
+            alt="Raros Boa Vista"
+            priority
+            height={40}
+          />
         </div>
 
         <h1>Entrar</h1>

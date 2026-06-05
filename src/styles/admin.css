@@ -1,10 +1,15 @@
-/* ===== MeuBlog Admin — shell + componentes ===== */
+/* ===== Raros Boa Vista Admin — shell + componentes ===== */
 :root{
-  --navy:#1b2535;
-  --navy-2:#141d2b;
-  --nav-active:#2b3850;
-  --blue:#2563eb;
-  --blue-hover:#1d4fd7;
+  --navy:#241a3d;
+  --navy-2:#1a1230;
+  --nav-active:#3a2a5e;
+  --purple:#703cc0;
+  --magenta:#9618ba;
+  --turquoise:#00c2d1;
+  --blue-accent:#267ce8;
+  /* primário da interface = roxo da marca */
+  --blue:#703cc0;
+  --blue-hover:#5b2ea0;
   --ink:#111827;
   --body:#374151;
   --muted:#6b7280;
@@ -14,13 +19,14 @@
   --bg:#eef0f3;
   --field-border:#d1d5db;
   --radius:10px;
+  --brand-gradient:linear-gradient(135deg,#703cc0 0%,#9618ba 45%,#267ce8 100%);
   --green:#16a34a; --green-bg:#dcfce7;
   --amber:#b45309; --amber-bg:#fef3c7;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;height:100%;}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-family:var(--font-poppins),-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
 }
 a{text-decoration:none;color:inherit;}
@@ -34,7 +40,7 @@ a{text-decoration:none;color:inherit;}
   position:sticky;top:0;height:100vh;
 }
 .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 26px;}
-.brand .mark{width:32px;height:32px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
+.brand .mark{width:32px;height:32px;border-radius:8px;background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
 .brand .name{color:#fff;font-weight:700;font-size:18px;letter-spacing:.2px;}
 .nav{display:flex;flex-direction:column;gap:4px;}
 .nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;color:#aeb9c9;font-size:14px;font-weight:500;transition:background .15s,color .15s;}
@@ -52,8 +58,8 @@ a{text-decoration:none;color:inherit;}
 /* Buttons */
 .btn{border:none;border-radius:9px;font:inherit;font-size:14px;font-weight:600;padding:11px 20px;cursor:pointer;transition:background .15s,box-shadow .15s,border-color .15s;display:inline-flex;align-items:center;gap:8px;}
 .btn svg{width:16px;height:16px;}
-.btn-primary{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
-.btn-primary:hover{background:var(--blue-hover);}
+.btn-primary{background:var(--brand-gradient);color:#fff;box-shadow:0 4px 14px rgba(112,60,192,.35);}
+.btn-primary:hover{filter:brightness(1.06);box-shadow:0 6px 18px rgba(112,60,192,.45);}
 .btn-ghost{background:#fff;border:1px solid var(--field-border);color:#374151;}
 .btn-ghost:hover{background:#f6f7f9;}
 .btn-sm{padding:8px 14px;font-size:13px;}
@@ -170,7 +176,8 @@ a{text-decoration:none;color:inherit;}
 .auth-center::after{content:"";position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(37,99,235,.4),transparent 60%);right:-220px;bottom:-220px;}
 .auth-center .login-card{position:relative;z-index:1;background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(2,6,23,.4);padding:40px 38px;}
 .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;font-size:20px;font-weight:800;color:var(--ink);margin-bottom:26px;}
-.login-logo .mark{width:38px;height:38px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
+.login-logo .mark{width:38px;height:38px;border-radius:10px;background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
+.login-logo .brand-logo{height:40px;width:auto;display:block;}
 .login-card{width:100%;max-width:400px;}
 .login-card h1{font-size:26px;font-weight:800;margin:0 0 6px;text-align:center;}
 .login-card .sub{color:var(--muted);font-size:15px;margin:0 0 30px;text-align:center;}

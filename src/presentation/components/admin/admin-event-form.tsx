@@ -60,7 +60,7 @@ export function AdminEventForm({
           <div className="stack">
             <div className="field">
               <label htmlFor="title">Nome do evento</label>
-              <input id="title" name="title" className="input" type="text" placeholder="Ex.: MeuBlog Conf 2024" defaultValue={initial?.title ?? ""} required />
+              <input id="title" name="title" className="input" type="text" placeholder="Ex.: Raros Boa Vista Conf 2024" defaultValue={initial?.title ?? ""} required />
             </div>
             <div className="field">
               <label htmlFor="description">Descrição</label>

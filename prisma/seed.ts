@@ -1,19 +1,67 @@
-import {
-  PrismaClient,
-  PostStatus,
-  PostType,
-  SessionStatus,
-  EventFormat,
-} from "@prisma/client";
+import { PrismaClient, PostStatus, PostType } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 const prisma = new PrismaClient();
 
+// Galeria de imagens já redimensionadas (scripts/process-acoes-images.mjs).
+const manifest: Record<string, string[]> = JSON.parse(
+  readFileSync(path.join(process.cwd(), "public", "acoes", "manifest.json"), "utf8"),
+);
+
 const CATEGORIES = [
-  { name: "Notícias", slug: "noticias", variant: "news" },
-  { name: "Tecnologia", slug: "tecnologia", variant: "tec" },
+  { name: "Ações Sociais", slug: "acoes-sociais", variant: "tut" },
   { name: "Saúde", slug: "saude", variant: "saude" },
-  { name: "Tutoriais", slug: "tutoriais", variant: "tut" },
+];
+
+// Os 3 posts reais das ações do Centro Social / Raros Boa Vista.
+const ACTIONS = [
+  {
+    slug: "projeto-juventude-atualizada",
+    images: "juventude-atualizada",
+    category: "acoes-sociais",
+    title: "Projeto Juventude Atualizada — Centro Social",
+    excerpt:
+      "Iniciativa do Centro Social para o desenvolvimento integral de adolescentes e jovens por meio de atividades educativas, culturais e sociais.",
+    paragraphs: [
+      "O Projeto Juventude Atualizada, desenvolvido pelo Centro Social, é uma iniciativa que tem como objetivo promover o desenvolvimento integral de adolescentes e jovens por meio de atividades educativas, culturais, sociais e de fortalecimento de valores.",
+      "Pensado para atender às demandas da juventude contemporânea, o projeto busca criar um ambiente de aprendizado, acolhimento e crescimento pessoal, incentivando o protagonismo juvenil, a cidadania e a construção de perspectivas positivas para o futuro.",
+      "Por meio de ações voltadas à capacitação, orientação e integração social, o Juventude Atualizada contribui para a formação de jovens mais preparados para os desafios da vida, fortalecendo habilidades, talentos e competências que podem impactar positivamente sua trajetória pessoal, familiar e profissional.",
+      "Além das atividades formativas, o projeto também promove momentos de convivência, troca de experiências e desenvolvimento de valores essenciais, estimulando o respeito, a responsabilidade, a solidariedade e o compromisso com a comunidade.",
+      "O Centro Social acredita que investir na juventude é investir na transformação da sociedade. Por isso, o Projeto Juventude Atualizada segue como uma importante ferramenta de inclusão, desenvolvimento humano e geração de oportunidades, reafirmando o compromisso da instituição com a promoção do bem-estar e da qualidade de vida de crianças, adolescentes, jovens e suas famílias.",
+    ],
+  },
+  {
+    slug: "mutirao-doencas-raras",
+    images: "mutirao-doencas-raras",
+    category: "saude",
+    title: "Mutirão de Atendimentos a Pacientes com Doenças Genéticas",
+    excerpt:
+      "O 1º Mutirão de Doenças Raras promoveu saúde, acolhimento e atendimentos especializados a pessoas que convivem com doenças raras e suas famílias.",
+    paragraphs: [
+      "O Centro Social realizou o 1º Mutirão de Doenças Raras, uma importante ação voltada à promoção da saúde, acolhimento e orientação de pessoas que convivem com doenças raras e de suas famílias.",
+      "A iniciativa teve como objetivo ampliar o acesso à informação, fortalecer a rede de apoio e proporcionar atendimentos especializados, contribuindo para a identificação precoce, acompanhamento e encaminhamento adequado dos pacientes. O mutirão reuniu profissionais, parceiros e voluntários comprometidos com a causa, promovendo um espaço de escuta, cuidado e conscientização.",
+      "Durante a programação, os participantes tiveram acesso a orientações, atendimentos e informações sobre diversas condições raras, além de receberem suporte para compreender melhor os desafios enfrentados por quem convive com essas doenças. A ação também reforçou a importância do diagnóstico precoce, do tratamento adequado e da construção de políticas públicas que garantam mais qualidade de vida aos pacientes.",
+      "O evento foi realizado em parceria com a Associação Brasileira de Doenças Genéticas, fortalecendo o compromisso conjunto de ampliar a visibilidade das doenças raras e promover ações que façam a diferença na vida das famílias atendidas.",
+      "Mais do que um momento de atendimentos, o 1º Mutirão de Doenças Raras representou um passo importante na construção de uma rede de apoio mais forte, humana e acessível, reafirmando o compromisso do Centro Social com a inclusão, o cuidado e a valorização da vida.",
+    ],
+  },
+  {
+    slug: "forum-doencas-geneticas",
+    images: "forum-doencas-geneticas",
+    category: "saude",
+    title: "1º Fórum de Roraima em Doenças Raras e Neurodivergentes",
+    excerpt:
+      "Evento dedicado à conscientização, troca de conhecimento e fortalecimento da rede de apoio às pessoas que convivem com doenças genéticas e raras.",
+    paragraphs: [
+      "O Centro Social promoveu o 1º Fórum de Doenças Genéticas, um evento dedicado à conscientização, troca de conhecimento e fortalecimento da rede de apoio às pessoas que convivem com doenças genéticas e raras.",
+      "O fórum reuniu profissionais da saúde, especialistas, representantes de instituições parceiras, familiares e membros da comunidade para discutir temas relacionados ao diagnóstico precoce, acompanhamento multidisciplinar, inclusão social, acesso aos tratamentos e aos direitos das pessoas com doenças genéticas.",
+      "A programação contou com palestras, momentos de diálogo e compartilhamento de experiências, proporcionando um ambiente de aprendizado e reflexão sobre os desafios enfrentados por pacientes e suas famílias. Além disso, o evento buscou ampliar o conhecimento da população sobre a importância da informação e da conscientização para a identificação e o manejo adequado dessas condições.",
+      "Realizado em parceria com a Associação Brasileira de Doenças Genéticas, o fórum representou um importante marco para o fortalecimento das ações voltadas às doenças genéticas no estado, contribuindo para a construção de uma rede mais preparada, acolhedora e comprometida com a promoção da saúde e da qualidade de vida.",
+      "Mais do que um encontro de especialistas, o 1º Fórum de Doenças Genéticas foi um espaço de escuta, acolhimento e mobilização social, reforçando a importância da união entre instituições, profissionais e famílias.",
+    ],
+  },
 ];
 
 async function main() {
@@ -21,7 +69,7 @@ async function main() {
   const password = process.env.ADMIN_PASSWORD ?? "senha123";
   const name = process.env.ADMIN_NAME ?? "Admin";
 
-  // Usuário administrador
+  // Usuário administrador (preservado entre execuções)
   const passwordHash = await bcrypt.hash(password, 10);
   const admin = await prisma.user.upsert({
     where: { email },
@@ -29,170 +77,58 @@ async function main() {
     create: { email, name, passwordHash, role: "admin" },
   });
 
-  // Categorias
+  // Limpeza dos dados de teste — deixa o site apenas com as ações reais.
+  await prisma.projectItem.deleteMany({});
+  await prisma.post.deleteMany({});
+  await prisma.programSession.deleteMany({});
+  await prisma.event.deleteMany({});
+  await prisma.category.deleteMany({});
+
+  // Categorias relevantes
   for (const c of CATEGORIES) {
-    await prisma.category.upsert({
-      where: { slug: c.slug },
-      update: { name: c.name, variant: c.variant },
-      create: c,
-    });
+    await prisma.category.create({ data: c });
   }
-  const allCategories = await prisma.category.findMany();
-  const catId = (name: string) => allCategories.find((c) => c.name === name)?.id ?? null;
-  const tec = await prisma.category.findUnique({ where: { slug: "tecnologia" } });
-  const saude = await prisma.category.findUnique({ where: { slug: "saude" } });
+  const categories = await prisma.category.findMany();
+  const catId = (slug: string) => categories.find((c) => c.slug === slug)?.id ?? null;
 
-  // Posts de exemplo
-  const samples = [
-    {
-      title: "Como usar Prisma com PostgreSQL no Next.js",
-      slug: "como-usar-prisma-com-postgresql-no-nextjs",
-      excerpt: "Aprenda a integrar o Prisma ORM com PostgreSQL de forma simples e eficiente.",
-      content:
-        "O Prisma é um ORM moderno e intuitivo que torna o trabalho com bancos de dados muito mais agradável.\n\nNeste post, vamos ver como integrá-lo com PostgreSQL em um projeto Next.js, configurar o schema e rodar as primeiras migrations.",
-      categoryId: tec?.id,
-      status: PostStatus.PUBLISHED,
-    },
-    {
-      title: "Entendendo Server Components no Next.js",
-      slug: "entendendo-server-components-no-nextjs",
-      excerpt: "Veja como os Server Components funcionam e quando usar.",
-      content:
-        "Server Components renderizam no servidor e reduzem o JavaScript enviado ao cliente.\n\nEntenda quando usá-los e como combiná-los com Client Components.",
-      categoryId: tec?.id,
-      status: PostStatus.PUBLISHED,
-    },
-    {
-      title: "5 hábitos para melhorar sua saúde mental",
-      slug: "5-habitos-para-melhorar-sua-saude-mental",
-      excerpt: "Pequenas mudanças que fazem grande diferença no dia a dia.",
-      content:
-        "Cuidar da saúde mental é tão importante quanto cuidar do corpo.\n\nVeja cinco hábitos simples que ajudam a manter o equilíbrio.",
-      categoryId: saude?.id,
-      status: PostStatus.DRAFT,
-    },
-  ];
+  // Posts das ações (mais recente primeiro: ordem do array)
+  const now = new Date();
+  for (const [i, a] of ACTIONS.entries()) {
+    const gallery = manifest[a.images] ?? [];
+    const cover = gallery[0] ?? null;
+    const content = a.paragraphs.join("\n\n");
+    const publishedAt = new Date(now);
+    publishedAt.setDate(publishedAt.getDate() - i); // escalona as datas
 
-  for (const s of samples) {
-    await prisma.post.upsert({
-      where: { slug: s.slug },
-      update: {},
-      create: {
-        title: s.title,
-        slug: s.slug,
-        excerpt: s.excerpt,
-        content: s.content,
-        status: s.status,
-        readingTime: Math.max(1, Math.ceil(s.content.split(/\s+/).length / 200)),
-        publishedAt: s.status === PostStatus.PUBLISHED ? new Date() : null,
+    const post = await prisma.post.create({
+      data: {
+        title: a.title,
+        slug: a.slug,
+        excerpt: a.excerpt,
+        content,
+        coverImage: cover,
+        status: PostStatus.PUBLISHED,
+        type: PostType.STANDARD,
+        readingTime: Math.max(1, Math.ceil(content.split(/\s+/).length / 200)),
+        publishedAt,
         authorId: admin.id,
-        categoryId: s.categoryId,
+        categoryId: catId(a.category),
       },
     });
+
+    // Galeria de fotos (todas as imagens após a capa)
+    const items = gallery.slice(1).map((image, position) => ({
+      ownerPostId: post.id,
+      image,
+      position,
+    }));
+    if (items.length > 0) {
+      await prisma.projectItem.createMany({ data: items });
+    }
+    console.log(`✓ ${a.title} (${gallery.length} fotos)`);
   }
 
-  // Sessões da programação (ids fixos para o seed ser idempotente)
-  const base = new Date();
-  const atDay = (offset: number, h: number, m: number) => {
-    const d = new Date(base);
-    d.setDate(d.getDate() + offset);
-    d.setHours(h, m, 0, 0);
-    return d;
-  };
-  const sessions = [
-    {
-      id: "seed-ses-1",
-      title: "Prisma + PostgreSQL na prática",
-      description: "Configurando um banco de dados do zero em um projeto Next.js.",
-      speaker: "Ana Martins",
-      speakerRole: "Engenheira de Software",
-      categoryId: catId("Tecnologia"),
-      startsAt: atDay(0, 10, 0),
-      durationMin: 60,
-      status: SessionStatus.LIVE,
-    },
-    {
-      id: "seed-ses-2",
-      title: "Workshop: criando um blog com Tailwind CSS",
-      description: "Do layout aos componentes, passo a passo.",
-      speaker: "Carlos Lima",
-      speakerRole: "Designer & Dev Front-end",
-      categoryId: catId("Tutoriais"),
-      startsAt: atDay(0, 14, 0),
-      durationMin: 45,
-      status: SessionStatus.SCHEDULED,
-    },
-    {
-      id: "seed-ses-3",
-      title: "Server Components: o que muda no seu projeto",
-      description: "Entenda o novo modelo de renderização do Next.js.",
-      speaker: "Pedro Alves",
-      speakerRole: "Tech Lead",
-      categoryId: catId("Tecnologia"),
-      startsAt: atDay(1, 9, 30),
-      durationMin: 50,
-      status: SessionStatus.SCHEDULED,
-    },
-  ];
-  for (const s of sessions) {
-    await prisma.programSession.upsert({ where: { id: s.id }, update: s, create: s });
-  }
-
-  // Eventos
-  const events = [
-    {
-      slug: "meublog-conf-2024",
-      title: "MeuBlog Conf 2024",
-      description:
-        "Um dia inteiro de palestras sobre Next.js, performance web e o futuro do desenvolvimento full-stack.",
-      categoryId: catId("Tecnologia"),
-      format: EventFormat.PRESENTIAL,
-      location: "Centro de Convenções · São Paulo, SP",
-      startsAt: atDay(13, 9, 0),
-      capacity: 350,
-    },
-    {
-      slug: "workshop-api-routes",
-      title: "Workshop: API Routes no Next.js",
-      description: "Mão na massa criando endpoints seguros e performáticos.",
-      categoryId: catId("Tutoriais"),
-      format: EventFormat.ONLINE,
-      location: "YouTube ao vivo",
-      startsAt: atDay(5, 19, 0),
-      capacity: null,
-    },
-  ];
-  for (const e of events) {
-    await prisma.event.upsert({ where: { slug: e.slug }, update: e, create: e });
-  }
-
-  // Coleção de Projetos (post tipo PROJECTS + galeria apontando p/ posts existentes)
-  const prismaPost = await prisma.post.findUnique({ where: { slug: "como-usar-prisma-com-postgresql-no-nextjs" } });
-  const serverPost = await prisma.post.findUnique({ where: { slug: "entendendo-server-components-no-nextjs" } });
-  const projectPost = await prisma.post.upsert({
-    where: { slug: "nossos-projetos" },
-    update: {},
-    create: {
-      title: "Nossos Projetos",
-      slug: "nossos-projetos",
-      excerpt: "Uma seleção dos nossos principais projetos e tutoriais. Clique em qualquer card para ler o post completo.",
-      content: "",
-      type: PostType.PROJECTS,
-      status: PostStatus.PUBLISHED,
-      publishedAt: new Date(),
-      authorId: admin.id,
-    },
-  });
-  await prisma.projectItem.deleteMany({ where: { ownerPostId: projectPost.id } });
-  const items = [
-    { caption: "Integração com banco de dados", linkedPostId: prismaPost?.id ?? null, position: 0 },
-    { caption: "Renderização no servidor", linkedPostId: serverPost?.id ?? null, position: 1 },
-  ];
-  await prisma.projectItem.createMany({
-    data: items.map((it) => ({ ...it, ownerPostId: projectPost.id, image: null })),
-  });
-
-  console.log("Seed concluído: admin, categorias, posts, sessões, eventos e projetos criados.");
+  console.log("Seed concluído: admin, categorias e 3 posts de ações.");
 }
 
 main()

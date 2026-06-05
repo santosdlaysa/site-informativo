@@ -10,7 +10,7 @@ import {
 const initial: ProfileFormState = {};
 
 const FALLBACK_BIO =
-  "Editor do MeuBlog. Escreve sobre desenvolvimento web, performance e boas práticas.";
+  "Editor do Raros Boa Vista. Escreve sobre desenvolvimento web, performance e boas práticas.";
 
 export function ProfileForm({ profile }: { profile: UserProfile }) {
   const [state, formAction, pending] = useActionState(updateProfileAction, initial);

@@ -57,7 +57,7 @@ export default async function EventosPage({
         <div className="wrap">
           <p className="eyebrow">Comunidade</p>
           <h1>Eventos</h1>
-          <p>Encontros, workshops e meetups da comunidade MeuBlog. Participe presencialmente ou online.</p>
+          <p>Encontros, workshops e meetups da comunidade Raros Boa Vista. Participe presencialmente ou online.</p>
         </div>
       </section>
 

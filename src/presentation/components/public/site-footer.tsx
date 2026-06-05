@@ -10,7 +10,7 @@ export function SiteFooter() {
               <span className="mark">
                 <ShieldIcon width={16} height={16} />
               </span>{" "}
-              MeuBlog
+              Raros Boa Vista
             </span>
             <p>
               Conteúdo sobre desenvolvimento web, tecnologia e bem-estar. Fale com a gente pelos
@@ -70,7 +70,7 @@ export function SiteFooter() {
         </div>
 
         <div className="footer-bottom">
-          <span>© 2024 MeuBlog. Todos os direitos reservados.</span>
+          <span>© 2024 Raros Boa Vista. Todos os direitos reservados.</span>
         </div>
       </div>
     </footer>

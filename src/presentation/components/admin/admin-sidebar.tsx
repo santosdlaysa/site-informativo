@@ -32,7 +32,7 @@ export function AdminSidebar() {
         <span className="mark">
           <ShieldIcon width={18} height={18} />
         </span>
-        <span className="name">MeuBlog</span>
+        <span className="name">Raros Boa Vista</span>
       </div>
       <nav className="nav">
         {NAV.map(({ href, label, Icon, match }) => (

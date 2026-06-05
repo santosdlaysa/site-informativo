@@ -136,7 +136,7 @@ export default async function PostPage({
               <h4>{post.authorName}</h4>
               <p>
                 {post.authorBio ??
-                  "Editor do MeuBlog. Escreve sobre desenvolvimento web, performance e boas práticas."}
+                  "Editor do Raros Boa Vista. Escreve sobre desenvolvimento web, performance e boas práticas."}
               </p>
             </div>
           </div>
