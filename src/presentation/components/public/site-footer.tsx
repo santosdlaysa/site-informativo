@@ -1,4 +1,5 @@
-import { ShieldIcon } from "../icons";
+import Image from "next/image";
+import logoHorizontal from "@/assets/Logo horizontal.png";
 
 export function SiteFooter() {
   return (
@@ -7,10 +8,7 @@ export function SiteFooter() {
         <div className="footer-contact" id="contato">
           <div className="fc-about">
             <span className="brand">
-              <span className="mark">
-                <ShieldIcon width={16} height={16} />
-              </span>{" "}
-              Raros Boa Vista
+              <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={32} />
             </span>
             <p>
               Conteúdo sobre desenvolvimento web, tecnologia e bem-estar. Fale com a gente pelos
@@ -70,7 +68,10 @@ export function SiteFooter() {
         </div>
 
         <div className="footer-bottom">
-          <span>© 2024 Raros Boa Vista. Todos os direitos reservados.</span>
+          <span className="brand">
+            <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={26} />
+          </span>
+          <span>© 2016 Raros Boa Vista. Todos os direitos reservados.</span>
         </div>
       </div>
     </footer>

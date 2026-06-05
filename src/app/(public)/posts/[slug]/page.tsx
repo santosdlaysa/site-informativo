@@ -6,6 +6,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { PostStatus, PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
+import { PostGallery } from "@/presentation/components/public/post-gallery";
 import { badgeClass } from "@/presentation/lib/category-variant";
 import { formatLongDate } from "@/presentation/lib/format";
 import { ClockIcon } from "@/presentation/components/icons";
@@ -104,29 +105,7 @@ export default async function PostPage({
           {gallery.length > 0 && (
             <div className="post-gallery" style={{ marginTop: 36 }}>
               <h2 style={{ fontSize: 22, marginBottom: 16 }}>Galeria</h2>
-              <div className="gallery-grid">
-                {gallery.map((it) => {
-                  const inner = (
-                    <>
-                      <ImageSlot src={it.image} placeholder="Imagem da galeria" rounded={false} />
-                      {it.caption && (
-                        <div className="cap">
-                          <h3>{it.caption}</h3>
-                        </div>
-                      )}
-                    </>
-                  );
-                  return it.linkedPostSlug ? (
-                    <Link className="proj-card" href={`/posts/${it.linkedPostSlug}`} key={it.id}>
-                      {inner}
-                    </Link>
-                  ) : (
-                    <figure className="proj-card" key={it.id}>
-                      {inner}
-                    </figure>
-                  );
-                })}
-              </div>
+              <PostGallery items={gallery} />
             </div>
           )}
 
