@@ -27,10 +27,6 @@ import {
   ListEventsUseCase,
   UpdateEventUseCase,
 } from "@/core/application/events/event.usecases";
-import {
-  CreateProjectUseCase,
-  UpdateProjectUseCase,
-} from "@/core/application/projects/project.usecases";
 
 import { PrismaPostRepository } from "./database/repositories/prisma-post.repository";
 import { PrismaCategoryRepository } from "./database/repositories/prisma-category.repository";
@@ -73,9 +69,6 @@ export const container = {
   updateEvent: new UpdateEventUseCase(eventRepository),
   deleteEvent: new DeleteEventUseCase(eventRepository),
   listEvents: new ListEventsUseCase(eventRepository),
-  // galeria de imagens dos posts
-  createProject: new CreateProjectUseCase(createPost, projectRepository),
-  updateProject: new UpdateProjectUseCase(updatePost, projectRepository),
   // auth
   authenticate: new AuthenticateUseCase(userRepository, passwordHasher),
   // perfil do autor

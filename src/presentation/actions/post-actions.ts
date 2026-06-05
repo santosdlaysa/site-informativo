@@ -5,12 +5,19 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
-import { PostStatus, PostType } from "@/core/domain/post/post-status";
+import { PostStatus } from "@/core/domain/post/post-status";
 import { DomainError } from "@/core/domain/shared/errors";
+import type { GalleryItemInput } from "@/core/domain/project/project.repository";
 
 export interface PostFormState {
   error?: string;
 }
+
+const itemSchema = z.object({
+  image: z.string().nullable().optional(),
+  caption: z.string().nullable().optional(),
+  linkedPostId: z.string().nullable().optional(),
+});
 
 const formSchema = z.object({
   title: z.string().trim().min(3, "O título deve ter ao menos 3 caracteres."),
@@ -19,7 +26,7 @@ const formSchema = z.object({
   categoryId: z.string().optional().or(z.literal("")),
   coverImage: z.string().optional().or(z.literal("")),
   status: z.nativeEnum(PostStatus).optional(),
-  type: z.nativeEnum(PostType).optional(),
+  items: z.string().optional(),
 });
 
 function parse(formData: FormData) {
@@ -30,8 +37,30 @@ function parse(formData: FormData) {
     categoryId: formData.get("categoryId") ?? "",
     coverImage: formData.get("coverImage") ?? "",
     status: (formData.get("status") as PostStatus) || undefined,
-    type: (formData.get("type") as PostType) || undefined,
+    items: (formData.get("items") as string) ?? undefined,
   });
+}
+
+/**
+ * Galeria opcional: lê o JSON do campo `items`, descarta entradas vazias
+ * (sem imagem nem vínculo) e atribui a posição pela ordem.
+ */
+function parseGallery(raw: string | undefined): GalleryItemInput[] {
+  if (!raw) return [];
+  try {
+    const result = z.array(itemSchema).safeParse(JSON.parse(raw));
+    if (!result.success) return [];
+    return result.data
+      .filter((it) => it.image || it.linkedPostId)
+      .map((it, i) => ({
+        image: it.image ?? null,
+        caption: it.caption ?? null,
+        linkedPostId: it.linkedPostId ?? null,
+        position: i,
+      }));
+  } catch {
+    return [];
+  }
 }
 
 export async function createPostAction(
@@ -47,16 +76,16 @@ export async function createPostAction(
   }
 
   try {
-    await container.createPost.execute({
+    const { id } = await container.createPost.execute({
       title: parsed.data.title,
       excerpt: parsed.data.excerpt || null,
       content: parsed.data.content || "",
       categoryId: parsed.data.categoryId || null,
       coverImage: parsed.data.coverImage || null,
       status: parsed.data.status,
-      type: parsed.data.type,
       authorId: session.user.id,
     });
+    await container.projectRepository.replaceGallery(id, parseGallery(parsed.data.items));
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
     throw error;
@@ -89,8 +118,8 @@ export async function updatePostAction(
       categoryId: parsed.data.categoryId || null,
       coverImage: parsed.data.coverImage || null,
       status: parsed.data.status,
-      type: parsed.data.type,
     });
+    await container.projectRepository.replaceGallery(id, parseGallery(parsed.data.items));
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
     throw error;

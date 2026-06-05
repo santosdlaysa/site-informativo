@@ -58,10 +58,10 @@ casos de uso com os repositórios Prisma e os expõe prontos para a apresentaç�
 - **Público:** `/eventos` — evento em destaque + grade com filtro por formato (Todos/Online/Presencial); detalhe informativo em `/eventos/[slug]`.
 - **Admin:** `/admin/eventos` — formulário (nome, descrição, categoria, formato, local, capa, data/hora, capacidade) + lista com exclusão.
 
-### Projetos (post tipo galeria)
-- Conceito "post dentro de post": uma coleção (`Post` do tipo `PROJECTS`) com itens (`ProjectItem`) que apontam para **posts existentes**.
-- **Público:** `/projetos` (índice de coleções publicadas) e `/projetos/[slug]` (galeria; cada card abre o post vinculado). Posts do tipo galeria acessados por `/posts/[slug]` são redirecionados para `/projetos/[slug]`.
-- **Admin:** `/admin/projetos` (lista) e construtor em `/admin/projetos/novo` e `/admin/projetos/[id]/editar` — monta a galeria item a item (imagem + post vinculado + legenda), adicionar/remover.
+### Galeria de projetos (opcional, dentro do post)
+- Todo post pode ter, opcionalmente, uma galeria de itens (`ProjectItem`). Cada item é uma imagem que **pode** apontar para um post existente (clicar abre esse post) ou, sem vínculo, abrir ampliada em lightbox. Não há mais um "tipo" de post separado.
+- **Público:** a galeria aparece como uma seção dentro da própria página do post em `/posts/[slug]`.
+- **Admin:** montada na seção "Galeria de projetos (opcional)" do formulário de post (`/admin/posts/novo` e `/admin/posts/[id]/editar`) — adicionar/remover itens (imagem + post vinculado + legenda). É salva junto do post.
 
 ## 4. Banco de dados (Prisma)
 
@@ -166,9 +166,6 @@ usam `admin/(panel)` (layout protegido, `admin.css`).
 | `/admin/programacao/[id]/editar` | `app/admin/(panel)/programacao/[id]/editar/page.tsx` | Editar sessão |
 | `/admin/eventos` | `app/admin/(panel)/eventos/page.tsx` | Novo evento + lista |
 | `/admin/eventos/[id]/editar` | `app/admin/(panel)/eventos/[id]/editar/page.tsx` | Editar evento |
-| `/admin/projetos` | `app/admin/(panel)/projetos/page.tsx` | Lista de coleções |
-| `/admin/projetos/novo` | `app/admin/(panel)/projetos/novo/page.tsx` | Construtor de galeria |
-| `/admin/projetos/[id]/editar` | `app/admin/(panel)/projetos/[id]/editar/page.tsx` | Editar galeria |
 
 ### API
 
@@ -194,7 +191,7 @@ tratam `DomainError`.
 | Auth | `authenticate` | `auth-actions.ts` |
 | Programação | `program.usecases.ts` (create / update / list / delete) | `program-actions.ts` |
 | Eventos | `event.usecases.ts` (create / update / list / delete) | `event-actions.ts` |
-| Projetos | `project.usecases.ts` (create / update / list / delete) | `project-actions.ts` |
+| Galeria de projetos | itens opcionais salvos junto do post (`ProjectRepository.replaceGallery` / `getGallery`) | `post-actions.ts` |
 
 Portas (interfaces) em `src/core/application/ports/`: `id-generator.ts`,
 `password-hasher.ts` — implementadas em `src/infrastructure/` (UUID e bcrypt).

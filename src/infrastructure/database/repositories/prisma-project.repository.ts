@@ -1,7 +1,6 @@
 import {
   GalleryItemInput,
   GalleryItemView,
-  ProjectOwnerView,
   ProjectRepository,
 } from "@/core/domain/project/project.repository";
 import { prisma } from "../prisma";
@@ -35,31 +34,6 @@ export class PrismaProjectRepository implements ProjectRepository {
       linkedPostId: r.linkedPostId,
       linkedPostSlug: r.linkedPost?.slug ?? null,
       linkedPostTitle: r.linkedPost?.title ?? null,
-    }));
-  }
-
-  async listOwners(): Promise<ProjectOwnerView[]> {
-    const rows = await prisma.post.findMany({
-      where: { galleryItems: { some: {} } },
-      orderBy: { updatedAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        status: true,
-        coverImage: true,
-        updatedAt: true,
-        _count: { select: { galleryItems: true } },
-      },
-    });
-    return rows.map((r) => ({
-      id: r.id,
-      title: r.title,
-      slug: r.slug,
-      status: r.status,
-      coverImage: r.coverImage,
-      updatedAt: r.updatedAt,
-      itemCount: r._count.galleryItems,
     }));
   }
 }

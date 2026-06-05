@@ -1,0 +1,149 @@
+"use client";
+
+import { useState } from "react";
+import { ImageSlot } from "../image-slot";
+import { PlusIcon, TrashIcon, LinkIcon } from "../icons";
+
+export interface PostOption {
+  id: string;
+  title: string;
+}
+
+export interface GalleryItem {
+  image: string | null;
+  caption: string | null;
+  linkedPostId: string | null;
+}
+
+interface GalleryItemsFieldProps {
+  /** Posts que podem ser vinculados aos itens da galeria. */
+  postOptions: PostOption[];
+  /** Itens já existentes ao editar um post. */
+  initialItems?: GalleryItem[];
+}
+
+const emptyItem: GalleryItem = { image: null, caption: null, linkedPostId: null };
+
+/**
+ * Seção opcional de galeria (projetos) embutida no formulário de post.
+ * Começa vazia — adicionar itens é opcional. Cada item recebe uma imagem e,
+ * opcionalmente, aponta para outro post (clicar abre esse post) ou abre em
+ * lightbox quando sem vínculo. Emite os itens no campo oculto `items`.
+ */
+export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFieldProps) {
+  const [items, setItems] = useState<GalleryItem[]>(initialItems ?? []);
+
+  function update(i: number, patch: Partial<GalleryItem>) {
+    setItems((cur) => cur.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  }
+  function remove(i: number) {
+    setItems((cur) => cur.filter((_, idx) => idx !== i));
+  }
+  function add() {
+    setItems((cur) => [...cur, { ...emptyItem }]);
+  }
+
+  return (
+    <div className="panel" style={{ marginTop: 26 }}>
+      <div className="panel-head">
+        <h2>Galeria de projetos (opcional)</h2>
+        <span className="count">
+          {items.length} {items.length === 1 ? "item" : "itens"}
+        </span>
+      </div>
+      <div className="panel-pad">
+        <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 13.5 }}>
+          Adicione imagens apenas se quiser. Cada item pode apontar para um{" "}
+          <strong>post existente</strong> (clicar abre esse post) ou, sem vínculo, abrir a
+          imagem ampliada no site.
+        </p>
+        {items.length > 0 && (
+          <div className="proj-list">
+            {items.map((it, i) => (
+              <div className="proj-item" key={i}>
+                <div className="proj-thumb">
+                  <ImageSlot
+                    src={it.image}
+                    placeholder="Enviar imagem"
+                    editable
+                    onChange={(url) => update(i, { image: url })}
+                  />
+                </div>
+                <div className="proj-fields">
+                  <div className="field" style={{ margin: 0 }}>
+                    <label className="lbl" style={{ marginBottom: 6 }}>
+                      Post vinculado (opcional)
+                    </label>
+                    <div className="selnative">
+                      <select
+                        className="select"
+                        value={it.linkedPostId ?? ""}
+                        onChange={(e) => update(i, { linkedPostId: e.target.value || null })}
+                      >
+                        <option value="">Nenhum — abrir imagem ampliada</option>
+                        {postOptions.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title}
+                          </option>
+                        ))}
+                      </select>
+                      <Chevron />
+                    </div>
+                  </div>
+                  <div className="field" style={{ margin: 0 }}>
+                    <label className="lbl" style={{ marginBottom: 6 }}>
+                      Legenda (opcional)
+                    </label>
+                    <input
+                      className="input"
+                      type="text"
+                      placeholder="Texto sobre a imagem"
+                      value={it.caption ?? ""}
+                      onChange={(e) => update(i, { caption: e.target.value || null })}
+                    />
+                  </div>
+                  {it.linkedPostId && (
+                    <span className="linkrow">
+                      <LinkIcon /> Abre o post selecionado ao clicar
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="proj-remove"
+                  title="Remover"
+                  onClick={() => remove(i)}
+                >
+                  <TrashIcon />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <button type="button" className="add-proj" onClick={add}>
+          <PlusIcon /> Adicionar item
+        </button>
+      </div>
+
+      <input type="hidden" name="items" value={JSON.stringify(items)} />
+    </div>
+  );
+}
+
+function Chevron() {
+  return (
+    <svg
+      className="chev"
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
