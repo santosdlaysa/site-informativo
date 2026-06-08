@@ -51,9 +51,9 @@ export function UsersManager({
             {users.map((u) => (
               <tr key={u.id}>
                 <td>
-                  <span className="t-title">{u.name}</span>
+                  <div className="t-title">{u.name}</div>
                   {u.id === currentUserId && (
-                    <span className="t-sub">você</span>
+                    <div className="t-sub">você</div>
                   )}
                 </td>
                 <td>{u.email}</td>
