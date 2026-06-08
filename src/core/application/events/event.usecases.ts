@@ -74,7 +74,7 @@ export class DeleteEventUseCase {
 export class ListEventsUseCase {
   constructor(private readonly repo: EventRepository) {}
 
-  execute(filter?: { format?: EventFormat }): Promise<EventView[]> {
+  execute(filter?: { format?: EventFormat; search?: string }): Promise<EventView[]> {
     return this.repo.list(filter);
   }
 }

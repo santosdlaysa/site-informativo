@@ -77,9 +77,20 @@ export class PrismaEventRepository implements EventRepository {
     return found !== null;
   }
 
-  async list(filter: { format?: EventFormat } = {}): Promise<EventView[]> {
+  async list(filter: { format?: EventFormat; search?: string } = {}): Promise<EventView[]> {
     const rows = await prisma.event.findMany({
-      where: filter.format ? { format: filter.format } : {},
+      where: {
+        ...(filter.format ? { format: filter.format } : {}),
+        ...(filter.search
+          ? {
+              OR: [
+                { title: { contains: filter.search, mode: "insensitive" } },
+                { description: { contains: filter.search, mode: "insensitive" } },
+                { location: { contains: filter.search, mode: "insensitive" } },
+              ],
+            }
+          : {}),
+      },
       orderBy: { startsAt: "asc" },
       include: { category: true },
     });

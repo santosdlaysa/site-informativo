@@ -20,6 +20,6 @@ export interface EventRepository {
   delete(id: string): Promise<void>;
   findById(id: string): Promise<Event | null>;
   slugExists(slug: string, ignoreId?: string): Promise<boolean>;
-  list(filter?: { format?: EventFormat }): Promise<EventView[]>;
+  list(filter?: { format?: EventFormat; search?: string }): Promise<EventView[]>;
   findViewBySlug(slug: string): Promise<EventView | null>;
 }

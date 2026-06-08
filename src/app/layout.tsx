@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s — Raros Boa Vista",
   },
   description:
-    "Conteúdo sobre desenvolvimento web, tecnologia e bem-estar. Posts, programação e eventos.",
+    "O Centro Social Raros Boa Vista promove capacitação, inclusão digital e desenvolvimento artístico de crianças, adolescentes e jovens em Roraima, fortalecendo vínculos e gerando redes de apoio para a comunidade.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

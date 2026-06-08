@@ -95,6 +95,15 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
 @media (max-width:740px){.nav-login{display:none;}}
 @media (max-width:640px){.header-search-input{width:150px;}}
 
+/* Botão de busca (lupa) no menu */
+.nav-search-btn{
+  width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;
+  display:flex;align-items:center;justify-content:center;color:var(--body);cursor:pointer;
+  transition:.15s;flex:none;
+}
+.nav-search-btn:hover{border-color:var(--blue);color:var(--blue);}
+.header-search.open .nav-search-btn{border-color:var(--blue);color:var(--blue);}
+
 /* ===== Menu sanduíche (mobile) ===== */
 .nav-toggle{
   display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--line);
@@ -318,6 +327,54 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
   flex-shrink:0;
 }
 .home-hero-arrow:hover{background:rgba(255,255,255,.18);}
+
+/* Barra de busca da página /busca */
+.busca-form{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:22px;
+  max-width:560px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px;
+  padding:6px 6px 6px 16px;
+}
+.busca-form:focus-within{border-color:rgba(255,255,255,.5);}
+.busca-form-icon{
+  width:20px;height:20px;
+  color:rgba(255,255,255,.7);
+  flex-shrink:0;
+}
+.busca-form input{
+  flex:1;
+  min-width:0;
+  background:transparent;
+  border:0;
+  outline:0;
+  color:#fff;
+  font-size:15px;
+  padding:10px 0;
+}
+.busca-form input::placeholder{color:rgba(255,255,255,.6);}
+.busca-form button{
+  background:#fff;
+  color:var(--blue);
+  border:0;
+  padding:11px 22px;
+  border-radius:9px;
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+  transition:filter .15s;
+  flex-shrink:0;
+}
+.busca-form button:hover{filter:brightness(.95);}
+
+@media (max-width:560px){
+  .busca-form{flex-wrap:wrap;}
+  .busca-form button{flex:1;}
+}
 
 /* Stats bar */
 .home-stats-outer{position:relative;z-index:2;margin-top:-60px;margin-bottom:16px;}
