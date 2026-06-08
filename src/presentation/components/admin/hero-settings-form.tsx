@@ -156,8 +156,8 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
 
         {/* Seção Quem Somos */}
         <div style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginBottom: 16, marginTop: 8 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>Seção "Quem Somos"</h3>
-          <p style={{ margin: "0 0 16px", color: "var(--muted)", fontSize: 13 }}>Foto exibida ao lado do texto "Quem Somos" na página inicial.</p>
+          <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>Seção &quot;Quem Somos&quot;</h3>
+          <p style={{ margin: "0 0 16px", color: "var(--muted)", fontSize: 13 }}>Foto exibida ao lado do texto &quot;Quem Somos&quot; na página inicial.</p>
         </div>
 
         <div className="field" style={{ marginBottom: 24 }}>
