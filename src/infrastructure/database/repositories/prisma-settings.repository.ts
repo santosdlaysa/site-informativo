@@ -32,6 +32,10 @@ export class PrismaSettingsRepository implements SettingsRepository {
       qsFeature1Desc: row.qsFeature1Desc,
       qsFeature2Title: row.qsFeature2Title,
       qsFeature2Desc: row.qsFeature2Desc,
+      socialFacebook: row.socialFacebook,
+      socialTwitter: row.socialTwitter,
+      socialLinkedin: row.socialLinkedin,
+      socialInstagram: row.socialInstagram,
     };
   }
 

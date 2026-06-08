@@ -91,18 +91,6 @@ export default async function PostsPage({
                 ))}
               </ul>
             </div>
-            <div className="sidebar-box">
-              <h3>Tags populares</h3>
-              <div className="tag-cloud">
-                {["Next.js", "Prisma", "React", "PostgreSQL", "CSS", "Saúde", "Vercel", "TypeScript"].map(
-                  (t) => (
-                    <span className="tag" key={t}>
-                      {t}
-                    </span>
-                  ),
-                )}
-              </div>
-            </div>
           </aside>
         </div>
       </div>

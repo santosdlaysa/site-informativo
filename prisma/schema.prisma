@@ -149,6 +149,10 @@ model SiteSettings {
   qsFeature1Desc  String @default("Acesso livre a cursos técnicos e artísticos.")
   qsFeature2Title String @default("Desenvolvimento Integral")
   qsFeature2Desc  String @default("Apoio psicossocial para jovens e pais.")
+  socialFacebook  String @default("")
+  socialTwitter   String @default("")
+  socialLinkedin  String @default("")
+  socialInstagram String @default("")
   updatedAt    DateTime @updatedAt
 }
 

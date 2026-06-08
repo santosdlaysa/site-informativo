@@ -1,7 +1,44 @@
 import Image from "next/image";
 import logoHorizontal from "@/assets/Logo horizontal.png";
+import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 
-export function SiteFooter() {
+const SOCIAL_ICONS = {
+  facebook: (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1z" />
+    </svg>
+  ),
+  twitter: (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.7 4.6a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5a4 4 0 0 0 3.2 4 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18.1a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2.2z" />
+    </svg>
+  ),
+  linkedin: (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6.9 8H4V20h2.9V8zM5.4 3.5a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4zM20 20h-2.9v-5.9c0-1.4-.5-2.3-1.7-2.3-1 0-1.5.6-1.8 1.3-.1.2-.1.5-.1.8V20H10.6V8h2.8v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V20z" />
+    </svg>
+  ),
+  instagram: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" />
+    </svg>
+  ),
+} as const;
+
+export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
+  const socials = [
+    { key: "facebook", label: "Facebook", href: settings.socialFacebook },
+    { key: "twitter", label: "Twitter", href: settings.socialTwitter },
+    { key: "linkedin", label: "LinkedIn", href: settings.socialLinkedin },
+    { key: "instagram", label: "Instagram", href: settings.socialInstagram },
+  ].filter((s) => (s.href ?? "").trim().length > 0) as {
+    key: keyof typeof SOCIAL_ICONS;
+    label: string;
+    href: string;
+  }[];
+
   return (
     <footer className="site-footer">
       <div className="wrap">
@@ -39,33 +76,18 @@ export function SiteFooter() {
               Boa Vista, RR
             </span>
           </div>
-          <div className="fc-col">
-            <h4>Redes sociais</h4>
-            <div className="fc-social">
-              <a href="#" aria-label="Facebook">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="Twitter">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.7 4.6a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5a4 4 0 0 0 3.2 4 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18.1a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2.2z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M6.9 8H4V20h2.9V8zM5.4 3.5a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4zM20 20h-2.9v-5.9c0-1.4-.5-2.3-1.7-2.3-1 0-1.5.6-1.8 1.3-.1.2-.1.5-.1.8V20H10.6V8h2.8v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V20z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="5" />
-                  <circle cx="12" cy="12" r="4" />
-                  <circle cx="17.5" cy="6.5" r="1" />
-                </svg>
-              </a>
+          {socials.length > 0 && (
+            <div className="fc-col">
+              <h4>Redes sociais</h4>
+              <div className="fc-social">
+                {socials.map((s) => (
+                  <a key={s.key} href={s.href} aria-label={s.label} target="_blank" rel="noopener noreferrer">
+                    {SOCIAL_ICONS[s.key]}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="footer-bottom">

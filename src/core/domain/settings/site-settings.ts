@@ -24,6 +24,10 @@ export interface SiteSettingsData {
   qsFeature1Desc: string;
   qsFeature2Title: string;
   qsFeature2Desc: string;
+  socialFacebook: string;
+  socialTwitter: string;
+  socialLinkedin: string;
+  socialInstagram: string;
 }
 
 export const DEFAULT_SETTINGS: SiteSettingsData = {
@@ -55,4 +59,8 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   qsFeature1Desc: "Acesso livre a cursos técnicos e artísticos.",
   qsFeature2Title: "Desenvolvimento Integral",
   qsFeature2Desc: "Apoio psicossocial para jovens e pais.",
+  socialFacebook: "",
+  socialTwitter: "",
+  socialLinkedin: "",
+  socialInstagram: "",
 };

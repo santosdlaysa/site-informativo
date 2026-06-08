@@ -67,3 +67,24 @@ export async function updateQuemSomosAction(
   revalidatePath("/admin/configuracoes");
   return { success: true };
 }
+
+export async function updateRedesSociaisAction(
+  _prev: SettingsFormState,
+  formData: FormData,
+): Promise<SettingsFormState> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+
+  const get = (key: string) => ((formData.get(key) as string | null) ?? "").trim();
+
+  await container.updateSettings.execute({
+    socialFacebook: get("socialFacebook"),
+    socialTwitter: get("socialTwitter"),
+    socialLinkedin: get("socialLinkedin"),
+    socialInstagram: get("socialInstagram"),
+  });
+
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/configuracoes");
+  return { success: true };
+}
