@@ -36,14 +36,8 @@ export default async function HomePage() {
             <p className="home-hero-desc">{settings.heroDesc}</p>
             <div className="home-hero-ctas">
               <Link href={settings.heroCta1Href} className="home-btn-primary">{settings.heroCta1Text}</Link>
-              <Link href={settings.heroCta2Href} className="home-btn-ghost">{settings.heroCta2Text}</Link>
             </div>
           </div>
-          <button className="home-hero-arrow" aria-label="Próximo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
         </div>
       </section>
 
@@ -132,10 +126,10 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="qs-img-wrap">
-              <div className="qs-img-box">
+              <div className="qs-img-box" style={settings.qsImage ? { background: "#fff" } : undefined}>
                 {settings.qsImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={settings.qsImage} alt="Equipe Raros e Jovens" style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                  <img src={settings.qsImage} alt="Equipe Raros e Jovens" style={{ objectFit: "contain", width: "100%", height: "100%", padding: 24 }} />
                 ) : (
                   <Image src={equipeImg} alt="Equipe Raros e Jovens" fill sizes="(max-width:820px) 100vw, 50vw" style={{ objectFit: "cover" }} />
                 )}
