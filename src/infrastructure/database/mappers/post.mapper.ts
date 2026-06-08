@@ -13,7 +13,7 @@ import {
 } from "@/core/domain/post/post.repository";
 
 type PostWithRelations = PrismaPost & {
-  author: Pick<PrismaUser, "name" | "bio" | "avatar">;
+  author: Pick<PrismaUser, "id" | "name" | "bio" | "avatar">;
   category: Pick<PrismaCategory, "name" | "slug" | "variant"> | null;
 };
 
@@ -70,6 +70,7 @@ export const PostMapper = {
       readingTime: row.readingTime,
       publishedAt: row.publishedAt,
       createdAt: row.createdAt,
+      authorId: row.author.id,
       authorName: row.author.name,
       authorBio: row.author.bio,
       authorAvatar: row.author.avatar,

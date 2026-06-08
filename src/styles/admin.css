@@ -58,8 +58,8 @@ a{text-decoration:none;color:inherit;}
 /* Buttons */
 .btn{border:none;border-radius:9px;font:inherit;font-size:14px;font-weight:600;padding:11px 20px;cursor:pointer;transition:background .15s,box-shadow .15s,border-color .15s;display:inline-flex;align-items:center;gap:8px;}
 .btn svg{width:16px;height:16px;}
-.btn-primary{background:var(--brand-gradient);color:#fff;box-shadow:0 4px 14px rgba(112,60,192,.35);}
-.btn-primary:hover{filter:brightness(1.06);box-shadow:0 6px 18px rgba(112,60,192,.45);}
+.btn-primary{background:var(--purple);color:#fff;box-shadow:0 4px 14px rgba(112,60,192,.35);}
+.btn-primary:hover{background:var(--blue-hover);box-shadow:0 6px 18px rgba(112,60,192,.45);}
 .btn-ghost{background:#fff;border:1px solid var(--field-border);color:#374151;}
 .btn-ghost:hover{background:#f6f7f9;}
 .btn-sm{padding:8px 14px;font-size:13px;}

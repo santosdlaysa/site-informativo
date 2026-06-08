@@ -1,6 +1,8 @@
 import {
   AuthUser,
+  CreateUserData,
   UpdateProfileData,
+  UserListItem,
   UserProfile,
   UserRepository,
 } from "@/core/domain/user/user.repository";
@@ -36,5 +38,29 @@ export class PrismaUserRepository implements UserRepository {
       where: { id },
       data: { name: data.name, bio: data.bio, avatar: data.avatar },
     });
+  }
+
+  async listAll(): Promise<UserListItem[]> {
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: "asc" },
+      select: { id: true, name: true, email: true, createdAt: true },
+    });
+    return users;
+  }
+
+  async count(): Promise<number> {
+    return prisma.user.count();
+  }
+
+  async create(data: CreateUserData): Promise<UserListItem> {
+    const user = await prisma.user.create({
+      data: { name: data.name, email: data.email, passwordHash: data.passwordHash },
+      select: { id: true, name: true, email: true, createdAt: true },
+    });
+    return user;
+  }
+
+  async delete(id: string): Promise<void> {
+    await prisma.user.delete({ where: { id } });
   }
 }

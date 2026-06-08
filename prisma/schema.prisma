@@ -122,6 +122,27 @@ model ProgramSession {
   @@index([categoryId])
 }
 
+model SiteSettings {
+  id           String   @id @default("default")
+  heroBgImage  String?
+  heroTag      String   @default("Fortalecimento de Vínculos")
+  heroTitle    String   @default("Conectando famílias e\ngerando redes de apoio")
+  heroDesc     String   @default("Nossos eventos de encerramento coroam meses de esforço, disciplina e união coletiva entre pais, alunos e orientadores.")
+  heroCta1Text String   @default("Ver Galeria de Fotos")
+  heroCta1Href String   @default("/acoes")
+  heroCta2Text String   @default("Fale Conosco")
+  heroCta2Href String   @default("/eventos")
+  stat1Num     String   @default("150+")
+  stat1Label   String   @default("Jovens Formados")
+  stat2Num     String   @default("85+")
+  stat2Label   String   @default("Famílias Apoiadas")
+  stat3Num     String   @default("3")
+  stat3Label   String   @default("Oficinas Ativas")
+  stat4Num     String   @default("Boa Vista")
+  stat4Label   String   @default("Roraima, Brasil")
+  updatedAt    DateTime @updatedAt
+}
+
 model Event {
   id          String      @id @default(cuid())
   title       String

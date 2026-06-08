@@ -15,7 +15,7 @@ const LINKS = [
   { href: "/eventos", label: "Eventos" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -60,6 +60,12 @@ export function SiteHeader() {
             </li>
           ))}
         </ul>
+        <Link
+          href={isLoggedIn ? "/admin" : "/admin/login"}
+          className="nav-login"
+        >
+          {isLoggedIn ? "Painel" : "Entrar"}
+        </Link>
         <form className="header-search" onSubmit={handleSubmit}>
           {searchOpen && (
             <input

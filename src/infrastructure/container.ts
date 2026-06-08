@@ -27,6 +27,15 @@ import {
   ListEventsUseCase,
   UpdateEventUseCase,
 } from "@/core/application/events/event.usecases";
+import {
+  GetSettingsUseCase,
+  UpdateSettingsUseCase,
+} from "@/core/application/settings/settings.usecases";
+import {
+  CreateUserUseCase,
+  DeleteUserUseCase,
+  ListUsersUseCase,
+} from "@/core/application/users/user.usecases";
 
 import { PrismaPostRepository } from "./database/repositories/prisma-post.repository";
 import { PrismaCategoryRepository } from "./database/repositories/prisma-category.repository";
@@ -34,6 +43,7 @@ import { PrismaUserRepository } from "./database/repositories/prisma-user.reposi
 import { PrismaProgramSessionRepository } from "./database/repositories/prisma-program-session.repository";
 import { PrismaEventRepository } from "./database/repositories/prisma-event.repository";
 import { PrismaProjectRepository } from "./database/repositories/prisma-project.repository";
+import { PrismaSettingsRepository } from "./database/repositories/prisma-settings.repository";
 import { CryptoIdGenerator } from "./ids/crypto-id-generator";
 import { BcryptPasswordHasher } from "./auth/bcrypt-password-hasher";
 
@@ -43,6 +53,7 @@ const userRepository = new PrismaUserRepository();
 const sessionRepository = new PrismaProgramSessionRepository();
 const eventRepository = new PrismaEventRepository();
 const projectRepository = new PrismaProjectRepository();
+const settingsRepository = new PrismaSettingsRepository();
 const idGenerator = new CryptoIdGenerator();
 const passwordHasher = new BcryptPasswordHasher();
 
@@ -74,6 +85,13 @@ export const container = {
   // perfil do autor
   getProfile: new GetProfileUseCase(userRepository),
   updateProfile: new UpdateProfileUseCase(userRepository),
+  // configurações do site
+  getSettings: new GetSettingsUseCase(settingsRepository),
+  updateSettings: new UpdateSettingsUseCase(settingsRepository),
+  // gestão de editores
+  listUsers: new ListUsersUseCase(userRepository),
+  createUser: new CreateUserUseCase(userRepository, passwordHasher),
+  deleteUser: new DeleteUserUseCase(userRepository),
   // acesso direto a read models pontuais
   postRepository,
   eventRepository,

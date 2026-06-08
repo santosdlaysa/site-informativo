@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { AdminPostsTable } from "@/presentation/components/admin/admin-posts-table";
 import { PlusIcon, EyeIcon } from "@/presentation/components/icons";
@@ -8,6 +10,9 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Posts — Admin" };
 
 export default async function AdminPostsPage() {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/admin/login");
+
   const posts = await container.listPosts.execute();
 
   return (
@@ -30,7 +35,7 @@ export default async function AdminPostsPage() {
         </div>
       </div>
 
-      <AdminPostsTable posts={posts} />
+      <AdminPostsTable posts={posts} currentUserId={session.user.id} />
     </>
   );
 }

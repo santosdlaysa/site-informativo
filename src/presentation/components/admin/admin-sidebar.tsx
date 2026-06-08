@@ -1,23 +1,26 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ShieldIcon,
   PostsIcon,
   NewPostIcon,
   CalendarIcon,
   EventIcon,
   SettingsIcon,
   LogoutIcon,
+  UsersIcon,
 } from "../icons";
 import { logoutAction } from "@/presentation/actions/auth-actions";
+import logoHorizontal from "@/assets/Logo horizontal.png";
 
 const NAV = [
   { href: "/admin/posts", label: "Posts", Icon: PostsIcon, match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
   { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, match: (p: string) => p.startsWith("/admin/posts/novo") },
   { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/programacao") },
   { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, match: (p: string) => p.startsWith("/admin/eventos") },
+  { href: "/admin/editores", label: "Editores", Icon: UsersIcon, match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
@@ -27,10 +30,7 @@ export function AdminSidebar() {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <span className="mark">
-          <ShieldIcon width={18} height={18} />
-        </span>
-        <span className="name">Raros Boa Vista</span>
+        <Image src={logoHorizontal} alt="Raros Boa Vista" height={56} />
       </div>
       <nav className="nav">
         {NAV.map(({ href, label, Icon, match }) => (

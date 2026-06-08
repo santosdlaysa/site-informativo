@@ -1,79 +1,147 @@
 import Link from "next/link";
+import Image from "next/image";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
-import { badgeClass } from "@/presentation/lib/category-variant";
 import { formatLongDate } from "@/presentation/lib/format";
+import equipeImg from "@/assets/img.png";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [posts, categories] = await Promise.all([
+  const [posts, categories, settings] = await Promise.all([
     container.listPublishedPosts.execute({ take: 12, type: PostType.Standard }),
     container.listCategories.execute(),
+    container.getSettings.execute(),
   ]);
 
-  const featured = posts[0] ?? null;
-  const side = posts.slice(1, 4);
   const latest = posts.slice(0, 4);
   const splitPosts = posts.slice(0, 2);
   const splitHeading = splitPosts[0]?.category?.name ?? "Em destaque";
 
   return (
     <>
+      {/* ===== Hero ===== */}
+      <section className="home-hero" style={settings.heroBgImage ? { backgroundImage: `url(${settings.heroBgImage})` } : undefined}>
+        {settings.heroBgImage && <div className="home-hero-overlay" />}
+        <div className="wrap home-hero-inner">
+          <div className="home-hero-content">
+            <span className="home-hero-tag">{settings.heroTag}</span>
+            <h1>
+              {settings.heroTitle.split("\n").map((line, i) => (
+                <span key={i}>{line}{i < settings.heroTitle.split("\n").length - 1 && <br />}</span>
+              ))}
+            </h1>
+            <p className="home-hero-desc">{settings.heroDesc}</p>
+            <div className="home-hero-ctas">
+              <Link href={settings.heroCta1Href} className="home-btn-primary">{settings.heroCta1Text}</Link>
+              <Link href={settings.heroCta2Href} className="home-btn-ghost">{settings.heroCta2Text}</Link>
+            </div>
+          </div>
+          <button className="home-hero-arrow" aria-label="Próximo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      {/* ===== Stats bar ===== */}
+      <div className="home-stats-outer">
+        <div className="wrap">
+          <div className="home-stats">
+            <div className="home-stat">
+              <span className="home-stat-icon home-stat-icon--blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={26} height={26}>
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+              </span>
+              <strong className="home-stat-num">{settings.stat1Num}</strong>
+              <span className="home-stat-label">{settings.stat1Label}</span>
+            </div>
+            <div className="home-stat">
+              <span className="home-stat-icon home-stat-icon--red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={26} height={26}>
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </span>
+              <strong className="home-stat-num">{settings.stat2Num}</strong>
+              <span className="home-stat-label">{settings.stat2Label}</span>
+            </div>
+            <div className="home-stat">
+              <span className="home-stat-icon home-stat-icon--purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={26} height={26}>
+                  <path d="M9 18V5l12-2v13" />
+                  <circle cx="6" cy="18" r="3" />
+                  <circle cx="18" cy="16" r="3" />
+                </svg>
+              </span>
+              <strong className="home-stat-num">{settings.stat3Num}</strong>
+              <span className="home-stat-label">{settings.stat3Label}</span>
+            </div>
+            <div className="home-stat">
+              <span className="home-stat-icon home-stat-icon--green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={26} height={26}>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <strong className="home-stat-num">{settings.stat4Num}</strong>
+              <span className="home-stat-label">{settings.stat4Label}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Quem Somos ===== */}
       <div className="wrap">
-        <section className="hero-grid">
-          {featured ? (
-            <Link className="hero" href={`/posts/${featured.slug}`}>
-              <ImageSlot className="img" src={featured.coverImage} placeholder="" rounded={false} />
-              <div className="scrim" />
-              <div className="hero-content">
-                {featured.category && (
-                  <span className={badgeClass(featured.category.variant, { onImg: true })}>
-                    {featured.category.name}
+        <section className="qs-section">
+          <div className="qs-grid">
+            <div>
+              <span className="qs-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={14} height={14}>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                Quem Somos
+              </span>
+              <h2 className="qs-title">Compromisso com o futuro da nossa comunidade</h2>
+              <p className="qs-body">
+                O Centro Social <strong>Raros Boa Vista</strong> nasceu com o propósito de suprir as necessidades de capacitação, inserção digital e desenvolvimento artístico de crianças, adolescentes e jovens da região de Roraima.
+              </p>
+              <p className="qs-body">
+                Através de oficinas e acompanhamento próximo de profissionais e voluntários, fortalecemos as competências e talentos individuais, cultivando valores humanos cruciais como o respeito, a responsabilidade cidadã e a solidariedade local.
+              </p>
+              <div className="qs-features">
+                <div className="qs-feature">
+                  <span className="qs-feature-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
-                )}
-                <h1>{featured.title}</h1>
-                {featured.excerpt && <p className="lead">{featured.excerpt}</p>}
-                <div className="meta">
-                  <span className="avatar" />
-                  <span>{featured.authorName}</span>
-                  <span className="dot" />
-                  <span>{formatLongDate(featured.publishedAt ?? featured.createdAt)}</span>
+                  <div>
+                    <strong>Inclusão Real</strong>
+                    <span>Acesso livre a cursos técnicos e artísticos.</span>
+                  </div>
+                </div>
+                <div className="qs-feature">
+                  <span className="qs-feature-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
+                  </span>
+                  <div>
+                    <strong>Desenvolvimento Integral</strong>
+                    <span>Apoio psicossocial para jovens e pais.</span>
+                  </div>
                 </div>
               </div>
-            </Link>
-          ) : (
-            <div className="hero">
-              <div className="scrim" />
-              <div className="hero-content">
-                <h1>Bem-vindo ao Raros Boa Vista</h1>
-                <p className="lead">
-                  Ainda não há posts publicados. Acesse o painel para criar o primeiro.
-                </p>
-              </div>
             </div>
-          )}
-
-          <aside className="side-list">
-            {side.map((p) => (
-              <Link className="side-item" href={`/posts/${p.slug}`} key={p.id}>
-                <span className="thumb">
-                  <ImageSlot src={p.coverImage} placeholder="" rounded={false} />
-                </span>
-                <span className="info">
-                  {p.category && (
-                    <span className={badgeClass(p.category.variant, { soft: true })} style={{ alignSelf: "flex-start" }}>
-                      {p.category.name}
-                    </span>
-                  )}
-                  <h4>{p.title}</h4>
-                  <span className="date">{formatLongDate(p.publishedAt ?? p.createdAt)}</span>
-                </span>
-              </Link>
-            ))}
-          </aside>
+            <div className="qs-img-wrap">
+              <div className="qs-img-box">
+                <Image src={equipeImg} alt="Equipe Raros e Jovens" fill sizes="(max-width:820px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+              </div>
+              <div className="qs-img-glow" />
+            </div>
+          </div>
         </section>
       </div>
 

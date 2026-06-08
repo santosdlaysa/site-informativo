@@ -104,6 +104,11 @@ export async function updatePostAction(
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
 
+  const post = await container.postRepository.findEntityById(id);
+  if (!post || post.toSnapshot().authorId !== session.user.id) {
+    return { error: "Você não tem permissão para editar este post." };
+  }
+
   const parsed = parse(formData);
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
@@ -133,6 +138,9 @@ export async function updatePostAction(
 export async function deletePostAction(id: string): Promise<void> {
   const session = await auth();
   if (!session?.user?.id) return;
+
+  const post = await container.postRepository.findEntityById(id);
+  if (!post || post.toSnapshot().authorId !== session.user.id) return;
 
   await container.deletePost.execute(id);
   revalidatePath("/admin/posts");

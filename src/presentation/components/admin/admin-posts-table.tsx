@@ -12,7 +12,7 @@ import { deletePostAction } from "@/presentation/actions/post-actions";
 
 type Tab = "todos" | "pub" | "rasc";
 
-export function AdminPostsTable({ posts }: { posts: PostListItem[] }) {
+export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[]; currentUserId: string }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("todos");
   const [query, setQuery] = useState("");
@@ -111,24 +111,26 @@ export function AdminPostsTable({ posts }: { posts: PostListItem[] }) {
                 <td>{formatShortDate(p.publishedAt ?? p.createdAt)}</td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
-                    <Link
-                      className="act-edit"
-                      href={`/admin/posts/${p.id}/editar`}
-                      title="Editar"
-                      style={{
-                        width: 34,
-                        height: 34,
-                        border: "1px solid var(--line)",
-                        background: "#fff",
-                        borderRadius: 8,
-                        color: "var(--muted)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <EditIcon width={16} height={16} />
-                    </Link>
+                    {p.authorId === currentUserId && (
+                      <Link
+                        className="act-edit"
+                        href={`/admin/posts/${p.id}/editar`}
+                        title="Editar"
+                        style={{
+                          width: 34,
+                          height: 34,
+                          border: "1px solid var(--line)",
+                          background: "#fff",
+                          borderRadius: 8,
+                          color: "var(--muted)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <EditIcon width={16} height={16} />
+                      </Link>
+                    )}
                     <div className="kebab" onClick={(e) => e.stopPropagation()}>
                       <button
                         className="kebab-btn"
@@ -141,19 +143,23 @@ export function AdminPostsTable({ posts }: { posts: PostListItem[] }) {
                         </svg>
                       </button>
                       <div className={`kebab-menu${openMenu === p.id ? " open" : ""}`}>
-                        <Link href={`/admin/posts/${p.id}/editar`} style={{ textDecoration: "none" }}>
-                          <button>
-                            <EditIcon /> Editar
-                          </button>
-                        </Link>
+                        {p.authorId === currentUserId && (
+                          <Link href={`/admin/posts/${p.id}/editar`} style={{ textDecoration: "none" }}>
+                            <button>
+                              <EditIcon /> Editar
+                            </button>
+                          </Link>
+                        )}
                         <a href={`/posts/${p.slug}`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                           <button>
                             <EyeIcon /> Visualizar
                           </button>
                         </a>
-                        <button className="danger" onClick={() => handleDelete(p.id)}>
-                          <TrashIcon /> Excluir
-                        </button>
+                        {p.authorId === currentUserId && (
+                          <button className="danger" onClick={() => handleDelete(p.id)}>
+                            <TrashIcon /> Excluir
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

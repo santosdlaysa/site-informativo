@@ -16,6 +16,7 @@ export interface PostListItem {
   readingTime: number;
   publishedAt: Date | null;
   createdAt: Date;
+  authorId: string;
   authorName: string;
   authorBio: string | null;
   authorAvatar: string | null;
