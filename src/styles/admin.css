@@ -42,8 +42,8 @@ a{text-decoration:none;color:inherit;}
 .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 26px;}
 .brand .mark{width:32px;height:32px;border-radius:8px;background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
 .brand .name{color:#fff;font-weight:700;font-size:18px;letter-spacing:.2px;}
-.nav{display:flex;flex-direction:column;gap:4px;}
-.nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;color:#aeb9c9;font-size:14px;font-weight:500;transition:background .15s,color .15s;}
+.nav{display:flex;flex-direction:column;gap:4px;align-items:stretch;justify-content:flex-start;height:auto;}
+.nav a{display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:11px 12px;border-radius:8px;color:#aeb9c9;font-size:14px;font-weight:500;transition:background .15s,color .15s;width:100%;}
 .nav a svg{width:18px;height:18px;flex:none;}
 .nav a:hover{background:rgba(255,255,255,.05);color:#e8edf4;}
 .nav a.active{background:var(--nav-active);color:#fff;}

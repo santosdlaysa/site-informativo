@@ -137,7 +137,12 @@ export default async function HomePage() {
             </div>
             <div className="qs-img-wrap">
               <div className="qs-img-box">
-                <Image src={equipeImg} alt="Equipe Raros e Jovens" fill sizes="(max-width:820px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+                {settings.qsImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={settings.qsImage} alt="Equipe Raros e Jovens" style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                ) : (
+                  <Image src={equipeImg} alt="Equipe Raros e Jovens" fill sizes="(max-width:820px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+                )}
               </div>
               <div className="qs-img-glow" />
             </div>

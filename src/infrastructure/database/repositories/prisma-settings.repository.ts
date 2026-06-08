@@ -8,6 +8,7 @@ export class PrismaSettingsRepository implements SettingsRepository {
     if (!row) return { ...DEFAULT_SETTINGS };
     return {
       heroBgImage: row.heroBgImage ?? null,
+      qsImage: row.qsImage ?? null,
       heroTag: row.heroTag,
       heroTitle: row.heroTitle,
       heroDesc: row.heroDesc,

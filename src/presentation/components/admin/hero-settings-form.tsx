@@ -27,11 +27,18 @@ async function fileToDataUrl(file: File): Promise<string> {
 export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
   const [state, formAction, pending] = useActionState(updateSettingsAction, initial);
   const [bgImage, setBgImage] = useState<string>(settings.heroBgImage ?? "");
+  const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
+  const qsInputRef = useRef<HTMLInputElement>(null);
 
   const ingest = useCallback(async (file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
     setBgImage(await fileToDataUrl(file));
+  }, []);
+
+  const ingestQs = useCallback(async (file: File | undefined) => {
+    if (!file || !ACCEPT.includes(file.type)) return;
+    setQsImage(await fileToDataUrl(file));
   }, []);
 
   return (
@@ -146,6 +153,45 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
             </div>
           </div>
         ))}
+
+        {/* Seção Quem Somos */}
+        <div style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginBottom: 16, marginTop: 8 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>Seção "Quem Somos"</h3>
+          <p style={{ margin: "0 0 16px", color: "var(--muted)", fontSize: 13 }}>Foto exibida ao lado do texto "Quem Somos" na página inicial.</p>
+        </div>
+
+        <div className="field" style={{ marginBottom: 24 }}>
+          <label>Foto da equipe</label>
+          <div
+            className="dropzone"
+            style={{ position: "relative", height: 180, padding: 0, overflow: "hidden", cursor: "pointer" }}
+            onClick={() => qsInputRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); void ingestQs(e.dataTransfer.files?.[0]); }}
+          >
+            {qsImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={qsImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, color: "var(--muted)", fontSize: 13 }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={32} height={32}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span>Clique ou arraste uma foto aqui</span>
+                <span style={{ fontSize: 11 }}>PNG, JPG ou WebP — recomendado 800×600</span>
+              </div>
+            )}
+          </div>
+          {qsImage && (
+            <button type="button" className="btn" style={{ marginTop: 8, fontSize: 13, color: "var(--muted)" }} onClick={() => setQsImage("")}>
+              Remover imagem
+            </button>
+          )}
+          <input ref={qsInputRef} type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestQs(e.target.files?.[0])} />
+          <input type="hidden" name="qsImage" value={qsImage} />
+        </div>
 
         <div className="form-actions">
           <button className="btn btn-primary" type="submit" disabled={pending}>

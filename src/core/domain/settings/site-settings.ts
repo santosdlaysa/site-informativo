@@ -1,5 +1,6 @@
 export interface SiteSettingsData {
   heroBgImage?: string | null;
+  qsImage?: string | null;
   heroTag: string;
   heroTitle: string;
   heroDesc: string;
@@ -19,6 +20,7 @@ export interface SiteSettingsData {
 
 export const DEFAULT_SETTINGS: SiteSettingsData = {
   heroBgImage: null,
+  qsImage: null,
   heroTag: "Fortalecimento de Vínculos",
   heroTitle: "Conectando famílias e\ngerando redes de apoio",
   heroDesc:

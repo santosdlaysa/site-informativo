@@ -125,6 +125,7 @@ model ProgramSession {
 model SiteSettings {
   id           String   @id @default("default")
   heroBgImage  String?
+  qsImage      String?
   heroTag      String   @default("Fortalecimento de Vínculos")
   heroTitle    String   @default("Conectando famílias e\ngerando redes de apoio")
   heroDesc     String   @default("Nossos eventos de encerramento coroam meses de esforço, disciplina e união coletiva entre pais, alunos e orientadores.")

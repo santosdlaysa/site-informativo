@@ -20,6 +20,7 @@ export async function updateSettingsAction(
 
   await container.updateSettings.execute({
     heroBgImage: get("heroBgImage") || null,
+    qsImage: get("qsImage") || null,
     heroTag: get("heroTag"),
     heroTitle: get("heroTitle"),
     heroDesc: get("heroDesc"),
