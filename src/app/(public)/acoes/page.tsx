@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
@@ -11,11 +12,21 @@ export const metadata: Metadata = {
     "Projetos e iniciativas sociais do Raros Boa Vista / Centro Social: juventude, saúde e apoio a pessoas com doenças raras.",
 };
 
-export default async function AcoesPage() {
-  const posts = await container.listPublishedPosts.execute({
-    take: 24,
-    type: PostType.Standard,
-  });
+export default async function AcoesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ categoria?: string }>;
+}) {
+  const { categoria } = await searchParams;
+
+  const [posts, categories] = await Promise.all([
+    container.listPublishedPosts.execute({
+      categorySlug: categoria,
+      take: 24,
+      type: PostType.Standard,
+    }),
+    container.listCategories.execute(),
+  ]);
 
   return (
     <>
@@ -31,8 +42,27 @@ export default async function AcoesPage() {
 
       <div className="wrap">
         <section className="section">
+          <div className="chips">
+            <Link className={`chip${!categoria ? " active" : ""}`} href="/acoes">
+              Todos
+            </Link>
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                className={`chip${categoria === c.slug ? " active" : ""}`}
+                href={`/acoes?categoria=${c.slug}`}
+              >
+                {c.name}
+              </Link>
+            ))}
+          </div>
+
           {posts.length === 0 ? (
-            <div className="empty-state">Nenhuma ação publicada por enquanto.</div>
+            <div className="empty-state">
+              {categoria
+                ? "Nenhuma ação publicada nesta categoria por enquanto."
+                : "Nenhuma ação publicada por enquanto."}
+            </div>
           ) : (
             <div className="cards-3">
               {posts.map((p) => (

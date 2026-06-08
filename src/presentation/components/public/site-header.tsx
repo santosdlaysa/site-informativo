@@ -9,7 +9,6 @@ import logoHorizontal from "@/assets/Logo horizontal.png";
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/acoes", label: "Ações" },
-  { href: "/posts", label: "Posts" },
   { href: "/programacao", label: "Programação" },
   { href: "/eventos", label: "Eventos" },
 ];
