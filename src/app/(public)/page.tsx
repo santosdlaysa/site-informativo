@@ -105,23 +105,19 @@ export default async function HomePage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={14} height={14}>
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
-                Quem Somos
+                {settings.qsTag}
               </span>
-              <h2 className="qs-title">Compromisso com o futuro da nossa comunidade</h2>
-              <p className="qs-body">
-                O Centro Social <strong>Raros Boa Vista</strong> nasceu com o propósito de suprir as necessidades de capacitação, inserção digital e desenvolvimento artístico de crianças, adolescentes e jovens da região de Roraima.
-              </p>
-              <p className="qs-body">
-                Através de oficinas e acompanhamento próximo de profissionais e voluntários, fortalecemos as competências e talentos individuais, cultivando valores humanos cruciais como o respeito, a responsabilidade cidadã e a solidariedade local.
-              </p>
+              <h2 className="qs-title">{settings.qsTitle}</h2>
+              <p className="qs-body">{settings.qsBody1}</p>
+              <p className="qs-body">{settings.qsBody2}</p>
               <div className="qs-features">
                 <div className="qs-feature">
                   <span className="qs-feature-check">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
                   <div>
-                    <strong>Inclusão Real</strong>
-                    <span>Acesso livre a cursos técnicos e artísticos.</span>
+                    <strong>{settings.qsFeature1Title}</strong>
+                    <span>{settings.qsFeature1Desc}</span>
                   </div>
                 </div>
                 <div className="qs-feature">
@@ -129,8 +125,8 @@ export default async function HomePage() {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
                   <div>
-                    <strong>Desenvolvimento Integral</strong>
-                    <span>Apoio psicossocial para jovens e pais.</span>
+                    <strong>{settings.qsFeature2Title}</strong>
+                    <span>{settings.qsFeature2Desc}</span>
                   </div>
                 </div>
               </div>

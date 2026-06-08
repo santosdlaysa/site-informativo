@@ -24,6 +24,14 @@ export class PrismaSettingsRepository implements SettingsRepository {
       stat3Label: row.stat3Label,
       stat4Num: row.stat4Num,
       stat4Label: row.stat4Label,
+      qsTag: row.qsTag,
+      qsTitle: row.qsTitle,
+      qsBody1: row.qsBody1,
+      qsBody2: row.qsBody2,
+      qsFeature1Title: row.qsFeature1Title,
+      qsFeature1Desc: row.qsFeature1Desc,
+      qsFeature2Title: row.qsFeature2Title,
+      qsFeature2Desc: row.qsFeature2Desc,
     };
   }
 

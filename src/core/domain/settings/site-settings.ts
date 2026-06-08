@@ -16,6 +16,14 @@ export interface SiteSettingsData {
   stat3Label: string;
   stat4Num: string;
   stat4Label: string;
+  qsTag: string;
+  qsTitle: string;
+  qsBody1: string;
+  qsBody2: string;
+  qsFeature1Title: string;
+  qsFeature1Desc: string;
+  qsFeature2Title: string;
+  qsFeature2Desc: string;
 }
 
 export const DEFAULT_SETTINGS: SiteSettingsData = {
@@ -37,4 +45,14 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   stat3Label: "Oficinas Ativas",
   stat4Num: "Boa Vista",
   stat4Label: "Roraima, Brasil",
+  qsTag: "Quem Somos",
+  qsTitle: "Compromisso com o futuro da nossa comunidade",
+  qsBody1:
+    "O Centro Social Raros Boa Vista nasceu com o propósito de suprir as necessidades de capacitação, inserção digital e desenvolvimento artístico de crianças, adolescentes e jovens da região de Roraima.",
+  qsBody2:
+    "Através de oficinas e acompanhamento próximo de profissionais e voluntários, fortalecemos as competências e talentos individuais, cultivando valores humanos cruciais como o respeito, a responsabilidade cidadã e a solidariedade local.",
+  qsFeature1Title: "Inclusão Real",
+  qsFeature1Desc: "Acesso livre a cursos técnicos e artísticos.",
+  qsFeature2Title: "Desenvolvimento Integral",
+  qsFeature2Desc: "Apoio psicossocial para jovens e pais.",
 };

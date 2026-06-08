@@ -9,7 +9,7 @@ export interface SettingsFormState {
   success?: boolean;
 }
 
-export async function updateSettingsAction(
+export async function updateHeroSettingsAction(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
@@ -20,7 +20,6 @@ export async function updateSettingsAction(
 
   await container.updateSettings.execute({
     heroBgImage: get("heroBgImage") || null,
-    qsImage: get("qsImage") || null,
     heroTag: get("heroTag"),
     heroTitle: get("heroTitle"),
     heroDesc: get("heroDesc"),
@@ -36,6 +35,32 @@ export async function updateSettingsAction(
     stat3Label: get("stat3Label"),
     stat4Num: get("stat4Num"),
     stat4Label: get("stat4Label"),
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin/configuracoes");
+  return { success: true };
+}
+
+export async function updateQuemSomosAction(
+  _prev: SettingsFormState,
+  formData: FormData,
+): Promise<SettingsFormState> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+
+  const get = (key: string) => (formData.get(key) as string | null) ?? "";
+
+  await container.updateSettings.execute({
+    qsImage: get("qsImage") || null,
+    qsTag: get("qsTag"),
+    qsTitle: get("qsTitle"),
+    qsBody1: get("qsBody1"),
+    qsBody2: get("qsBody2"),
+    qsFeature1Title: get("qsFeature1Title"),
+    qsFeature1Desc: get("qsFeature1Desc"),
+    qsFeature2Title: get("qsFeature2Title"),
+    qsFeature2Desc: get("qsFeature2Desc"),
   });
 
   revalidatePath("/");

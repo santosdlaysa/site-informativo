@@ -4,6 +4,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { ProfileForm } from "@/presentation/components/admin/profile-form";
 import { HeroSettingsForm } from "@/presentation/components/admin/hero-settings-form";
+import { QuemSomosSettingsForm } from "@/presentation/components/admin/quem-somos-settings-form";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Configurações — Admin" };
@@ -30,6 +31,10 @@ export default async function AdminSettingsPage() {
 
       <div style={{ marginTop: 32 }}>
         <HeroSettingsForm settings={settings} />
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <QuemSomosSettingsForm settings={settings} />
       </div>
     </>
   );

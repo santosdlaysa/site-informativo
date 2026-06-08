@@ -11,8 +11,9 @@ export function SiteFooter() {
               <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={32} />
             </span>
             <p>
-              Conteúdo sobre desenvolvimento web, tecnologia e bem-estar. Fale com a gente pelos
-              canais ao lado.
+              O Centro Social Raros Boa Vista promove capacitação, inclusão digital e
+              desenvolvimento artístico de crianças, adolescentes e jovens em Roraima,
+              fortalecendo vínculos e gerando redes de apoio para a comunidade.
             </p>
           </div>
           <div className="fc-col">
