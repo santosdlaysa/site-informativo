@@ -47,12 +47,11 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           ))}
         </ul>
         <div className="nav-actions">
-          <Link
-            href={isLoggedIn ? "/admin" : "/admin/login"}
-            className="nav-login"
-          >
-            {isLoggedIn ? "Painel" : "Entrar"}
-          </Link>
+          {!isLoggedIn && (
+            <Link href="/admin/login" className="nav-login">
+              Entrar
+            </Link>
+          )}
         </div>
         <button
           type="button"
@@ -84,13 +83,15 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               </li>
             ))}
           </ul>
-          <Link
-            href={isLoggedIn ? "/admin" : "/admin/login"}
-            className="mobile-menu-login"
-            onClick={() => setMenuOpen(false)}
-          >
-            {isLoggedIn ? "Painel" : "Entrar"}
-          </Link>
+          {!isLoggedIn && (
+            <Link
+              href="/admin/login"
+              className="mobile-menu-login"
+              onClick={() => setMenuOpen(false)}
+            >
+              Entrar
+            </Link>
+          )}
         </nav>
       )}
     </header>
