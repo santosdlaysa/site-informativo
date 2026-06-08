@@ -13,3 +13,30 @@ body {
   padding: 0;
   overflow-x: hidden;
 }
+
+/* ===== Skeleton loading (placeholders com o formato dos elementos) ===== */
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+.skeleton {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #e7eaf0 25%, #f1f3f7 37%, #e7eaf0 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+/* Sobre fundos escuros (ex.: thumbs/sidebar do admin) */
+.skeleton--dark {
+  background: linear-gradient(90deg, #1e293b 25%, #283449 37%, #1e293b 63%);
+  background-size: 400% 100%;
+}
+.sk-line { height: 12px; border-radius: 6px; }
+.sk-title { height: 24px; border-radius: 8px; }
+.sk-chip { height: 32px; width: 88px; border-radius: 999px; }
+.sk-circle { border-radius: 50%; }
+.sk-btn { height: 40px; width: 140px; border-radius: 9px; }
+.sk-stack { display: flex; flex-direction: column; gap: 10px; }
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

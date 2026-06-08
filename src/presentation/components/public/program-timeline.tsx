@@ -76,7 +76,6 @@ export function ProgramTimeline({ days }: { days: DayVM[] }) {
                 <h3>{s.title}</h3>
                 {s.description && <p>{s.description}</p>}
                 <div className="speaker">
-                  <span className="avatar" />
                   <div>
                     <div className="nm">{s.speaker ?? "A definir"}</div>
                     {s.speakerRole && <div className="rl">{s.speakerRole}</div>}

@@ -1,1 +1,1 @@
-export { default } from "@/presentation/components/admin/panel-loading";
+export { default } from "@/presentation/components/admin/form-skeleton";

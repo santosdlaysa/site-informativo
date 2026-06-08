@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { SearchIcon } from "../icons";
+import { usePathname } from "next/navigation";
 import logoHorizontal from "@/assets/Logo horizontal.png";
 
 const LINKS = [
@@ -17,33 +16,15 @@ const LINKS = [
 
 export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
-
-  // Foca o campo assim que ele é exibido.
-  useEffect(() => {
-    if (searchOpen) inputRef.current?.focus();
-  }, [searchOpen]);
 
   // Fecha o menu mobile ao navegar para outra página.
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!searchOpen) {
-      setSearchOpen(true);
-      return;
-    }
-    const term = inputRef.current?.value.trim() ?? "";
-    router.push(term ? `/posts?busca=${encodeURIComponent(term)}` : "/posts");
-  }
 
   return (
     <header className="site-header">
@@ -73,23 +54,6 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           >
             {isLoggedIn ? "Painel" : "Entrar"}
           </Link>
-          <form className="header-search" onSubmit={handleSubmit}>
-            {searchOpen && (
-              <input
-                ref={inputRef}
-                type="search"
-                name="busca"
-                placeholder="Buscar posts..."
-                className="header-search-input"
-                onBlur={(e) => {
-                  if (!e.currentTarget.value.trim()) setSearchOpen(false);
-                }}
-              />
-            )}
-            <button className="icon-btn" type="submit" aria-label="Buscar">
-              <SearchIcon width={20} height={20} />
-            </button>
-          </form>
         </div>
         <button
           type="button"
