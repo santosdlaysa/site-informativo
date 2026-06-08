@@ -28,16 +28,12 @@ const SOCIAL_ICONS = {
 } as const;
 
 export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
-  const socials = [
+  const socials: { key: keyof typeof SOCIAL_ICONS; label: string; href: string }[] = [
     { key: "facebook", label: "Facebook", href: settings.socialFacebook },
     { key: "twitter", label: "Twitter", href: settings.socialTwitter },
     { key: "linkedin", label: "LinkedIn", href: settings.socialLinkedin },
     { key: "instagram", label: "Instagram", href: settings.socialInstagram },
-  ].filter((s) => (s.href ?? "").trim().length > 0) as {
-    key: keyof typeof SOCIAL_ICONS;
-    label: string;
-    href: string;
-  }[];
+  ];
 
   return (
     <footer className="site-footer">
@@ -76,18 +72,24 @@ export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
               Boa Vista, RR
             </span>
           </div>
-          {socials.length > 0 && (
-            <div className="fc-col">
-              <h4>Redes sociais</h4>
-              <div className="fc-social">
-                {socials.map((s) => (
-                  <a key={s.key} href={s.href} aria-label={s.label} target="_blank" rel="noopener noreferrer">
+          <div className="fc-col">
+            <h4>Redes sociais</h4>
+            <div className="fc-social">
+              {socials.map((s) => {
+                const href = (s.href ?? "").trim();
+                return (
+                  <a
+                    key={s.key}
+                    href={href || "#"}
+                    aria-label={s.label}
+                    {...(href ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  >
                     {SOCIAL_ICONS[s.key]}
                   </a>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
+          </div>
         </div>
 
         <div className="footer-bottom">

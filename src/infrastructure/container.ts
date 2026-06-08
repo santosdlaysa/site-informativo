@@ -96,4 +96,5 @@ export const container = {
   postRepository,
   eventRepository,
   projectRepository,
+  categoryRepository,
 } as const;

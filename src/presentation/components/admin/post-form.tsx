@@ -35,6 +35,7 @@ export function PostForm({
 }: PostFormProps) {
   const [state, formAction, pending] = useActionState(action, initial);
   const [cover, setCover] = useState<string>(post?.coverImage ?? "");
+  const [creatingCategory, setCreatingCategory] = useState(false);
 
   const isEdit = Boolean(post);
 
@@ -78,25 +79,44 @@ export function PostForm({
           </div>
           <div className="stack">
             <div className="field">
-              <label htmlFor="categoryId">Menu</label>
-              <div className="selnative">
-                <select
-                  id="categoryId"
-                  name="categoryId"
-                  className="select"
-                  defaultValue={currentCategoryId ?? ""}
-                >
-                  <option value="">Selecione o menu</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-                <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
+              <label htmlFor={creatingCategory ? "newCategory" : "categoryId"}>Categoria</label>
+              {creatingCategory ? (
+                <input
+                  id="newCategory"
+                  name="newCategory"
+                  className="input"
+                  type="text"
+                  placeholder="Nome da nova categoria"
+                  autoFocus
+                />
+              ) : (
+                <div className="selnative">
+                  <select
+                    id="categoryId"
+                    name="categoryId"
+                    className="select"
+                    defaultValue={currentCategoryId ?? ""}
+                  >
+                    <option value="">Selecione a categoria</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </div>
+              )}
+              <button
+                type="button"
+                className="btn"
+                style={{ marginTop: 8, fontSize: 13, color: "var(--muted)", padding: 0, background: "none", border: "none", cursor: "pointer" }}
+                onClick={() => setCreatingCategory((v) => !v)}
+              >
+                {creatingCategory ? "← Escolher categoria existente" : "+ Criar nova categoria"}
+              </button>
             </div>
             <div className="field">
               <label htmlFor="status">Status</label>

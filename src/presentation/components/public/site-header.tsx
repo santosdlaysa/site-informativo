@@ -66,29 +66,31 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </li>
           ))}
         </ul>
-        <Link
-          href={isLoggedIn ? "/admin" : "/admin/login"}
-          className="nav-login"
-        >
-          {isLoggedIn ? "Painel" : "Entrar"}
-        </Link>
-        <form className="header-search" onSubmit={handleSubmit}>
-          {searchOpen && (
-            <input
-              ref={inputRef}
-              type="search"
-              name="busca"
-              placeholder="Buscar posts..."
-              className="header-search-input"
-              onBlur={(e) => {
-                if (!e.currentTarget.value.trim()) setSearchOpen(false);
-              }}
-            />
-          )}
-          <button className="icon-btn" type="submit" aria-label="Buscar">
-            <SearchIcon width={20} height={20} />
-          </button>
-        </form>
+        <div className="nav-actions">
+          <Link
+            href={isLoggedIn ? "/admin" : "/admin/login"}
+            className="nav-login"
+          >
+            {isLoggedIn ? "Painel" : "Entrar"}
+          </Link>
+          <form className="header-search" onSubmit={handleSubmit}>
+            {searchOpen && (
+              <input
+                ref={inputRef}
+                type="search"
+                name="busca"
+                placeholder="Buscar posts..."
+                className="header-search-input"
+                onBlur={(e) => {
+                  if (!e.currentTarget.value.trim()) setSearchOpen(false);
+                }}
+              />
+            )}
+            <button className="icon-btn" type="submit" aria-label="Buscar">
+              <SearchIcon width={20} height={20} />
+            </button>
+          </form>
+        </div>
         <button
           type="button"
           className="nav-toggle"

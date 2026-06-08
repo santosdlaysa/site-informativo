@@ -24,6 +24,7 @@ const formSchema = z.object({
   excerpt: z.string().trim().optional().or(z.literal("")),
   content: z.string().optional().or(z.literal("")),
   categoryId: z.string().optional().or(z.literal("")),
+  newCategory: z.string().trim().optional().or(z.literal("")),
   coverImage: z.string().optional().or(z.literal("")),
   status: z.nativeEnum(PostStatus).optional(),
   items: z.string().optional(),
@@ -35,10 +36,27 @@ function parse(formData: FormData) {
     excerpt: formData.get("excerpt") ?? "",
     content: formData.get("content") ?? "",
     categoryId: formData.get("categoryId") ?? "",
+    newCategory: formData.get("newCategory") ?? "",
     coverImage: formData.get("coverImage") ?? "",
     status: (formData.get("status") as PostStatus) || undefined,
     items: (formData.get("items") as string) ?? undefined,
   });
+}
+
+/**
+ * Resolve o id da categoria a usar: se o usuário digitou uma categoria nova,
+ * cria (ou reaproveita) e retorna seu id; senão devolve o id selecionado.
+ */
+async function resolveCategoryId(
+  categoryId: string,
+  newCategory: string,
+): Promise<string | null> {
+  const name = newCategory.trim();
+  if (name) {
+    const created = await container.categoryRepository.create(name);
+    return created.id;
+  }
+  return categoryId || null;
 }
 
 /**
@@ -76,11 +94,15 @@ export async function createPostAction(
   }
 
   try {
+    const categoryId = await resolveCategoryId(
+      parsed.data.categoryId ?? "",
+      parsed.data.newCategory ?? "",
+    );
     const { id } = await container.createPost.execute({
       title: parsed.data.title,
       excerpt: parsed.data.excerpt || null,
       content: parsed.data.content || "",
-      categoryId: parsed.data.categoryId || null,
+      categoryId,
       coverImage: parsed.data.coverImage || null,
       status: parsed.data.status,
       authorId: session.user.id,
@@ -115,12 +137,16 @@ export async function updatePostAction(
   }
 
   try {
+    const categoryId = await resolveCategoryId(
+      parsed.data.categoryId ?? "",
+      parsed.data.newCategory ?? "",
+    );
     await container.updatePost.execute({
       id,
       title: parsed.data.title,
       excerpt: parsed.data.excerpt || null,
       content: parsed.data.content || "",
-      categoryId: parsed.data.categoryId || null,
+      categoryId,
       coverImage: parsed.data.coverImage || null,
       status: parsed.data.status,
     });
