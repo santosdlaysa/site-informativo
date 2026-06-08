@@ -13,7 +13,7 @@ import {
 } from "@/core/domain/post/post.repository";
 
 type PostWithRelations = PrismaPost & {
-  author: Pick<PrismaUser, "name" | "bio">;
+  author: Pick<PrismaUser, "name" | "bio" | "avatar">;
   category: Pick<PrismaCategory, "name" | "slug" | "variant"> | null;
 };
 
@@ -72,6 +72,7 @@ export const PostMapper = {
       createdAt: row.createdAt,
       authorName: row.author.name,
       authorBio: row.author.bio,
+      authorAvatar: row.author.avatar,
       category: row.category
         ? { name: row.category.name, slug: row.category.slug, variant: row.category.variant }
         : null,

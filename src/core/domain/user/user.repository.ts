@@ -12,11 +12,13 @@ export interface UserProfile {
   name: string;
   email: string;
   bio: string | null;
+  avatar: string | null;
 }
 
 export interface UpdateProfileData {
   name: string;
   bio: string | null;
+  avatar: string | null;
 }
 
 /** Porta do repositório de usuários. */

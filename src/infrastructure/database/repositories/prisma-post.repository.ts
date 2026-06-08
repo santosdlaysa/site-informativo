@@ -10,7 +10,7 @@ import { prisma } from "../prisma";
 import { PostMapper } from "../mappers/post.mapper";
 
 const relationsInclude = {
-  author: { select: { name: true, bio: true } },
+  author: { select: { name: true, bio: true, avatar: true } },
   category: { select: { name: true, slug: true, variant: true } },
 } satisfies Prisma.PostInclude;
 

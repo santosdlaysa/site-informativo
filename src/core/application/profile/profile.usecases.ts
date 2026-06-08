@@ -24,6 +24,7 @@ export class UpdateProfileUseCase {
     await this.users.updateProfile(id, {
       name: data.name.trim(),
       bio: data.bio?.trim() ? data.bio.trim() : null,
+      avatar: data.avatar ?? null,
     });
   }
 }

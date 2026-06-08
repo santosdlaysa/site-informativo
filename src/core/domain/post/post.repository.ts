@@ -18,6 +18,7 @@ export interface PostListItem {
   createdAt: Date;
   authorName: string;
   authorBio: string | null;
+  authorAvatar: string | null;
   category: { name: string; slug: string; variant: string } | null;
 }
 

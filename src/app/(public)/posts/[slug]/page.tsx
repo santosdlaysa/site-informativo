@@ -80,7 +80,12 @@ export default async function PostPage({
           )}
           <h1>{post.title}</h1>
           <div className="meta">
-            <span className="avatar" />
+            {post.authorAvatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={post.authorAvatar} alt={post.authorName} className="avatar" style={{ objectFit: "cover" }} />
+            ) : (
+              <span className="avatar" />
+            )}
             <span>{post.authorName}</span>
             <span className="dot" />
             <span>{formatLongDate(post.publishedAt ?? post.createdAt)}</span>
@@ -110,7 +115,12 @@ export default async function PostPage({
           )}
 
           <div className="author-box">
-            <span className="av" />
+            {post.authorAvatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={post.authorAvatar} alt={post.authorName} className="av" style={{ objectFit: "cover" }} />
+            ) : (
+              <span className="av" />
+            )}
             <div>
               <h4>{post.authorName}</h4>
               <p>

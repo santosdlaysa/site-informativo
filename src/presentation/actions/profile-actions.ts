@@ -14,6 +14,7 @@ export interface ProfileFormState {
 const formSchema = z.object({
   name: z.string().trim().min(2, "O nome deve ter ao menos 2 caracteres."),
   bio: z.string().trim().optional().or(z.literal("")),
+  avatar: z.string().optional().or(z.literal("")),
 });
 
 export async function updateProfileAction(
@@ -26,6 +27,7 @@ export async function updateProfileAction(
   const parsed = formSchema.safeParse({
     name: formData.get("name"),
     bio: formData.get("bio") ?? "",
+    avatar: formData.get("avatar") ?? "",
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
@@ -35,6 +37,7 @@ export async function updateProfileAction(
     await container.updateProfile.execute(session.user.id, {
       name: parsed.data.name,
       bio: parsed.data.bio || null,
+      avatar: parsed.data.avatar || null,
     });
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };

@@ -27,13 +27,14 @@ export class PrismaUserRepository implements UserRepository {
       name: user.name,
       email: user.email,
       bio: user.bio,
+      avatar: user.avatar,
     };
   }
 
   async updateProfile(id: string, data: UpdateProfileData): Promise<void> {
     await prisma.user.update({
       where: { id },
-      data: { name: data.name, bio: data.bio },
+      data: { name: data.name, bio: data.bio, avatar: data.avatar },
     });
   }
 }
