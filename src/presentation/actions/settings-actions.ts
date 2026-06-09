@@ -61,7 +61,10 @@ export async function updateQuemSomosAction(
     qsFeature1Desc: get("qsFeature1Desc"),
     qsFeature2Title: get("qsFeature2Title"),
     qsFeature2Desc: get("qsFeature2Desc"),
+    qsFullText: get("qsFullText"),
     qsPartnersTitle: get("qsPartnersTitle"),
+    qsRealizacao: get("qsRealizacao"),
+    qsParcerias: get("qsParcerias"),
     qsPartner1: get("qsPartner1") || null,
     qsPartner2: get("qsPartner2") || null,
     qsPartner3: get("qsPartner3") || null,
@@ -69,6 +72,7 @@ export async function updateQuemSomosAction(
   });
 
   revalidatePath("/");
+  revalidatePath("/projeto");
   revalidatePath("/admin/configuracoes");
   return { success: true };
 }

@@ -4,6 +4,7 @@ import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
+import { QsPartners } from "@/presentation/components/public/qs-partners";
 import { formatLongDate } from "@/presentation/lib/format";
 import equipeImg from "@/assets/img.png";
 
@@ -19,10 +20,6 @@ export default async function HomePage() {
   const latest = posts.slice(0, 4);
   const splitPosts = posts.slice(0, 2);
   const splitHeading = splitPosts[0]?.category?.name ?? "Em destaque";
-
-  const partners = [settings.qsPartner1, settings.qsPartner2, settings.qsPartner3, settings.qsPartner4]
-    .map((p) => (p ?? "").trim())
-    .filter(Boolean);
 
   return (
     <>
@@ -128,6 +125,12 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
+              <Link href="/projeto" className="qs-more">
+                Saiba mais
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={16} height={16}>
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
             </div>
             <div className="qs-img-wrap">
               <div className="qs-img-box" style={settings.qsImage ? { background: "#fff" } : undefined}>
@@ -142,17 +145,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {partners.length > 0 && (
-            <div className="qs-partners">
-              <h3 className="qs-partners-title">{settings.qsPartnersTitle}</h3>
-              <div className="qs-partners-row">
-                {partners.map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="qs-partner" key={i} src={src} alt="" />
-                ))}
-              </div>
-            </div>
-          )}
+          <QsPartners settings={settings} />
         </section>
       </div>
 

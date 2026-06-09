@@ -89,6 +89,12 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
           <textarea id="qsBody2" name="qsBody2" className="textarea" rows={4} defaultValue={settings.qsBody2} />
         </div>
 
+        <div className="field" style={{ marginBottom: 20 }}>
+          <label htmlFor="qsFullText">Texto completo (página &quot;Saiba mais&quot;)</label>
+          <textarea id="qsFullText" name="qsFullText" className="textarea" rows={12} defaultValue={settings.qsFullText ?? ""} />
+          <div className="hint">Texto completo exibido na página /projeto. Separe os parágrafos com uma linha em branco.</div>
+        </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16, marginBottom: 16 }}>
           <div className="field">
             <label htmlFor="qsFeature1Title">Destaque 1 — título</label>
@@ -148,6 +154,17 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
           <label htmlFor="qsPartnersTitle">Parceiros — título do bloco</label>
           <input id="qsPartnersTitle" name="qsPartnersTitle" className="input" defaultValue={settings.qsPartnersTitle} />
           <div className="hint">Título exibido acima dos logos dos parceiros (ex.: &quot;Parceiros&quot;).</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+          <div className="field">
+            <label htmlFor="qsRealizacao">Realização</label>
+            <input id="qsRealizacao" name="qsRealizacao" className="input" defaultValue={settings.qsRealizacao} />
+          </div>
+          <div className="field">
+            <label htmlFor="qsParcerias">Parcerias Institucionais</label>
+            <input id="qsParcerias" name="qsParcerias" className="input" defaultValue={settings.qsParcerias} />
+          </div>
         </div>
 
         <div className="field" style={{ marginBottom: 24 }}>

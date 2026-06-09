@@ -150,6 +150,9 @@ model SiteSettings {
   qsFeature2Title String @default("Acolhimento e Direitos")
   qsFeature2Desc  String @default("Espaço de orientação, inclusão social e defesa de direitos.")
   qsPartnersTitle String  @default("Parceiros")
+  qsRealizacao    String  @default("ACDG Brasil")
+  qsParcerias     String  @default("AD Social e Secretaria de Saúde de Boa Vista")
+  qsFullText      String?
   qsPartner1      String?
   qsPartner2      String?
   qsPartner3      String?
