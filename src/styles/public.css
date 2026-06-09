@@ -417,7 +417,7 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
 
 /* ===== Quem Somos ===== */
 .qs-section{padding:72px 0;}
-.qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
 .qs-tag{display:inline-flex;align-items:center;gap:7px;background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:20px;}
 .qs-tag svg{flex:none;}
 .qs-title{font-size:36px;font-weight:800;line-height:1.18;color:var(--ink);margin:0 0 20px;}
