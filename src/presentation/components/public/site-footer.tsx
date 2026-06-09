@@ -51,12 +51,12 @@ export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
           </div>
           <div className="fc-col">
             <h4>Contato</h4>
-            <a href="mailto:Contato@rarosboavista.com.br">
+            <a href="mailto:adsocial.projetoacdg@gmail.com">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
               </svg>{" "}
-              Contato@rarosboavista.com.br
+              adsocial.projetoacdg@gmail.com
             </a>
             <a href="tel:+5595981238294">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

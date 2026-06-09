@@ -36,6 +36,7 @@ export class PrismaSettingsRepository implements SettingsRepository {
       qsRealizacao: row.qsRealizacao,
       qsParcerias: row.qsParcerias,
       qsFullText: row.qsFullText ?? null,
+      qsRealizacaoLogo: row.qsRealizacaoLogo ?? null,
       qsPartner1: row.qsPartner1 ?? null,
       qsPartner2: row.qsPartner2 ?? null,
       qsPartner3: row.qsPartner3 ?? null,

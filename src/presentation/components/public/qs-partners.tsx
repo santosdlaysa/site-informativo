@@ -1,38 +1,54 @@
 import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 
-export function QsPartners({ settings }: { settings: SiteSettingsData }) {
+function getGroups(settings: SiteSettingsData) {
+  const realizacao = (settings.qsRealizacaoLogo ?? "").trim();
   const partners = [settings.qsPartner1, settings.qsPartner2, settings.qsPartner3, settings.qsPartner4]
     .map((p) => (p ?? "").trim())
     .filter(Boolean);
+  return { realizacao, partners };
+}
 
-  const realizacao = settings.qsRealizacao?.trim();
-  const parcerias = settings.qsParcerias?.trim();
+/** Grupos de logos: "Realização" e "Parceiros". Sem o invólucro de seção. */
+export function PartnerGroups({ settings }: { settings: SiteSettingsData }) {
+  const { realizacao, partners } = getGroups(settings);
+  const parceirosLabel = settings.qsPartnersTitle?.trim() || "Parceiros";
 
-  if (partners.length === 0 && !realizacao && !parcerias) return null;
+  if (!realizacao && partners.length === 0) return null;
 
   return (
-    <div className="qs-partners">
-      {settings.qsPartnersTitle?.trim() && (
-        <h3 className="qs-partners-title">{settings.qsPartnersTitle}</h3>
-      )}
-      {partners.length > 0 && (
-        <div className="qs-partners-row">
-          {partners.map((src, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="qs-partner" key={i} src={src} alt="" />
-          ))}
+    <div className="qs-partner-groups">
+      {realizacao && (
+        <div className="qs-partner-group">
+          <span className="qs-partner-group-label">Realização</span>
+          <div className="qs-partners-logos">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="qs-partner" src={realizacao} alt="" />
+          </div>
         </div>
       )}
-      {(realizacao || parcerias) && (
-        <div className="qs-credits">
-          {realizacao && (
-            <p><strong>Realização:</strong> {realizacao}</p>
-          )}
-          {parcerias && (
-            <p><strong>Parcerias Institucionais:</strong> {parcerias}</p>
-          )}
+      {partners.length > 0 && (
+        <div className="qs-partner-group">
+          <span className="qs-partner-group-label">{parceirosLabel}</span>
+          <div className="qs-partners-logos">
+            {partners.map((src, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="qs-partner" key={i} src={src} alt="" />
+            ))}
+          </div>
         </div>
       )}
     </div>
+  );
+}
+
+/** Bloco completo (com separador) usado na página /projeto. */
+export function QsPartners({ settings }: { settings: SiteSettingsData }) {
+  const { realizacao, partners } = getGroups(settings);
+  if (!realizacao && partners.length === 0) return null;
+
+  return (
+    <section className="qs-partners">
+      <PartnerGroups settings={settings} />
+    </section>
   );
 }

@@ -4,7 +4,7 @@ import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
-import { QsPartners } from "@/presentation/components/public/qs-partners";
+import { PartnerGroups } from "@/presentation/components/public/qs-partners";
 import { formatLongDate } from "@/presentation/lib/format";
 import equipeImg from "@/assets/img.png";
 
@@ -104,33 +104,13 @@ export default async function HomePage() {
               </span>
               <h2 className="qs-title">{settings.qsTitle}</h2>
               <p className="qs-body">{settings.qsBody1}</p>
-              <p className="qs-body">{settings.qsBody2}</p>
-              <div className="qs-features">
-                <div className="qs-feature">
-                  <span className="qs-feature-check">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
-                  </span>
-                  <div>
-                    <strong>{settings.qsFeature1Title}</strong>
-                    <span>{settings.qsFeature1Desc}</span>
-                  </div>
-                </div>
-                <div className="qs-feature">
-                  <span className="qs-feature-check">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width={12} height={12}><polyline points="20 6 9 17 4 12" /></svg>
-                  </span>
-                  <div>
-                    <strong>{settings.qsFeature2Title}</strong>
-                    <span>{settings.qsFeature2Desc}</span>
-                  </div>
-                </div>
-              </div>
               <Link href="/projeto" className="qs-more">
                 Saiba mais
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={16} height={16}>
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </Link>
+              <PartnerGroups settings={settings} />
             </div>
             <div className="qs-img-wrap">
               <div className="qs-img-box" style={settings.qsImage ? { background: "#fff" } : undefined}>
@@ -144,8 +124,6 @@ export default async function HomePage() {
               <div className="qs-img-glow" />
             </div>
           </div>
-
-          <QsPartners settings={settings} />
         </section>
       </div>
 

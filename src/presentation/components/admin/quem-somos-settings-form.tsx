@@ -29,6 +29,8 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
   const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
   const qsInputRef = useRef<HTMLInputElement>(null);
 
+  const [realizacaoLogo, setRealizacaoLogo] = useState<string>(settings.qsRealizacaoLogo ?? "");
+
   const [partners, setPartners] = useState<string[]>([
     settings.qsPartner1 ?? "",
     settings.qsPartner2 ?? "",
@@ -39,6 +41,11 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
   const ingestQs = useCallback(async (file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
     setQsImage(await fileToDataUrl(file));
+  }, []);
+
+  const ingestRealizacao = useCallback(async (file: File | undefined) => {
+    if (!file || !ACCEPT.includes(file.type)) return;
+    setRealizacaoLogo(await fileToDataUrl(file));
   }, []);
 
   const ingestPartner = useCallback(async (index: number, file: File | undefined) => {
@@ -153,22 +160,37 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
         <div className="field" style={{ marginBottom: 16 }}>
           <label htmlFor="qsPartnersTitle">Parceiros — título do bloco</label>
           <input id="qsPartnersTitle" name="qsPartnersTitle" className="input" defaultValue={settings.qsPartnersTitle} />
-          <div className="hint">Título exibido acima dos logos dos parceiros (ex.: &quot;Parceiros&quot;).</div>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
-          <div className="field">
-            <label htmlFor="qsRealizacao">Realização</label>
-            <input id="qsRealizacao" name="qsRealizacao" className="input" defaultValue={settings.qsRealizacao} />
-          </div>
-          <div className="field">
-            <label htmlFor="qsParcerias">Parcerias Institucionais</label>
-            <input id="qsParcerias" name="qsParcerias" className="input" defaultValue={settings.qsParcerias} />
-          </div>
+          <div className="hint">Rótulo exibido acima dos logos de parceiros (ex.: &quot;Parceiros&quot;).</div>
         </div>
 
         <div className="field" style={{ marginBottom: 24 }}>
-          <label>Logos dos parceiros</label>
+          <label>Realização — logo (ex.: ACDG)</label>
+          <label
+            className="dropzone"
+            style={{ position: "relative", height: 96, padding: 0, overflow: "hidden", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", maxWidth: 240 }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); void ingestRealizacao(e.dataTransfer.files?.[0]); }}
+          >
+            {realizacaoLogo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={realizacaoLogo} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: 10, display: "block" }} />
+            ) : (
+              <span style={{ color: "var(--muted)", fontSize: 12, textAlign: "center", padding: 8 }}>
+                Clique ou arraste a logo da Realização
+              </span>
+            )}
+            <input type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestRealizacao(e.target.files?.[0])} />
+          </label>
+          {realizacaoLogo && (
+            <button type="button" className="btn" style={{ marginTop: 6, fontSize: 12, color: "var(--muted)" }} onClick={() => setRealizacaoLogo("")}>
+              Remover
+            </button>
+          )}
+          <input type="hidden" name="qsRealizacaoLogo" value={realizacaoLogo} />
+        </div>
+
+        <div className="field" style={{ marginBottom: 24 }}>
+          <label>Parceiros — logos (ex.: Prefeitura de Boa Vista)</label>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             {partners.map((img, i) => (
               <div key={i}>

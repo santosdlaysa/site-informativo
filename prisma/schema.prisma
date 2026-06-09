@@ -153,6 +153,7 @@ model SiteSettings {
   qsRealizacao    String  @default("ACDG Brasil")
   qsParcerias     String  @default("AD Social e Secretaria de Saúde de Boa Vista")
   qsFullText      String?
+  qsRealizacaoLogo String?
   qsPartner1      String?
   qsPartner2      String?
   qsPartner3      String?

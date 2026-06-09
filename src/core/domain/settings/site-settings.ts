@@ -28,6 +28,7 @@ export interface SiteSettingsData {
   qsRealizacao: string;
   qsParcerias: string;
   qsFullText?: string | null;
+  qsRealizacaoLogo?: string | null;
   qsPartner1?: string | null;
   qsPartner2?: string | null;
   qsPartner3?: string | null;
@@ -79,6 +80,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     "Ao final do processo de implantação, espera-se que o Centro esteja plenamente integrado à rede municipal de saúde, contribuindo para a ampliação do acesso ao diagnóstico e ao cuidado especializado, para a melhoria da qualidade de vida das pessoas com doenças raras e para o fortalecimento das políticas públicas voltadas a essa população.",
     "Mais do que um serviço de saúde, o Centro será um espaço de acolhimento, orientação, produção de conhecimento e defesa de direitos, promovendo cuidado integral, inclusão social e dignidade às pessoas com doenças raras e suas famílias.",
   ].join("\n\n"),
+  qsRealizacaoLogo: null,
   qsPartner1: null,
   qsPartner2: null,
   qsPartner3: null,
