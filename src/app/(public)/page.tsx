@@ -20,6 +20,10 @@ export default async function HomePage() {
   const splitPosts = posts.slice(0, 2);
   const splitHeading = splitPosts[0]?.category?.name ?? "Em destaque";
 
+  const partners = [settings.qsPartner1, settings.qsPartner2, settings.qsPartner3, settings.qsPartner4]
+    .map((p) => (p ?? "").trim())
+    .filter(Boolean);
+
   return (
     <>
       {/* ===== Hero ===== */}
@@ -137,6 +141,18 @@ export default async function HomePage() {
               <div className="qs-img-glow" />
             </div>
           </div>
+
+          {partners.length > 0 && (
+            <div className="qs-partners">
+              <h3 className="qs-partners-title">{settings.qsPartnersTitle}</h3>
+              <div className="qs-partners-row">
+                {partners.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="qs-partner" key={i} src={src} alt="" />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
 

@@ -141,14 +141,19 @@ model SiteSettings {
   stat3Label   String   @default("Oficinas Ativas")
   stat4Num     String   @default("Boa Vista")
   stat4Label   String   @default("Roraima, Brasil")
-  qsTag           String @default("Quem Somos")
-  qsTitle         String @default("Compromisso com o futuro da nossa comunidade")
-  qsBody1         String @default("O Centro Social Raros Boa Vista nasceu com o propósito de suprir as necessidades de capacitação, inserção digital e desenvolvimento artístico de crianças, adolescentes e jovens da região de Roraima.")
-  qsBody2         String @default("Através de oficinas e acompanhamento próximo de profissionais e voluntários, fortalecemos as competências e talentos individuais, cultivando valores humanos cruciais como o respeito, a responsabilidade cidadã e a solidariedade local.")
-  qsFeature1Title String @default("Inclusão Real")
-  qsFeature1Desc  String @default("Acesso livre a cursos técnicos e artísticos.")
-  qsFeature2Title String @default("Desenvolvimento Integral")
-  qsFeature2Desc  String @default("Apoio psicossocial para jovens e pais.")
+  qsTag           String @default("Apresentação do Projeto")
+  qsTitle         String @default("Centro de Assistência Multiprofissional em Doenças Raras de Boa Vista")
+  qsBody1         String @default("Uma iniciativa que fortalece o atendimento às pessoas com doenças raras e suas famílias, fruto da parceria entre a ACDG Brasil, a Secretaria Municipal de Saúde de Boa Vista e o Centro de Serviço e Assistência Social Maria Fernandes (CESASMAF), comprometidos com a saúde, a inclusão social e a garantia de direitos.")
+  qsBody2         String @default("O Centro oferece atendimento multiprofissional humanizado — medicina, enfermagem, serviço social, psicologia, fisioterapia, fonoaudiologia, terapia ocupacional, nutrição, odontologia, neuropsicopedagogia e genética médica —, atendendo casos encaminhados pela rede pública e por demanda espontânea, e também produz informações para subsidiar políticas públicas voltadas a essa população.")
+  qsFeature1Title String @default("Cuidado Integral")
+  qsFeature1Desc  String @default("Diagnóstico precoce e acompanhamento especializado e contínuo.")
+  qsFeature2Title String @default("Acolhimento e Direitos")
+  qsFeature2Desc  String @default("Espaço de orientação, inclusão social e defesa de direitos.")
+  qsPartnersTitle String  @default("Parceiros")
+  qsPartner1      String?
+  qsPartner2      String?
+  qsPartner3      String?
+  qsPartner4      String?
   socialFacebook  String @default("")
   socialTwitter   String @default("")
   socialLinkedin  String @default("")

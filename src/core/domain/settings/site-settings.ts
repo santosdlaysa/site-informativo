@@ -24,6 +24,11 @@ export interface SiteSettingsData {
   qsFeature1Desc: string;
   qsFeature2Title: string;
   qsFeature2Desc: string;
+  qsPartnersTitle: string;
+  qsPartner1?: string | null;
+  qsPartner2?: string | null;
+  qsPartner3?: string | null;
+  qsPartner4?: string | null;
   socialFacebook: string;
   socialTwitter: string;
   socialLinkedin: string;
@@ -49,16 +54,21 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   stat3Label: "Oficinas Ativas",
   stat4Num: "Boa Vista",
   stat4Label: "Roraima, Brasil",
-  qsTag: "Quem Somos",
-  qsTitle: "Compromisso com o futuro da nossa comunidade",
+  qsTag: "Apresentação do Projeto",
+  qsTitle: "Centro de Assistência Multiprofissional em Doenças Raras de Boa Vista",
   qsBody1:
-    "O Centro Social Raros Boa Vista nasceu com o propósito de suprir as necessidades de capacitação, inserção digital e desenvolvimento artístico de crianças, adolescentes e jovens da região de Roraima.",
+    "Uma iniciativa que fortalece o atendimento às pessoas com doenças raras e suas famílias, fruto da parceria entre a ACDG Brasil, a Secretaria Municipal de Saúde de Boa Vista e o Centro de Serviço e Assistência Social Maria Fernandes (CESASMAF), comprometidos com a saúde, a inclusão social e a garantia de direitos.",
   qsBody2:
-    "Através de oficinas e acompanhamento próximo de profissionais e voluntários, fortalecemos as competências e talentos individuais, cultivando valores humanos cruciais como o respeito, a responsabilidade cidadã e a solidariedade local.",
-  qsFeature1Title: "Inclusão Real",
-  qsFeature1Desc: "Acesso livre a cursos técnicos e artísticos.",
-  qsFeature2Title: "Desenvolvimento Integral",
-  qsFeature2Desc: "Apoio psicossocial para jovens e pais.",
+    "O Centro oferece atendimento multiprofissional humanizado — medicina, enfermagem, serviço social, psicologia, fisioterapia, fonoaudiologia, terapia ocupacional, nutrição, odontologia, neuropsicopedagogia e genética médica —, atendendo casos encaminhados pela rede pública e por demanda espontânea, e também produz informações para subsidiar políticas públicas voltadas a essa população.",
+  qsFeature1Title: "Cuidado Integral",
+  qsFeature1Desc: "Diagnóstico precoce e acompanhamento especializado e contínuo.",
+  qsFeature2Title: "Acolhimento e Direitos",
+  qsFeature2Desc: "Espaço de orientação, inclusão social e defesa de direitos.",
+  qsPartnersTitle: "Parceiros",
+  qsPartner1: null,
+  qsPartner2: null,
+  qsPartner3: null,
+  qsPartner4: null,
   socialFacebook: "",
   socialTwitter: "",
   socialLinkedin: "",

@@ -61,6 +61,11 @@ export async function updateQuemSomosAction(
     qsFeature1Desc: get("qsFeature1Desc"),
     qsFeature2Title: get("qsFeature2Title"),
     qsFeature2Desc: get("qsFeature2Desc"),
+    qsPartnersTitle: get("qsPartnersTitle"),
+    qsPartner1: get("qsPartner1") || null,
+    qsPartner2: get("qsPartner2") || null,
+    qsPartner3: get("qsPartner3") || null,
+    qsPartner4: get("qsPartner4") || null,
   });
 
   revalidatePath("/");

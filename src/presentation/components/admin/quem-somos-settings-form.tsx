@@ -29,9 +29,26 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
   const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
   const qsInputRef = useRef<HTMLInputElement>(null);
 
+  const [partners, setPartners] = useState<string[]>([
+    settings.qsPartner1 ?? "",
+    settings.qsPartner2 ?? "",
+    settings.qsPartner3 ?? "",
+    settings.qsPartner4 ?? "",
+  ]);
+
   const ingestQs = useCallback(async (file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
     setQsImage(await fileToDataUrl(file));
+  }, []);
+
+  const ingestPartner = useCallback(async (index: number, file: File | undefined) => {
+    if (!file || !ACCEPT.includes(file.type)) return;
+    const dataUrl = await fileToDataUrl(file);
+    setPartners((prev) => prev.map((p, i) => (i === index ? dataUrl : p)));
+  }, []);
+
+  const clearPartner = useCallback((index: number) => {
+    setPartners((prev) => prev.map((p, i) => (i === index ? "" : p)));
   }, []);
 
   return (
@@ -125,6 +142,45 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
           )}
           <input ref={qsInputRef} type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestQs(e.target.files?.[0])} />
           <input type="hidden" name="qsImage" value={qsImage} />
+        </div>
+
+        <div className="field" style={{ marginBottom: 16 }}>
+          <label htmlFor="qsPartnersTitle">Parceiros — título do bloco</label>
+          <input id="qsPartnersTitle" name="qsPartnersTitle" className="input" defaultValue={settings.qsPartnersTitle} />
+          <div className="hint">Título exibido acima dos logos dos parceiros (ex.: &quot;Parceiros&quot;).</div>
+        </div>
+
+        <div className="field" style={{ marginBottom: 24 }}>
+          <label>Logos dos parceiros</label>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+            {partners.map((img, i) => (
+              <div key={i}>
+                <label
+                  className="dropzone"
+                  style={{ position: "relative", height: 96, padding: 0, overflow: "hidden", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => { e.preventDefault(); void ingestPartner(i, e.dataTransfer.files?.[0]); }}
+                >
+                  {img ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: 10, display: "block" }} />
+                  ) : (
+                    <span style={{ color: "var(--muted)", fontSize: 12, textAlign: "center", padding: 8 }}>
+                      Parceiro {i + 1}
+                    </span>
+                  )}
+                  <input type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestPartner(i, e.target.files?.[0])} />
+                </label>
+                {img && (
+                  <button type="button" className="btn" style={{ marginTop: 6, fontSize: 12, color: "var(--muted)" }} onClick={() => clearPartner(i)}>
+                    Remover
+                  </button>
+                )}
+                <input type="hidden" name={`qsPartner${i + 1}`} value={img} />
+              </div>
+            ))}
+          </div>
+          <div className="hint">Até 4 logos. Recomendado fundo transparente (PNG) ou branco.</div>
         </div>
 
         <div className="form-actions">
