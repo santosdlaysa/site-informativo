@@ -29,7 +29,12 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
   const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
   const qsInputRef = useRef<HTMLInputElement>(null);
 
-  const [realizacaoLogo, setRealizacaoLogo] = useState<string>(settings.qsRealizacaoLogo ?? "");
+  const [realizacao, setRealizacao] = useState<string[]>([
+    settings.qsRealizacaoLogo ?? "",
+    settings.qsRealizacaoLogo2 ?? "",
+    settings.qsRealizacaoLogo3 ?? "",
+    settings.qsRealizacaoLogo4 ?? "",
+  ]);
 
   const [partners, setPartners] = useState<string[]>([
     settings.qsPartner1 ?? "",
@@ -43,9 +48,14 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
     setQsImage(await fileToDataUrl(file));
   }, []);
 
-  const ingestRealizacao = useCallback(async (file: File | undefined) => {
+  const ingestRealizacao = useCallback(async (index: number, file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
-    setRealizacaoLogo(await fileToDataUrl(file));
+    const dataUrl = await fileToDataUrl(file);
+    setRealizacao((prev) => prev.map((p, i) => (i === index ? dataUrl : p)));
+  }, []);
+
+  const clearRealizacao = useCallback((index: number) => {
+    setRealizacao((prev) => prev.map((p, i) => (i === index ? "" : p)));
   }, []);
 
   const ingestPartner = useCallback(async (index: number, file: File | undefined) => {
@@ -164,29 +174,36 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
         </div>
 
         <div className="field" style={{ marginBottom: 24 }}>
-          <label>Realização — logo (ex.: ACDG)</label>
-          <label
-            className="dropzone"
-            style={{ position: "relative", height: 96, padding: 0, overflow: "hidden", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", maxWidth: 240 }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => { e.preventDefault(); void ingestRealizacao(e.dataTransfer.files?.[0]); }}
-          >
-            {realizacaoLogo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={realizacaoLogo} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: 10, display: "block" }} />
-            ) : (
-              <span style={{ color: "var(--muted)", fontSize: 12, textAlign: "center", padding: 8 }}>
-                Clique ou arraste a logo da Realização
-              </span>
-            )}
-            <input type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestRealizacao(e.target.files?.[0])} />
-          </label>
-          {realizacaoLogo && (
-            <button type="button" className="btn" style={{ marginTop: 6, fontSize: 12, color: "var(--muted)" }} onClick={() => setRealizacaoLogo("")}>
-              Remover
-            </button>
-          )}
-          <input type="hidden" name="qsRealizacaoLogo" value={realizacaoLogo} />
+          <label>Realização — logos (ex.: ACDG)</label>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+            {realizacao.map((img, i) => (
+              <div key={i}>
+                <label
+                  className="dropzone"
+                  style={{ position: "relative", height: 96, padding: 0, overflow: "hidden", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => { e.preventDefault(); void ingestRealizacao(i, e.dataTransfer.files?.[0]); }}
+                >
+                  {img ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: 10, display: "block" }} />
+                  ) : (
+                    <span style={{ color: "var(--muted)", fontSize: 12, textAlign: "center", padding: 8 }}>
+                      Realização {i + 1}
+                    </span>
+                  )}
+                  <input type="file" accept={ACCEPT.join(",")} hidden onChange={(e) => void ingestRealizacao(i, e.target.files?.[0])} />
+                </label>
+                {img && (
+                  <button type="button" className="btn" style={{ marginTop: 6, fontSize: 12, color: "var(--muted)" }} onClick={() => clearRealizacao(i)}>
+                    Remover
+                  </button>
+                )}
+                <input type="hidden" name={i === 0 ? "qsRealizacaoLogo" : `qsRealizacaoLogo${i + 1}`} value={img} />
+              </div>
+            ))}
+          </div>
+          <div className="hint">Até 4 logos. Recomendado fundo transparente (PNG) ou branco.</div>
         </div>
 
         <div className="field" style={{ marginBottom: 24 }}>

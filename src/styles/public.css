@@ -436,7 +436,7 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
 .qs-partner-group{display:flex;flex-direction:column;gap:14px;}
 .qs-partner-group-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
 .qs-partners-logos{display:flex;flex-wrap:wrap;align-items:center;gap:32px;}
-.qs-partner{max-height:84px;max-width:190px;width:auto;height:auto;object-fit:contain;transition:transform .2s;}
+.qs-partner{max-height:120px;max-width:240px;width:auto;height:auto;object-fit:contain;transition:transform .2s;}
 .qs-partner:hover{transform:scale(1.05);}
 .qs-more{display:inline-flex;align-items:center;gap:8px;margin:6px 0 4px;font-size:15px;font-weight:700;color:#2563eb;text-decoration:none;transition:gap .2s;}
 .qs-more:hover{gap:12px;}

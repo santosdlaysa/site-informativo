@@ -1,7 +1,14 @@
 import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 
 function getGroups(settings: SiteSettingsData) {
-  const realizacao = (settings.qsRealizacaoLogo ?? "").trim();
+  const realizacao = [
+    settings.qsRealizacaoLogo,
+    settings.qsRealizacaoLogo2,
+    settings.qsRealizacaoLogo3,
+    settings.qsRealizacaoLogo4,
+  ]
+    .map((p) => (p ?? "").trim())
+    .filter(Boolean);
   const partners = [settings.qsPartner1, settings.qsPartner2, settings.qsPartner3, settings.qsPartner4]
     .map((p) => (p ?? "").trim())
     .filter(Boolean);
@@ -13,16 +20,18 @@ export function PartnerGroups({ settings }: { settings: SiteSettingsData }) {
   const { realizacao, partners } = getGroups(settings);
   const parceirosLabel = settings.qsPartnersTitle?.trim() || "Parceiros";
 
-  if (!realizacao && partners.length === 0) return null;
+  if (realizacao.length === 0 && partners.length === 0) return null;
 
   return (
     <div className="qs-partner-groups">
-      {realizacao && (
+      {realizacao.length > 0 && (
         <div className="qs-partner-group">
           <span className="qs-partner-group-label">Realização</span>
           <div className="qs-partners-logos">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="qs-partner" src={realizacao} alt="" />
+            {realizacao.map((src, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="qs-partner" key={i} src={src} alt="" />
+            ))}
           </div>
         </div>
       )}
@@ -44,7 +53,7 @@ export function PartnerGroups({ settings }: { settings: SiteSettingsData }) {
 /** Bloco completo (com separador) usado na página /projeto. */
 export function QsPartners({ settings }: { settings: SiteSettingsData }) {
   const { realizacao, partners } = getGroups(settings);
-  if (!realizacao && partners.length === 0) return null;
+  if (realizacao.length === 0 && partners.length === 0) return null;
 
   return (
     <section className="qs-partners">

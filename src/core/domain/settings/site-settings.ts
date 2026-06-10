@@ -29,6 +29,9 @@ export interface SiteSettingsData {
   qsParcerias: string;
   qsFullText?: string | null;
   qsRealizacaoLogo?: string | null;
+  qsRealizacaoLogo2?: string | null;
+  qsRealizacaoLogo3?: string | null;
+  qsRealizacaoLogo4?: string | null;
   qsPartner1?: string | null;
   qsPartner2?: string | null;
   qsPartner3?: string | null;
@@ -81,6 +84,9 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     "Mais do que um serviço de saúde, o Centro será um espaço de acolhimento, orientação, produção de conhecimento e defesa de direitos, promovendo cuidado integral, inclusão social e dignidade às pessoas com doenças raras e suas famílias.",
   ].join("\n\n"),
   qsRealizacaoLogo: null,
+  qsRealizacaoLogo2: null,
+  qsRealizacaoLogo3: null,
+  qsRealizacaoLogo4: null,
   qsPartner1: null,
   qsPartner2: null,
   qsPartner3: null,
