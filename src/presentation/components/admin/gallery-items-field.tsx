@@ -32,15 +32,34 @@ const emptyItem: GalleryItem = { image: null, caption: null, linkedPostId: null 
  */
 export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFieldProps) {
   const [items, setItems] = useState<GalleryItem[]>(initialItems ?? []);
+  /** Índice do item aguardando confirmação de remoção (1º clique na lixeira). */
+  const [confirming, setConfirming] = useState<number | null>(null);
+  /** Último item removido, para permitir desfazer. */
+  const [lastRemoved, setLastRemoved] = useState<{ item: GalleryItem; index: number } | null>(null);
 
   function update(i: number, patch: Partial<GalleryItem>) {
     setItems((cur) => cur.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   }
   function remove(i: number) {
-    setItems((cur) => cur.filter((_, idx) => idx !== i));
+    setItems((cur) => {
+      const removed = cur[i];
+      if (removed) setLastRemoved({ item: removed, index: i });
+      return cur.filter((_, idx) => idx !== i);
+    });
+    setConfirming(null);
+  }
+  function undoRemove() {
+    if (!lastRemoved) return;
+    setItems((cur) => {
+      const next = [...cur];
+      next.splice(Math.min(lastRemoved.index, next.length), 0, lastRemoved.item);
+      return next;
+    });
+    setLastRemoved(null);
   }
   function add() {
     setItems((cur) => [...cur, { ...emptyItem }]);
+    setConfirming(null);
   }
 
   return (
@@ -57,10 +76,20 @@ export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFie
           <strong>post existente</strong> (clicar abre esse post) ou, sem vínculo, abrir a
           imagem ampliada no site.
         </p>
+        {lastRemoved && (
+          <div className="proj-undo">
+            <span>
+              <TrashIcon /> Item removido. Salve o post para confirmar a exclusão.
+            </span>
+            <button type="button" onClick={undoRemove}>
+              Desfazer
+            </button>
+          </div>
+        )}
         {items.length > 0 && (
           <div className="proj-list">
             {items.map((it, i) => (
-              <div className="proj-item" key={i}>
+              <div className={`proj-item${confirming === i ? " removing" : ""}`} key={i}>
                 <div className="proj-thumb">
                   <ImageSlot
                     src={it.image}
@@ -108,14 +137,35 @@ export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFie
                     </span>
                   )}
                 </div>
-                <button
-                  type="button"
-                  className="proj-remove"
-                  title="Remover"
-                  onClick={() => remove(i)}
-                >
-                  <TrashIcon />
-                </button>
+                {confirming === i ? (
+                  <div className="proj-remove-confirm">
+                    <button
+                      type="button"
+                      className="confirm-yes"
+                      title="Confirmar remoção"
+                      onClick={() => remove(i)}
+                    >
+                      <TrashIcon /> Excluir
+                    </button>
+                    <button
+                      type="button"
+                      className="confirm-no"
+                      title="Cancelar"
+                      onClick={() => setConfirming(null)}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="proj-remove"
+                    title="Remover"
+                    onClick={() => setConfirming(i)}
+                  >
+                    <TrashIcon />
+                  </button>
+                )}
               </div>
             ))}
           </div>

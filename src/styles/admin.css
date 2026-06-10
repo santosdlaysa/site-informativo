@@ -276,6 +276,21 @@ a{text-decoration:none;color:inherit;}
 .proj-remove{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;align-self:center;transition:.15s;}
 .proj-remove:hover{border-color:#fca5a5;color:#dc2626;background:#fff5f5;}
 .proj-remove svg{width:17px;height:17px;}
+/* Item em confirmação de remoção: destaque vermelho + botões confirmar/cancelar. */
+.proj-item.removing{border-color:#fca5a5;background:#fff5f5;grid-template-columns:170px 1fr auto;}
+.proj-remove-confirm{display:flex;flex-direction:column;gap:8px;align-self:center;}
+.proj-remove-confirm button{font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:.15s;}
+.proj-remove-confirm .confirm-yes{border:1px solid #dc2626;background:#dc2626;color:#fff;}
+.proj-remove-confirm .confirm-yes:hover{background:#b91c1c;border-color:#b91c1c;}
+.proj-remove-confirm .confirm-yes svg{width:15px;height:15px;}
+.proj-remove-confirm .confirm-no{border:1px solid var(--line);background:#fff;color:var(--muted);}
+.proj-remove-confirm .confirm-no:hover{border-color:var(--field-border);color:var(--body);}
+/* Faixa "item removido — desfazer". */
+.proj-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:11px 14px;border:1px solid #fcd34d;background:#fffbeb;border-radius:11px;font-size:13.5px;color:#92400e;}
+.proj-undo span{display:flex;align-items:center;gap:8px;font-weight:600;}
+.proj-undo svg{width:16px;height:16px;}
+.proj-undo button{font:inherit;font-size:13px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:7px;transition:.15s;}
+.proj-undo button:hover{background:#eef4ff;}
 .add-proj{margin-top:16px;border:1.5px dashed var(--field-border);background:#fff;color:var(--body);border-radius:11px;padding:14px;width:100%;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:.15s;}
 .add-proj:hover{border-color:var(--blue);color:var(--blue);background:#f6f9ff;}
 .add-proj svg{width:17px;height:17px;}
