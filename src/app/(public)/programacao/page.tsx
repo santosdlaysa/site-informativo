@@ -21,9 +21,12 @@ export default async function ProgramacaoPage() {
 
   const variantByName = new Map(categories.map((c) => [c.name.toLowerCase(), c.variant]));
 
+  // Sessões encerradas não aparecem no site (continuam visíveis no admin).
+  const visibleSessions = sessions.filter((s) => s.status !== SessionStatus.Finished);
+
   // Agrupa por dia do calendário, preservando a ordem cronológica.
   const dayMap = new Map<string, DayVM>();
-  for (const s of sessions) {
+  for (const s of visibleSessions) {
     const d = new Date(s.startsAt);
     const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     if (!dayMap.has(key)) {
