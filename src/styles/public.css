@@ -531,21 +531,19 @@ h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.01em;}
 .today-bar-card{
   margin-top:28px;
   display:flex;align-items:center;gap:12px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px 18px;
-  box-shadow:var(--shadow-sm);
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:14px 18px;box-shadow:var(--shadow-sm);
 }
-.today-bar-icon{
-  width:36px;height:36px;border-radius:9px;
-  background:#ede4fb;color:var(--purple);
-  display:flex;align-items:center;justify-content:center;flex:none;
-}
+.today-bar-icon{width:36px;height:36px;border-radius:9px;background:#ede4fb;color:var(--purple);display:flex;align-items:center;justify-content:center;flex:none;}
 .today-bar-text{display:flex;flex-direction:column;gap:2px;}
 .today-bar-title{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.3;}
 .today-bar-sub{font-size:12.5px;color:var(--muted);line-height:1.3;}
-@media(max-width:640px){.today-bar-card{padding:10px 14px;}.today-bar-title{font-size:13px;}}
+.today-cards-wrap{margin-top:28px;display:flex;gap:12px;padding-bottom:2px;}
+.today-cards-wrap .today-bar-card{margin-top:0;flex:1;}
+.today-cards-wrap--scroll{overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+.today-cards-wrap--scroll::-webkit-scrollbar{display:none;}
+.today-cards-wrap--scroll .today-bar-card{flex:none;min-width:240px;max-width:320px;}
+@media(max-width:640px){.today-bar-card{padding:11px 14px;}.today-bar-title{font-size:13px;}}
 
 /* ---- Calendário Comemorativo ---- */
 .cal-widget{display:flex;flex-direction:column;gap:0;}

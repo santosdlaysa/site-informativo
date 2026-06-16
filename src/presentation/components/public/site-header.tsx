@@ -94,11 +94,6 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               </svg>
             </button>
           </form>
-          {!isLoggedIn && (
-            <Link href="/admin/login" className="nav-login">
-              Entrar
-            </Link>
-          )}
         </div>
         <button
           type="button"
@@ -130,15 +125,6 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               </li>
             ))}
           </ul>
-          {!isLoggedIn && (
-            <Link
-              href="/admin/login"
-              className="mobile-menu-login"
-              onClick={() => setMenuOpen(false)}
-            >
-              Entrar
-            </Link>
-          )}
         </nav>
       )}
     </header>

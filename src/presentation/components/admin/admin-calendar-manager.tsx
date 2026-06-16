@@ -22,11 +22,21 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createCalendarDateAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
-  const totalPages = Math.max(1, Math.ceil(dates.length / PAGE_SIZE));
-  const paged = dates.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const [search, setSearch] = useState("");
+
+  const filtered = search.trim()
+    ? dates.filter(
+        (d) =>
+          d.title.toLowerCase().includes(search.toLowerCase()) ||
+          d.date.includes(search),
+      )
+    : dates;
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   useEffect(() => {
     if (state.ok) {
@@ -36,11 +46,7 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
   }, [state, router]);
 
   async function handleDelete(id: string) {
-    if (confirmDelete !== id) {
-      setConfirmDelete(id);
-      return;
-    }
-    setConfirmDelete(null);
+    if (!confirm("Excluir esta data comemorativa?")) return;
     await deleteCalendarDateAction(id);
     router.refresh();
   }
@@ -99,8 +105,17 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
         <div className="panel-head">
           <h2>Datas cadastradas</h2>
           <span className="count">
-            {dates.length} {dates.length === 1 ? "data" : "datas"}
+            {filtered.length} {filtered.length === 1 ? "data" : "datas"}
           </span>
+        </div>
+        <div style={{ padding: "12px 24px", borderBottom: "1px solid var(--line)" }}>
+          <input
+            className="input"
+            type="search"
+            placeholder="Buscar por nome ou data (ex: 16/06/2026)…"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          />
         </div>
         <table className="tbl">
           <thead>
@@ -113,7 +128,7 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
           <tbody>
             {paged.length === 0 ? (
               <tr className="empty-row">
-                <td colSpan={3}>Nenhuma data cadastrada.</td>
+                <td colSpan={3}>{search ? "Nenhum resultado para a busca." : "Nenhuma data cadastrada."}</td>
               </tr>
             ) : (
               paged.map((d) => (
@@ -125,9 +140,8 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
                   <td className="act-cell">
                     <div className="act-inline">
                       <button
-                        title={confirmDelete === d.id ? "Clique novamente para confirmar" : "Excluir"}
+                        title="Excluir"
                         className="danger"
-                        style={confirmDelete === d.id ? { background: "#fee2e2", color: "#dc2626", borderColor: "#fca5a5" } : undefined}
                         onClick={() => handleDelete(d.id)}
                       >
                         <TrashIcon width={15} height={15} />
@@ -144,17 +158,17 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
           <div className="tbl-pagination">
             <button
               className="btn btn-ghost"
-              disabled={page === 1}
+              disabled={safePage === 1}
               onClick={() => setPage((p) => p - 1)}
             >
               ← Anterior
             </button>
             <span className="tbl-page-info">
-              Página {page} de {totalPages}
+              Página {safePage} de {totalPages}
             </span>
             <button
               className="btn btn-ghost"
-              disabled={page === totalPages}
+              disabled={safePage === totalPages}
               onClick={() => setPage((p) => p + 1)}
             >
               Próxima →
