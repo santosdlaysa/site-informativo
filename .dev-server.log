@@ -16,3 +16,5 @@
  ✓ Compiled /admin/configuracoes in 1584ms (1143 modules)
  GET /admin/configuracoes 200 in 5066ms
  ✓ Compiled in 1133ms (273 modules)
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "Foi forçado o cancelamento de uma conexão existente pelo host remoto." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "Foi forçado o cancelamento de uma conexão existente pelo host remoto." }) }
