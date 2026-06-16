@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/infrastructure/auth/auth";
 import { AdminSidebar } from "@/presentation/components/admin/admin-sidebar";
+import { ToastContainer } from "@/presentation/components/admin/toast";
 
 /** Shell do painel: protege as rotas e injeta a navegação lateral. */
 export default async function AdminPanelLayout({
@@ -15,6 +16,7 @@ export default async function AdminPanelLayout({
     <div className="app">
       <AdminSidebar />
       <main className="main">{children}</main>
+      <ToastContainer />
     </div>
   );
 }

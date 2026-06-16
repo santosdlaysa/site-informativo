@@ -8,6 +8,7 @@ import {
   type CalendarFormState,
 } from "@/presentation/actions/calendar-actions";
 import { TrashIcon } from "../icons";
+import { pushToast } from "./toast";
 
 export interface CalendarDateRowVM {
   id: string;
@@ -41,14 +42,23 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
   useEffect(() => {
     if (state.ok) {
       formRef.current?.reset();
+      pushToast("Data cadastrada com sucesso!", "success");
       router.refresh();
+    }
+    if (state.error) {
+      pushToast(state.error, "error");
     }
   }, [state, router]);
 
   async function handleDelete(id: string) {
     if (!confirm("Excluir esta data comemorativa?")) return;
-    await deleteCalendarDateAction(id);
-    router.refresh();
+    try {
+      await deleteCalendarDateAction(id);
+      pushToast("Data excluída com sucesso!", "success");
+      router.refresh();
+    } catch {
+      pushToast("Erro ao excluir a data.", "error");
+    }
   }
 
   return (
@@ -65,7 +75,6 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
           <h2>Nova data comemorativa</h2>
         </div>
         <div className="panel-pad">
-          {state.error && <div className="form-error">{state.error}</div>}
           <form ref={formRef} action={formAction}>
             <div className="row-2">
               <div className="field">
