@@ -6,6 +6,7 @@ import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
 import { PartnerGroups } from "@/presentation/components/public/qs-partners";
 import { CalendarWidget } from "@/presentation/components/public/calendar-widget";
+import { TodayCalendarBar } from "@/presentation/components/public/today-calendar-bar";
 import { formatLongDate } from "@/presentation/lib/format";
 import equipeImg from "@/assets/img.png";
 
@@ -97,6 +98,11 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* ===== Hoje no Calendário Comemorativo ===== */}
+      <div className="wrap">
+        <TodayCalendarBar dates={calendarDates} today={now} />
+      </div>
+
       {/* ===== Quem Somos ===== */}
       <div className="wrap">
         <section className="qs-section">
@@ -180,19 +186,21 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <aside className="sidebar-box">
-                <h3>Categorias</h3>
-                <ul className="cat-links">
-                  {categories.map((c) => (
-                    <li key={c.id}>
-                      <Link href={`/posts?categoria=${c.slug}`}>
-                        {c.name} <span className="count">{c.postCount}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              <aside>
+                <div className="sidebar-box">
+                  <h3>Categorias</h3>
+                  <ul className="cat-links">
+                    {categories.map((c) => (
+                      <li key={c.id}>
+                        <Link href={`/posts?categoria=${c.slug}`}>
+                          {c.name} <span className="count">{c.postCount}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                <div style={{ marginTop: 28 }}>
+                <div className="sidebar-box" style={{ marginTop: 16 }}>
                   <CalendarWidget
                     dates={calendarDates}
                     year={currentYear}
