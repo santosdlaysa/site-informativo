@@ -13,8 +13,6 @@ export default async function AdminCalendarioPage() {
     id: d.id,
     title: d.title,
     date: formatShortDate(d.date),
-    color: d.color,
-    description: d.description,
   }));
 
   return <AdminCalendarManager dates={rows} />;
