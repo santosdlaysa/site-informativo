@@ -20,6 +20,7 @@ const NAV = [
   { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, match: (p: string) => p.startsWith("/admin/posts/novo") },
   { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/programacao") },
   { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, match: (p: string) => p.startsWith("/admin/eventos") },
+  { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/calendario") },
   { href: "/admin/editores", label: "Editores", Icon: UsersIcon, match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];

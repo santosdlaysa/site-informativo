@@ -28,6 +28,13 @@ import {
   UpdateEventUseCase,
 } from "@/core/application/events/event.usecases";
 import {
+  CreateCalendarDateUseCase,
+  DeleteCalendarDateUseCase,
+  ListCalendarDatesUseCase,
+  ListCalendarDatesByMonthUseCase,
+  UpdateCalendarDateUseCase,
+} from "@/core/application/calendar/calendar.usecases";
+import {
   GetSettingsUseCase,
   UpdateSettingsUseCase,
 } from "@/core/application/settings/settings.usecases";
@@ -42,6 +49,7 @@ import { PrismaCategoryRepository } from "./database/repositories/prisma-categor
 import { PrismaUserRepository } from "./database/repositories/prisma-user.repository";
 import { PrismaProgramSessionRepository } from "./database/repositories/prisma-program-session.repository";
 import { PrismaEventRepository } from "./database/repositories/prisma-event.repository";
+import { PrismaCalendarDateRepository } from "./database/repositories/prisma-calendar-date.repository";
 import { PrismaProjectRepository } from "./database/repositories/prisma-project.repository";
 import { PrismaSettingsRepository } from "./database/repositories/prisma-settings.repository";
 import { CryptoIdGenerator } from "./ids/crypto-id-generator";
@@ -52,6 +60,7 @@ const categoryRepository = new PrismaCategoryRepository();
 const userRepository = new PrismaUserRepository();
 const sessionRepository = new PrismaProgramSessionRepository();
 const eventRepository = new PrismaEventRepository();
+const calendarDateRepository = new PrismaCalendarDateRepository();
 const projectRepository = new PrismaProjectRepository();
 const settingsRepository = new PrismaSettingsRepository();
 const idGenerator = new CryptoIdGenerator();
@@ -80,6 +89,12 @@ export const container = {
   updateEvent: new UpdateEventUseCase(eventRepository),
   deleteEvent: new DeleteEventUseCase(eventRepository),
   listEvents: new ListEventsUseCase(eventRepository),
+  // calendário comemorativo
+  createCalendarDate: new CreateCalendarDateUseCase(calendarDateRepository, idGenerator),
+  updateCalendarDate: new UpdateCalendarDateUseCase(calendarDateRepository),
+  deleteCalendarDate: new DeleteCalendarDateUseCase(calendarDateRepository),
+  listCalendarDates: new ListCalendarDatesUseCase(calendarDateRepository),
+  listCalendarDatesByMonth: new ListCalendarDatesByMonthUseCase(calendarDateRepository),
   // auth
   authenticate: new AuthenticateUseCase(userRepository, passwordHasher),
   // perfil do autor

@@ -5,16 +5,22 @@ import { PostType } from "@/core/domain/post/post-status";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { PostCard } from "@/presentation/components/public/post-card";
 import { PartnerGroups } from "@/presentation/components/public/qs-partners";
+import { CalendarWidget } from "@/presentation/components/public/calendar-widget";
 import { formatLongDate } from "@/presentation/lib/format";
 import equipeImg from "@/assets/img.png";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [posts, categories, settings] = await Promise.all([
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  const [posts, categories, settings, calendarDates] = await Promise.all([
     container.listPublishedPosts.execute({ take: 12, type: PostType.Standard }),
     container.listCategories.execute(),
     container.getSettings.execute(),
+    container.listCalendarDatesByMonth.execute(currentYear, currentMonth),
   ]);
 
   const latest = posts.slice(0, 4);
@@ -185,6 +191,14 @@ export default async function HomePage() {
                     </li>
                   ))}
                 </ul>
+
+                <div style={{ marginTop: 28 }}>
+                  <CalendarWidget
+                    dates={calendarDates}
+                    year={currentYear}
+                    month={currentMonth}
+                  />
+                </div>
               </aside>
             </div>
           </section>
