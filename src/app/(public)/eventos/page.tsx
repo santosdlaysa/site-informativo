@@ -48,9 +48,6 @@ export default async function EventosPage({
   ]);
   const variantByName = new Map(categories.map((c) => [c.name.toLowerCase(), c.variant]));
 
-  const featured = events[0] ?? null;
-  const rest = events.slice(1);
-
   return (
     <>
       <section className="page-hero page-hero--brand">
@@ -59,48 +56,6 @@ export default async function EventosPage({
           <p>Encontros, workshops e meetups da comunidade Raros Boa Vista. Participe presencialmente ou online.</p>
         </div>
       </section>
-
-      {featured && (
-        <div className="wrap">
-          <article className="feat">
-            <div className="media">
-              <ImageSlot src={featured.coverImage} placeholder="Imagem do evento" rounded={false} />
-              <span className="badge badge--eventos on-img tag-feat">Em destaque</span>
-            </div>
-            <div className="content">
-              {featured.categoryName && (
-                <span
-                  className={badgeClass(variantByName.get(featured.categoryName.toLowerCase()), { soft: true })}
-                  style={{ alignSelf: "flex-start" }}
-                >
-                  {featured.categoryName}
-                </span>
-              )}
-              <h2>{featured.title}</h2>
-              {featured.description && <p>{featured.description}</p>}
-              <div className="ev-info">
-                <div className="row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                  </svg>
-                  {formatLongDate(featured.startsAt)} · {hourMinute(new Date(featured.startsAt))}
-                </div>
-                {featured.location && (
-                  <div className="row">
-                    <PinIcon /> {featured.location}
-                  </div>
-                )}
-              </div>
-              <div className="ev-cta">
-                <Link className="btn-outline" href={`/eventos/${featured.slug}`}>
-                  Ver detalhes
-                </Link>
-              </div>
-            </div>
-          </article>
-        </div>
-      )}
 
       <div className="wrap">
         <section className="section">
@@ -123,11 +78,11 @@ export default async function EventosPage({
             })}
           </div>
 
-          {rest.length === 0 && !featured ? (
+          {events.length === 0 ? (
             <div className="empty-state">Nenhum evento cadastrado por enquanto.</div>
           ) : (
             <div className="cards-3">
-              {rest.map((ev) => {
+              {events.map((ev) => {
                 const { day, month } = dayAndMonthAbbr(new Date(ev.startsAt));
                 const online = ev.format === EventFormat.Online;
                 return (
