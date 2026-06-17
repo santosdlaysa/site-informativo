@@ -12,7 +12,7 @@ export function AdminPanelClient({
 }: {
   role: UserRole;
   passwordChangeRequired: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="app">

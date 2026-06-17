@@ -22,7 +22,8 @@ export default async function AdminPanelLayout({
     <AdminPanelClient
       role={role}
       passwordChangeRequired={security?.passwordChangeRequired ?? false}
-      children={children}
-    />
+    >
+      {children}
+    </AdminPanelClient>
   );
 }
