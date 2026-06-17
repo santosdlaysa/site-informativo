@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState, useCallback, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 import {
   updateHeroSettingsAction,
   type SettingsFormState,
 } from "@/presentation/actions/settings-actions";
+import { pushToast } from "./toast";
 
 const initial: SettingsFormState = {};
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
@@ -29,6 +30,11 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
   const [bgImage, setBgImage] = useState<string>(settings.heroBgImage ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (state.success) pushToast("Cabeçalho da home salvo com sucesso.", "success");
+    if (state.error) pushToast(state.error, "error");
+  }, [state]);
+
   const ingest = useCallback(async (file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
     setBgImage(await fileToDataUrl(file));
@@ -41,12 +47,6 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
       </div>
       <div className="panel-pad">
         {state.error && <div className="form-error">{state.error}</div>}
-        {state.success && (
-          <div className="form-error" style={{ background: "#ecfdf5", color: "#047857", borderColor: "#a7f3d0" }}>
-            Configurações salvas com sucesso.
-          </div>
-        )}
-
         <p style={{ margin: "0 0 24px", color: "var(--muted)", fontSize: 14 }}>
           Edite os textos e a imagem de fundo do banner principal da página inicial.
         </p>

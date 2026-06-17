@@ -6,6 +6,7 @@ import { createEventAction, deleteEventAction } from "@/presentation/actions/eve
 import { AdminEventForm } from "./admin-event-form";
 import type { CategoryOption } from "./admin-session-form";
 import { TrashIcon, EditIcon } from "../icons";
+import { pushToast } from "./toast";
 
 export interface EventRowVM {
   id: string;
@@ -27,8 +28,13 @@ export function AdminEventManager({
 
   async function handleDelete(id: string) {
     if (!confirm("Excluir este evento?")) return;
-    await deleteEventAction(id);
-    router.refresh();
+    try {
+      await deleteEventAction(id);
+      pushToast("Evento excluído com sucesso.", "success");
+      router.refresh();
+    } catch {
+      pushToast("Erro ao excluir o evento.", "error");
+    }
   }
 
   return (

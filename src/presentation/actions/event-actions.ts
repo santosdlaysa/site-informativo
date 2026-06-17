@@ -93,7 +93,7 @@ export async function updateEventAction(
 
   revalidatePath("/admin/eventos");
   revalidatePath("/eventos");
-  redirect("/admin/eventos");
+  redirect("/admin/eventos?toast=event-updated");
 }
 
 export async function deleteEventAction(id: string): Promise<void> {

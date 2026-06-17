@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState, useCallback, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 import {
   updateQuemSomosAction,
   type SettingsFormState,
 } from "@/presentation/actions/settings-actions";
+import { pushToast } from "./toast";
 
 const initial: SettingsFormState = {};
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
@@ -28,6 +29,11 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
   const [state, formAction, pending] = useActionState(updateQuemSomosAction, initial);
   const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
   const qsInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (state.success) pushToast("Seção Quem Somos salva com sucesso.", "success");
+    if (state.error) pushToast(state.error, "error");
+  }, [state]);
 
   const [realizacao, setRealizacao] = useState<string[]>([
     settings.qsRealizacaoLogo ?? "",
@@ -75,12 +81,6 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
       </div>
       <div className="panel-pad">
         {state.error && <div className="form-error">{state.error}</div>}
-        {state.success && (
-          <div className="form-error" style={{ background: "#ecfdf5", color: "#047857", borderColor: "#a7f3d0" }}>
-            Configurações salvas com sucesso.
-          </div>
-        )}
-
         <p style={{ margin: "0 0 24px", color: "var(--muted)", fontSize: 14 }}>
           Textos e foto exibidos na seção &quot;Quem Somos&quot; da página inicial.
         </p>

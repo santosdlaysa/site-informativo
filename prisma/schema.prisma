@@ -37,6 +37,7 @@ model User {
   name         String
   email        String   @unique
   passwordHash String
+  passwordChangeRequired Boolean @default(false)
   role         String   @default("admin")
   bio          String?
   avatar       String?

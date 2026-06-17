@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { CategoryView } from "@/core/domain/category/category.repository";
 import { PostStatus } from "@/core/domain/post/post-status";
 import { PostDetail } from "@/core/domain/post/post.repository";
 import { ImageSlot } from "../image-slot";
 import { GalleryItemsField, PostOption, GalleryItem } from "./gallery-items-field";
 import type { PostFormState } from "@/presentation/actions/post-actions";
+import { pushToast } from "./toast";
 
 type Action = (state: PostFormState, formData: FormData) => Promise<PostFormState>;
 
@@ -38,6 +39,10 @@ export function PostForm({
   const [creatingCategory, setCreatingCategory] = useState(false);
 
   const isEdit = Boolean(post);
+
+  useEffect(() => {
+    if (state.error) pushToast(state.error, "error");
+  }, [state]);
 
   return (
     <>

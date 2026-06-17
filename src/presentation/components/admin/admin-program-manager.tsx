@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createSessionAction, deleteSessionAction } from "@/presentation/actions/program-actions";
 import { AdminSessionForm, type CategoryOption } from "./admin-session-form";
 import { TrashIcon, EditIcon } from "../icons";
+import { pushToast } from "./toast";
 
 export interface SessionRowVM {
   id: string;
@@ -27,8 +28,13 @@ export function AdminProgramManager({
 
   async function handleDelete(id: string) {
     if (!confirm("Excluir esta sessão?")) return;
-    await deleteSessionAction(id);
-    router.refresh();
+    try {
+      await deleteSessionAction(id);
+      pushToast("Sessão excluída com sucesso.", "success");
+      router.refresh();
+    } catch {
+      pushToast("Erro ao excluir a sessão.", "error");
+    }
   }
 
   return (

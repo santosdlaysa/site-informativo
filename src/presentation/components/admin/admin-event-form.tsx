@@ -6,6 +6,7 @@ import { EventFormat, EVENT_FORMAT_LABEL } from "@/core/domain/event/event-forma
 import type { EventFormState } from "@/presentation/actions/event-actions";
 import { ImageSlot } from "../image-slot";
 import type { CategoryOption } from "./admin-session-form";
+import { pushToast } from "./toast";
 
 export interface EventFormInitial {
   title?: string;
@@ -48,8 +49,10 @@ export function AdminEventForm({
       formRef.current?.reset();
       setCover("");
       setResetKey((k) => k + 1);
+      pushToast("Evento cadastrado com sucesso.", "success");
       router.refresh();
     }
+    if (state.error) pushToast(state.error, "error");
   }, [state, isEdit, router]);
 
   return (

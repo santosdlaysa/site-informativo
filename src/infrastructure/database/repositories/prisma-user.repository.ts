@@ -17,6 +17,7 @@ export class PrismaUserRepository implements UserRepository {
       name: user.name,
       email: user.email,
       passwordHash: user.passwordHash,
+      passwordChangeRequired: user.passwordChangeRequired,
       role: user.role,
     };
   }
@@ -29,6 +30,7 @@ export class PrismaUserRepository implements UserRepository {
       name: user.name,
       email: user.email,
       passwordHash: user.passwordHash,
+      passwordChangeRequired: user.passwordChangeRequired,
       role: user.role,
     };
   }
@@ -55,7 +57,7 @@ export class PrismaUserRepository implements UserRepository {
   async updatePassword(id: string, passwordHash: string): Promise<void> {
     await prisma.user.update({
       where: { id },
-      data: { passwordHash },
+      data: { passwordHash, passwordChangeRequired: false },
     });
   }
 
@@ -73,7 +75,12 @@ export class PrismaUserRepository implements UserRepository {
 
   async create(data: CreateUserData): Promise<UserListItem> {
     const user = await prisma.user.create({
-      data: { name: data.name, email: data.email, passwordHash: data.passwordHash },
+      data: {
+        name: data.name,
+        email: data.email,
+        passwordHash: data.passwordHash,
+        passwordChangeRequired: data.passwordChangeRequired ?? false,
+      },
       select: { id: true, name: true, email: true, createdAt: true },
     });
     return user;

@@ -9,6 +9,7 @@ import {
   type UserFormState,
 } from "@/presentation/actions/user-actions";
 import { TrashIcon, PlusIcon, LockIcon, UsersIcon } from "../icons";
+import { pushToast } from "./toast";
 
 const MAX_USERS = 3;
 const INITIAL: UserFormState = {};
@@ -44,6 +45,7 @@ export function UsersManager({
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const router = useRouter();
   const canAdd = users.length < MAX_USERS;
   const currentUser = users.find((u) => u.id === currentUserId) ?? null;
   const currentUserForModal: UserListItem = currentUser ?? {
@@ -55,9 +57,21 @@ export function UsersManager({
 
   async function handleDelete(id: string) {
     setDeletingId(id);
-    await deleteUserAction(id);
+    const result = await deleteUserAction(id);
     setDeletingId(null);
+    if (result.error) {
+      pushToast(result.error, "error");
+      return;
+    }
+    pushToast("Editor removido com sucesso.", "success");
+    router.refresh();
   }
+
+  useEffect(() => {
+    if (state.success) pushToast("Editor criado com sucesso.", "success");
+    if (state.error) pushToast(state.error, "error");
+    if (state.success) router.refresh();
+  }, [state, router]);
 
   return (
     <div className="stack">
@@ -148,12 +162,6 @@ export function UsersManager({
           <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 20 }}>Adicionar editor</h2>
 
           {state.error && <div className="form-error">{state.error}</div>}
-          {state.success && (
-            <div style={{ background: "#dcfce7", border: "1px solid #86efac", color: "#16a34a", fontSize: 13.5, padding: "10px 13px", borderRadius: 9, marginBottom: 18 }}>
-              Editor criado com sucesso.
-            </div>
-          )}
-
           <form action={formAction}>
             <div className="row-2" style={{ marginBottom: 18 }}>
               <div className="field">
@@ -167,7 +175,7 @@ export function UsersManager({
             </div>
             <div className="field" style={{ marginBottom: 20 }}>
               <label>Senha</label>
-              <input className="input" name="password" type="password" placeholder="Mínimo 6 caracteres" required minLength={6} />
+              <input className="input" name="password" type="password" placeholder="Mínimo 6 caracteres ou teste" required />
             </div>
             <div className="form-actions" style={{ marginTop: 0 }}>
               <button className="btn btn-primary" type="submit" disabled={pending}>
@@ -246,10 +254,13 @@ function ProfileModal({
     setProfilePending(false);
     if (!response.ok) {
       setProfileState({ error: result.error ?? "Não foi possível salvar o perfil." });
+      pushToast(result.error ?? "Não foi possível salvar o perfil.", "error");
       return;
     }
     setProfileState({ success: true });
+    pushToast("Perfil atualizado com sucesso.", "success");
     router.refresh();
+    onClose();
   }
 
   async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
@@ -271,9 +282,11 @@ function ProfileModal({
     setPasswordPending(false);
     if (!response.ok) {
       setPasswordState({ error: result.error ?? "Não foi possível alterar a senha." });
+      pushToast(result.error ?? "Não foi possível alterar a senha.", "error");
       return;
     }
     setPasswordState({ success: true });
+    pushToast("Senha alterada com sucesso.", "success");
     formRef.current?.reset();
   }
 
@@ -337,19 +350,6 @@ function ProfileModal({
         {editingProfile && (
           <form onSubmit={submitProfile} className="modal-body modal-body-split">
             {profileState.error && <div className="form-error">{profileState.error}</div>}
-            {profileState.success && (
-              <div
-                className="form-error"
-                style={{
-                  background: "#ecfdf5",
-                  color: "#047857",
-                  borderColor: "#a7f3d0",
-                }}
-              >
-                Perfil atualizado com sucesso.
-              </div>
-            )}
-
             <div className="field" style={{ marginBottom: 18 }}>
               <label>Foto do autor</label>
               <div className="profile-photo-edit">
@@ -418,19 +418,6 @@ function ProfileModal({
         {editingPassword && (
         <form ref={formRef} onSubmit={submitPassword} className="modal-body modal-body-split">
           {passwordState.error && <div className="form-error">{passwordState.error}</div>}
-          {passwordState.success && (
-            <div
-              className="form-error"
-              style={{
-                background: "#ecfdf5",
-                color: "#047857",
-                borderColor: "#a7f3d0",
-              }}
-            >
-              Senha alterada com sucesso.
-            </div>
-          )}
-
           <div className="field" style={{ marginBottom: 18 }}>
             <label htmlFor="currentPassword">Senha atual</label>
             <input

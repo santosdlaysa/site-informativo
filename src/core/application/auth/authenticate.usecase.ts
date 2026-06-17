@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
   name: string;
   email: string;
   role: string;
+  passwordChangeRequired: boolean;
 }
 
 /**
@@ -26,6 +27,12 @@ export class AuthenticateUseCase {
     const ok = await this.hasher.compare(password, user.passwordHash);
     if (!ok) return null;
 
-    return { id: user.id, name: user.name, email: user.email, role: user.role };
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      passwordChangeRequired: user.passwordChangeRequired,
+    };
   }
 }

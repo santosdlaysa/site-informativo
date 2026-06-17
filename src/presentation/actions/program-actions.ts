@@ -96,7 +96,7 @@ export async function updateSessionAction(
 
   revalidatePath("/admin/programacao");
   revalidatePath("/programacao");
-  redirect("/admin/programacao");
+  redirect("/admin/programacao?toast=session-updated");
 }
 
 export async function deleteSessionAction(id: string): Promise<void> {

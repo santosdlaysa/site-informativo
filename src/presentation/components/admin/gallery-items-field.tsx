@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteGalleryItemAction } from "@/presentation/actions/post-actions";
 import { ImageSlot } from "../image-slot";
 import { PlusIcon, TrashIcon, LinkIcon } from "../icons";
+import { pushToast } from "./toast";
 
 export interface PostOption {
   id: string;
@@ -56,6 +57,7 @@ export function GalleryItemsField({ postId, postOptions, initialItems }: Gallery
       setDeletingId(null);
       if (result.error) {
         setDeleteError(result.error);
+        pushToast(result.error, "error");
         return;
       }
     }
@@ -66,6 +68,7 @@ export function GalleryItemsField({ postId, postOptions, initialItems }: Gallery
       return cur.filter((_, idx) => idx !== i);
     });
     setConfirming(null);
+    pushToast("Item da galeria removido com sucesso.", "success");
   }
   function undoRemove() {
     if (!lastRemoved) return;

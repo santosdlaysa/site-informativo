@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import type { SiteSettingsData } from "@/core/domain/settings/site-settings";
 import {
   updateRedesSociaisAction,
   type SettingsFormState,
 } from "@/presentation/actions/settings-actions";
+import { pushToast } from "./toast";
 
 const initial: SettingsFormState = {};
 
@@ -19,6 +20,11 @@ const FIELDS: { name: keyof SiteSettingsData; label: string; placeholder: string
 export function SocialSettingsForm({ settings }: { settings: SiteSettingsData }) {
   const [state, formAction, pending] = useActionState(updateRedesSociaisAction, initial);
 
+  useEffect(() => {
+    if (state.success) pushToast("Redes sociais salvas com sucesso.", "success");
+    if (state.error) pushToast(state.error, "error");
+  }, [state]);
+
   return (
     <form action={formAction} className="panel">
       <div className="panel-head">
@@ -26,12 +32,6 @@ export function SocialSettingsForm({ settings }: { settings: SiteSettingsData })
       </div>
       <div className="panel-pad">
         {state.error && <div className="form-error">{state.error}</div>}
-        {state.success && (
-          <div className="form-error" style={{ background: "#ecfdf5", color: "#047857", borderColor: "#a7f3d0" }}>
-            Configurações salvas com sucesso.
-          </div>
-        )}
-
         <p style={{ margin: "0 0 24px", color: "var(--muted)", fontSize: 14 }}>
           Cadastre os links das redes sociais exibidas no rodapé do site. Deixe em branco para ocultar o ícone.
         </p>

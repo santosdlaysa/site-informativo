@@ -14,7 +14,10 @@ export interface UserFormState {
 const createSchema = z.object({
   name: z.string().trim().min(2, "O nome deve ter ao menos 2 caracteres."),
   email: z.string().trim().email("E-mail inválido."),
-  password: z.string().min(6, "A senha deve ter ao menos 6 caracteres."),
+  password: z.string().refine(
+    (value) => value === "teste" || value.length >= 6,
+    "A senha deve ter ao menos 6 caracteres, exceto a senha temporária teste.",
+  ),
 });
 
 export async function createUserAction(

@@ -3,6 +3,7 @@ import { UserListItem, UserRepository } from "@/core/domain/user/user.repository
 import { PasswordHasher } from "../ports/password-hasher";
 
 const MAX_USERS = 3;
+const TEMPORARY_PASSWORD = "teste";
 const HIDDEN_EDITOR_EMAILS = new Set(["admin@meublog", "admin@meublog.com"]);
 
 function isVisibleEditor(user: UserListItem): boolean {
@@ -38,6 +39,7 @@ export class CreateUserUseCase {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       passwordHash,
+      passwordChangeRequired: password === TEMPORARY_PASSWORD,
     });
   }
 }
@@ -53,6 +55,16 @@ export class DeleteUserUseCase {
       throw new ValidationError("Você não pode remover sua própria conta.");
     }
     await this.users.delete(id);
+  }
+}
+
+export class GetUserSecurityUseCase {
+  constructor(private readonly users: UserRepository) {}
+
+  async execute(id: string): Promise<{ passwordChangeRequired: boolean } | null> {
+    const user = await this.users.findById(id);
+    if (!user) return null;
+    return { passwordChangeRequired: user.passwordChangeRequired };
   }
 }
 

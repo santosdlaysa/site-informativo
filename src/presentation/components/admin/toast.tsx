@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type ToastType = "success" | "error" | "info";
 
@@ -14,6 +15,32 @@ let _push: ((msg: string, type: ToastType) => void) | null = null;
 
 export function pushToast(message: string, type: ToastType = "success") {
   _push?.(message, type);
+}
+
+const ROUTE_TOASTS: Record<string, string> = {
+  "post-created": "Post criado com sucesso.",
+  "post-updated": "Post atualizado com sucesso.",
+  "session-updated": "Sessão atualizada com sucesso.",
+  "event-updated": "Evento atualizado com sucesso.",
+};
+
+export function ToastRouteListener() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    const toast = searchParams.get("toast");
+    if (!toast) return;
+
+    pushToast(ROUTE_TOASTS[toast] ?? "Alterações salvas com sucesso.", "success");
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("toast");
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  return null;
 }
 
 export function ToastContainer() {

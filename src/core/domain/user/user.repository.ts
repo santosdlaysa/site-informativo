@@ -3,6 +3,7 @@ export interface AuthUser {
   name: string;
   email: string;
   passwordHash: string;
+  passwordChangeRequired: boolean;
   role: string;
 }
 
@@ -25,6 +26,7 @@ export interface CreateUserData {
   name: string;
   email: string;
   passwordHash: string;
+  passwordChangeRequired?: boolean;
 }
 
 export interface UserListItem {

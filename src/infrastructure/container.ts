@@ -41,6 +41,7 @@ import {
 import {
   CreateUserUseCase,
   DeleteUserUseCase,
+  GetUserSecurityUseCase,
   ListUsersUseCase,
   UpdateOwnPasswordUseCase,
 } from "@/core/application/users/user.usecases";
@@ -108,6 +109,7 @@ export const container = {
   listUsers: new ListUsersUseCase(userRepository),
   createUser: new CreateUserUseCase(userRepository, passwordHasher),
   deleteUser: new DeleteUserUseCase(userRepository),
+  getUserSecurity: new GetUserSecurityUseCase(userRepository),
   updateOwnPassword: new UpdateOwnPasswordUseCase(userRepository, passwordHasher),
   // acesso direto a read models pontuais
   postRepository,

@@ -9,6 +9,7 @@ import { ImageSlot } from "../image-slot";
 import { EditIcon, EyeIcon, TrashIcon, SearchIcon } from "../icons";
 import { formatShortDate } from "@/presentation/lib/format";
 import { deletePostAction } from "@/presentation/actions/post-actions";
+import { pushToast } from "./toast";
 
 type Tab = "todos" | "pub" | "rasc";
 
@@ -34,8 +35,13 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
     if (!confirm("Excluir este post?")) return;
     setOpenMenu(null);
     startTransition(async () => {
-      await deletePostAction(id);
-      router.refresh();
+      try {
+        await deletePostAction(id);
+        pushToast("Post excluído com sucesso.", "success");
+        router.refresh();
+      } catch {
+        pushToast("Erro ao excluir o post.", "error");
+      }
     });
   }
 

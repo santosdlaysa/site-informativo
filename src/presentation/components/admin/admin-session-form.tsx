@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SessionStatus, SESSION_STATUS_LABEL } from "@/core/domain/program/session-status";
 import type { SessionFormState } from "@/presentation/actions/program-actions";
+import { pushToast } from "./toast";
 
 export interface CategoryOption {
   id: string;
@@ -58,8 +59,10 @@ export function AdminSessionForm({
   useEffect(() => {
     if (!isEdit && state.ok) {
       formRef.current?.reset();
+      pushToast("Sessão cadastrada com sucesso.", "success");
       router.refresh();
     }
+    if (state.error) pushToast(state.error, "error");
   }, [state, isEdit, router]);
 
   return (

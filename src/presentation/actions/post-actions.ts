@@ -115,7 +115,7 @@ export async function createPostAction(
 
   revalidatePath("/admin/posts");
   revalidatePath("/posts");
-  redirect("/admin/posts");
+  redirect("/admin/posts?toast=post-created");
 }
 
 export async function updatePostAction(
@@ -158,7 +158,7 @@ export async function updatePostAction(
 
   revalidatePath("/admin/posts");
   revalidatePath("/posts");
-  redirect("/admin/posts");
+  redirect("/admin/posts?toast=post-updated");
 }
 
 export async function deletePostAction(id: string): Promise<void> {
