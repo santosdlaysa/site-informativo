@@ -22,7 +22,7 @@ const NAV = [
   { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/programacao") },
   { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/eventos") },
   { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/calendario") },
-  { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/editores") },
+  { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
