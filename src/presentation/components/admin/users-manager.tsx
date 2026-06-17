@@ -43,9 +43,15 @@ export function UsersManager({
 }) {
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [selectedProfile, setSelectedProfile] = useState<UserListItem | null>(null);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const canAdd = users.length < MAX_USERS;
   const currentUser = users.find((u) => u.id === currentUserId) ?? null;
+  const currentUserForModal: UserListItem = currentUser ?? {
+    id: currentProfile.id,
+    name: currentProfile.name,
+    email: currentProfile.email,
+    createdAt: new Date(),
+  };
 
   async function handleDelete(id: string) {
     setDeletingId(id);
@@ -55,26 +61,24 @@ export function UsersManager({
 
   return (
     <div className="stack">
-      {currentUser && (
-        <div className="panel panel-pad editor-profile-card">
-          <div className="profile-summary" style={{ marginBottom: 0 }}>
-            <div className="profile-avatar">
-              {currentProfile.avatar && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={currentProfile.avatar} alt="" />
-              )}
-            </div>
-            <div>
-              <h3>{currentProfile.name}</h3>
-              <p>{currentProfile.bio?.trim() || FALLBACK_BIO}</p>
-            </div>
+      <div className="panel panel-pad editor-profile-card">
+        <div className="profile-summary" style={{ marginBottom: 0 }}>
+          <div className="profile-avatar">
+            {currentProfile.avatar && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={currentProfile.avatar} alt="" />
+            )}
           </div>
-          <button className="btn btn-primary" type="button" onClick={() => setSelectedProfile(currentUser)}>
-            <UsersIcon />
-            Abrir perfil
-          </button>
+          <div>
+            <h3>{currentProfile.name}</h3>
+            <p>{currentProfile.bio?.trim() || FALLBACK_BIO}</p>
+          </div>
         </div>
-      )}
+        <button className="btn btn-primary" type="button" onClick={() => setProfileModalOpen(true)}>
+          <UsersIcon />
+          Abrir perfil
+        </button>
+      </div>
 
       <div className="panel">
         <div className="panel-head">
@@ -114,7 +118,7 @@ export function UsersManager({
                       <div className="act-inline">
                         <button
                           title="Ver perfil"
-                          onClick={() => setSelectedProfile(u)}
+                          onClick={() => setProfileModalOpen(true)}
                         >
                           <UsersIcon />
                         </button>
@@ -181,11 +185,11 @@ export function UsersManager({
         </div>
       )}
 
-      {selectedProfile && (
+      {profileModalOpen && (
         <ProfileModal
-          user={selectedProfile}
+          user={currentUserForModal}
           profile={currentProfile}
-          onClose={() => setSelectedProfile(null)}
+          onClose={() => setProfileModalOpen(false)}
         />
       )}
     </div>
