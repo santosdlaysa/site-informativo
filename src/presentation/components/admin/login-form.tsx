@@ -14,7 +14,7 @@ export function LoginForm() {
 
   return (
     <div className="auth-screen auth-center">
-      <form className="login-card" action={formAction}>
+      <form className="login-card" action={formAction} autoComplete="off">
         <div className="login-logo">
           <Image
             className="brand-logo"
@@ -37,7 +37,7 @@ export function LoginForm() {
               <rect x="3" y="5" width="18" height="14" rx="2" />
               <path d="m3 7 9 6 9-6" />
             </svg>
-            <input id="email" name="email" type="email" placeholder="seu@email.com" required />
+            <input id="email" name="email" type="email" placeholder="seu@email.com" required autoComplete="off" />
           </div>
         </div>
 
@@ -54,6 +54,7 @@ export function LoginForm() {
               type={showPass ? "text" : "password"}
               placeholder="••••••••"
               required
+              autoComplete="off"
             />
             <button
               type="button"

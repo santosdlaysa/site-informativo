@@ -2,8 +2,13 @@ import { PrismaClient, PostStatus, PostType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { randomBytes } from "node:crypto";
 
 const prisma = new PrismaClient();
+
+function generateSecurePassword(): string {
+  return randomBytes(16).toString('hex');
+}
 
 // Galeria de imagens já redimensionadas (scripts/process-acoes-images.mjs).
 const manifest: Record<string, string[]> = JSON.parse(
@@ -65,8 +70,22 @@ const ACTIONS = [
 ];
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL ?? "admin@meublog.com";
-  const password = process.env.ADMIN_PASSWORD ?? "senha123";
+  if (!process.env.ADMIN_EMAIL) {
+    console.error("❌ ERRO: ADMIN_EMAIL não está definido nas variáveis de ambiente");
+    console.error("   Defina as variáveis de ambiente obrigatórias:");
+    console.error("   - ADMIN_EMAIL (seu email de administrador)");
+    console.error("   - ADMIN_PASSWORD (sua senha segura)");
+    console.error("   - ADMIN_NAME (seu nome, opcional)");
+    process.exit(1);
+  }
+
+  if (!process.env.ADMIN_PASSWORD) {
+    console.error("❌ ERRO: ADMIN_PASSWORD não está definido nas variáveis de ambiente");
+    process.exit(1);
+  }
+
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
   const name = process.env.ADMIN_NAME ?? "Admin";
 
   // Usuário administrador (preservado entre execuções)
