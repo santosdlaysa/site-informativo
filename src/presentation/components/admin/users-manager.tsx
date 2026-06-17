@@ -14,8 +14,6 @@ import { pushToast } from "./toast";
 
 const MAX_USERS = 3;
 const INITIAL: UserFormState = {};
-const FALLBACK_BIO =
-  "Editor do Raros Boa Vista. Escreve sobre desenvolvimento web, performance e boas práticas.";
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
 const EMPTY_MODAL_STATE: UserFormState = {};
 
@@ -91,7 +89,7 @@ export function UsersManager({
           </div>
           <div>
             <h3>{currentProfile.name}</h3>
-            <p>{currentProfile.bio?.trim() || FALLBACK_BIO}</p>
+            <p>{currentProfile.bio?.trim()}</p>
           </div>
         </div>
         <button className="btn btn-primary" type="button" onClick={() => setProfileModalOpen(true)}>
@@ -377,7 +375,9 @@ function EditUserProfileModal({
     }
     setPasswordState({ success: true });
     pushToast("Senha alterada com sucesso.", "success");
+    router.refresh();
     formRef.current?.reset();
+    setTimeout(() => onClose(), 500);
   }
 
   async function submitRole() {
