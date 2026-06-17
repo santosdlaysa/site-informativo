@@ -42,6 +42,7 @@ import {
   CreateUserUseCase,
   DeleteUserUseCase,
   ListUsersUseCase,
+  UpdateOwnPasswordUseCase,
 } from "@/core/application/users/user.usecases";
 
 import { PrismaPostRepository } from "./database/repositories/prisma-post.repository";
@@ -107,6 +108,7 @@ export const container = {
   listUsers: new ListUsersUseCase(userRepository),
   createUser: new CreateUserUseCase(userRepository, passwordHasher),
   deleteUser: new DeleteUserUseCase(userRepository),
+  updateOwnPassword: new UpdateOwnPasswordUseCase(userRepository, passwordHasher),
   // acesso direto a read models pontuais
   postRepository,
   eventRepository,

@@ -6,6 +6,7 @@ import { ProfileForm } from "@/presentation/components/admin/profile-form";
 import { HeroSettingsForm } from "@/presentation/components/admin/hero-settings-form";
 import { QuemSomosSettingsForm } from "@/presentation/components/admin/quem-somos-settings-form";
 import { SocialSettingsForm } from "@/presentation/components/admin/social-settings-form";
+import { PasswordSettingsForm } from "@/presentation/components/admin/password-settings-form";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Configurações — Admin" };
@@ -29,6 +30,10 @@ export default async function AdminSettingsPage() {
       </div>
 
       <ProfileForm profile={profile} />
+
+      <div style={{ marginTop: 32 }}>
+        <PasswordSettingsForm />
+      </div>
 
       <div style={{ marginTop: 32 }}>
         <HeroSettingsForm settings={settings} />

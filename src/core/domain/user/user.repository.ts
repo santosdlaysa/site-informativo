@@ -36,9 +36,11 @@ export interface UserListItem {
 
 /** Porta do repositório de usuários. */
 export interface UserRepository {
+  findById(id: string): Promise<AuthUser | null>;
   findByEmail(email: string): Promise<AuthUser | null>;
   findProfileById(id: string): Promise<UserProfile | null>;
   updateProfile(id: string, data: UpdateProfileData): Promise<void>;
+  updatePassword(id: string, passwordHash: string): Promise<void>;
   listAll(): Promise<UserListItem[]>;
   count(): Promise<number>;
   create(data: CreateUserData): Promise<UserListItem>;

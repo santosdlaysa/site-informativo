@@ -49,3 +49,23 @@ export class DeleteUserUseCase {
     await this.users.delete(id);
   }
 }
+
+export class UpdateOwnPasswordUseCase {
+  constructor(
+    private readonly users: UserRepository,
+    private readonly hasher: PasswordHasher,
+  ) {}
+
+  async execute(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    const user = await this.users.findById(userId);
+    if (!user) throw new ValidationError("Usuário não encontrado.");
+
+    const currentPasswordMatches = await this.hasher.compare(currentPassword, user.passwordHash);
+    if (!currentPasswordMatches) {
+      throw new ValidationError("Senha atual incorreta.");
+    }
+
+    const passwordHash = await this.hasher.hash(newPassword);
+    await this.users.updatePassword(userId, passwordHash);
+  }
+}

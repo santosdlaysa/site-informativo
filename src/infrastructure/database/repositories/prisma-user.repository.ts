@@ -9,6 +9,18 @@ import {
 import { prisma } from "../prisma";
 
 export class PrismaUserRepository implements UserRepository {
+  async findById(id: string): Promise<AuthUser | null> {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) return null;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      role: user.role,
+    };
+  }
+
   async findByEmail(email: string): Promise<AuthUser | null> {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return null;
@@ -37,6 +49,13 @@ export class PrismaUserRepository implements UserRepository {
     await prisma.user.update({
       where: { id },
       data: { name: data.name, bio: data.bio, avatar: data.avatar },
+    });
+  }
+
+  async updatePassword(id: string, passwordHash: string): Promise<void> {
+    await prisma.user.update({
+      where: { id },
+      data: { passwordHash },
     });
   }
 
