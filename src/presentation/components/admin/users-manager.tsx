@@ -8,7 +8,7 @@ import {
   deleteUserAction,
   type UserFormState,
 } from "@/presentation/actions/user-actions";
-import { USER_ROLE_LABEL, type UserRole } from "@/core/domain/user/user-role";
+import { USER_ROLE_LABEL, type UserRole, USER_ROLES } from "@/core/domain/user/user-role";
 import { TrashIcon, PlusIcon, LockIcon, UsersIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
 
@@ -302,13 +302,17 @@ function EditUserProfileModal({
 }) {
   const [passwordState, setPasswordState] = useState<UserFormState>(EMPTY_MODAL_STATE);
   const [profileState, setProfileState] = useState<UserFormState>(EMPTY_MODAL_STATE);
+  const [roleState, setRoleState] = useState<UserFormState>(EMPTY_MODAL_STATE);
   const [passwordPending, setPasswordPending] = useState(false);
   const [profilePending, setProfilePending] = useState(false);
+  const [rolePending, setRolePending] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
+  const [editingRole, setEditingRole] = useState(false);
   const [name, setName] = useState(profile.name);
   const [bio, setBio] = useState(profile.bio ?? "");
   const [avatar, setAvatar] = useState(profile.avatar ?? "");
+  const [role, setRole] = useState<UserRole>(user.role as UserRole);
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -376,6 +380,28 @@ function EditUserProfileModal({
     formRef.current?.reset();
   }
 
+  async function submitRole() {
+    setRolePending(true);
+    setRoleState(EMPTY_MODAL_STATE);
+
+    const response = await fetch(`/api/admin/users/${user.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role }),
+    });
+    const result = (await response.json().catch(() => ({}))) as UserFormState;
+    setRolePending(false);
+    if (!response.ok) {
+      setRoleState({ error: result.error ?? "Não foi possível atualizar a permissão." });
+      pushToast(result.error ?? "Não foi possível atualizar a permissão.", "error");
+      return;
+    }
+    setRoleState({ success: true });
+    pushToast("Permissão atualizada com sucesso.", "success");
+    router.refresh();
+    setEditingRole(false);
+  }
+
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
       <div
@@ -392,7 +418,7 @@ function EditUserProfileModal({
           </button>
         </div>
 
-        {!editingProfile && !editingPassword && (
+        {!editingProfile && !editingPassword && !editingRole && (
           <div className="modal-body">
             <div className="profile-summary">
               <div className="profile-avatar">
@@ -413,6 +439,10 @@ function EditUserProfileModal({
                 <strong>{user.email}</strong>
               </div>
               <div>
+                <span>Permissão</span>
+                <strong>{USER_ROLE_LABEL[role]}</strong>
+              </div>
+              <div>
                 <span>Criado em</span>
                 <strong>{new Date(user.createdAt).toLocaleDateString("pt-BR")}</strong>
               </div>
@@ -422,6 +452,10 @@ function EditUserProfileModal({
               <button className="btn btn-ghost" type="button" onClick={() => setEditingProfile(true)}>
                 <UsersIcon />
                 Editar foto e texto
+              </button>
+              <button className="btn btn-ghost" type="button" onClick={() => setEditingRole(true)}>
+                <UsersIcon />
+                Editar permissão
               </button>
               <button className="btn btn-primary" type="button" onClick={() => setEditingPassword(true)}>
                 <LockIcon />
@@ -540,6 +574,40 @@ function EditUserProfileModal({
               </button>
             </div>
           </form>
+        )}
+
+        {editingRole && (
+          <div className="modal-body modal-body-split">
+            {roleState.error && <div className="form-error">{roleState.error}</div>}
+
+            <div className="field">
+              <label htmlFor="editUserRole">Permissão</label>
+              <div className="selnative">
+                <select
+                  id="editUserRole"
+                  className="select"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as UserRole)}
+                >
+                  {USER_ROLES.map((r) => (
+                    <option key={r} value={r}>{USER_ROLE_LABEL[r]}</option>
+                  ))}
+                </select>
+                <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button className="btn btn-ghost" type="button" onClick={() => setEditingRole(false)}>
+                Voltar
+              </button>
+              <button className="btn btn-primary" type="button" disabled={rolePending} onClick={submitRole}>
+                {rolePending ? "Salvando..." : "Salvar permissão"}
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
