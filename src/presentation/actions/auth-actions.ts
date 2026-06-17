@@ -5,26 +5,42 @@ import { signIn, signOut } from "@/infrastructure/auth/auth";
 
 export interface LoginState {
   error?: string;
+  success?: boolean;
 }
 
-/** Server action de login usada pelo formulário com useActionState. */
+/** Server action de login - nunca retorna dados sensíveis */
 export async function loginAction(
   _prev: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
+  const email = formData.get("email");
+  const password = formData.get("password");
+
+  // Validação básica
+  if (!email || !password) {
+    return { error: "E-mail e senha são obrigatórios." };
+  }
+
   try {
+    // Não passa credenciais na URL, apenas faz o signin
     await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirectTo: "/admin/posts",
+      email: String(email),
+      password: String(password),
+      redirect: false, // Evita exposição na URL
     });
-    return {};
+
+    // Se chegou aqui, sucesso - retorna apenas flag, não dados
+    return { success: true };
   } catch (error) {
+    // Nunca expor detalhes sobre qual campo está errado (email existe? senha incorreta?)
+    // Isso previne enumeration attacks
     if (error instanceof AuthError) {
       return { error: "E-mail ou senha inválidos." };
     }
-    // Re-lança o redirect interno do Next (NEXT_REDIRECT) para concluir o login.
-    throw error;
+
+    // Erros inesperados também sem expor detalhes
+    console.error("[AUTH_ERROR]", error instanceof Error ? error.message : "Unknown error");
+    return { error: "Ocorreu um erro ao processar sua solicitação." };
   }
 }
 

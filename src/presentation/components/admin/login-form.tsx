@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { loginAction, type LoginState } from "@/presentation/actions/auth-actions";
 import { EyeIcon } from "../icons";
 import logoHorizontal from "@/assets/Logo horizontal.png";
@@ -9,8 +10,25 @@ import logoHorizontal from "@/assets/Logo horizontal.png";
 const initial: LoginState = {};
 
 export function LoginForm() {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(loginAction, initial);
   const [showPass, setShowPass] = useState(false);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  // Redireciona automaticamente após login bem-sucedido
+  useEffect(() => {
+    if (state.success) {
+      // Limpa campos sensíveis antes de redirecionar
+      if (emailInputRef.current) emailInputRef.current.value = "";
+      if (passwordInputRef.current) passwordInputRef.current.value = "";
+
+      // Aguarda um frame para garantir que os campos foram limpos
+      requestAnimationFrame(() => {
+        router.push("/admin/posts");
+      });
+    }
+  }, [state.success, router]);
 
   return (
     <div className="auth-screen auth-center">
@@ -37,7 +55,16 @@ export function LoginForm() {
               <rect x="3" y="5" width="18" height="14" rx="2" />
               <path d="m3 7 9 6 9-6" />
             </svg>
-            <input id="email" name="email" type="email" placeholder="seu@email.com" required autoComplete="off" />
+            <input
+              ref={emailInputRef}
+              id="email"
+              name="email"
+              type="email"
+              placeholder="seu@email.com"
+              required
+              autoComplete="off"
+              disabled={pending}
+            />
           </div>
         </div>
 
@@ -49,12 +76,14 @@ export function LoginForm() {
               <path d="M8 11V7a4 4 0 0 1 8 0v4" />
             </svg>
             <input
+              ref={passwordInputRef}
               id="senha"
               name="password"
               type={showPass ? "text" : "password"}
               placeholder="••••••••"
               required
               autoComplete="off"
+              disabled={pending}
             />
             <button
               type="button"
