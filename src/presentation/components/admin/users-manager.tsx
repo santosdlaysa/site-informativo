@@ -429,7 +429,7 @@ function EditUserProfileModal({
               </div>
               <div>
                 <h3>{name}</h3>
-                <p>{bio.trim() || FALLBACK_BIO}</p>
+                <p>{bio.trim()}</p>
               </div>
             </div>
 
@@ -727,7 +727,7 @@ function ProfileModal({
               </div>
               <div>
                 <h3>{name}</h3>
-                <p>{bio.trim() || FALLBACK_BIO}</p>
+                <p>{bio.trim()}</p>
               </div>
             </div>
 
