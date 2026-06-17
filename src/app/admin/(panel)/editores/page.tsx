@@ -11,7 +11,10 @@ export default async function EditoresPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
 
-  const users = await container.listUsers.execute();
+  const [users, profile] = await Promise.all([
+    container.listUsers.execute(),
+    container.getProfile.execute(session.user.id),
+  ]);
 
   return (
     <>
@@ -22,7 +25,7 @@ export default async function EditoresPage() {
         </div>
       </div>
 
-      <UsersManager users={users} currentUserId={session.user.id} />
+      <UsersManager users={users} currentUserId={session.user.id} currentProfile={profile} />
     </>
   );
 }

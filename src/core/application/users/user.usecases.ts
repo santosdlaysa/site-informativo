@@ -3,12 +3,18 @@ import { UserListItem, UserRepository } from "@/core/domain/user/user.repository
 import { PasswordHasher } from "../ports/password-hasher";
 
 const MAX_USERS = 3;
+const HIDDEN_EDITOR_EMAILS = new Set(["admin@meublog", "admin@meublog.com"]);
+
+function isVisibleEditor(user: UserListItem): boolean {
+  return !HIDDEN_EDITOR_EMAILS.has(user.email.trim().toLowerCase());
+}
 
 export class ListUsersUseCase {
   constructor(private readonly users: UserRepository) {}
 
-  execute(): Promise<UserListItem[]> {
-    return this.users.listAll();
+  async execute(): Promise<UserListItem[]> {
+    const users = await this.users.listAll();
+    return users.filter(isVisibleEditor);
   }
 }
 
@@ -19,7 +25,7 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(name: string, email: string, password: string): Promise<UserListItem> {
-    const count = await this.users.count();
+    const count = (await this.users.listAll()).filter(isVisibleEditor).length;
     if (count >= MAX_USERS) {
       throw new ValidationError(`Limite de ${MAX_USERS} editores atingido.`);
     }
