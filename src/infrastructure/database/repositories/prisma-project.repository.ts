@@ -7,9 +7,11 @@ import { prisma } from "../prisma";
 
 export class PrismaProjectRepository implements ProjectRepository {
   async replaceGallery(ownerPostId: string, items: GalleryItemInput[]): Promise<void> {
-    await prisma.$transaction([
-      prisma.projectItem.deleteMany({ where: { ownerPostId } }),
-      prisma.projectItem.createMany({
+    await prisma.$transaction(async (tx) => {
+      await tx.projectItem.deleteMany({ where: { ownerPostId } });
+      if (items.length === 0) return;
+
+      await tx.projectItem.createMany({
         data: items.map((it, i) => ({
           ownerPostId,
           image: it.image,
@@ -17,8 +19,8 @@ export class PrismaProjectRepository implements ProjectRepository {
           linkedPostId: it.linkedPostId,
           position: it.position ?? i,
         })),
-      }),
-    ]);
+      });
+    });
   }
 
   async deleteGalleryItem(ownerPostId: string, itemId: string): Promise<void> {

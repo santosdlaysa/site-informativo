@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ImageSlotProps {
   /** URL/data-URL inicial da imagem (vinda do banco). */
@@ -8,7 +8,7 @@ interface ImageSlotProps {
   placeholder?: string;
   /** Quando true, permite clicar/arrastar para enviar uma imagem. */
   editable?: boolean;
-  /** Recebe o data-URL (já redimensionado) quando o usuário envia uma imagem. */
+  /** Recebe o data-URL redimensionado, ou string vazia quando a imagem é removida. */
   onChange?: (dataUrl: string) => void;
   className?: string;
   rounded?: boolean;
@@ -47,6 +47,10 @@ export function ImageSlot({
   const [preview, setPreview] = useState<string | null>(src ?? null);
   const [over, setOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPreview(src ?? null);
+  }, [src]);
 
   const ingest = useCallback(
     async (file: File | undefined) => {
@@ -105,13 +109,57 @@ export function ImageSlot({
         <span style={{ padding: 8, textAlign: "center", fontWeight: 500 }}>{placeholder}</span>
       )}
       {editable && (
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPT.join(",")}
-          hidden
-          onChange={(e) => void ingest(e.target.files?.[0] ?? undefined)}
-        />
+        <>
+          {preview && (
+            <button
+              type="button"
+              title="Remover imagem"
+              aria-label="Remover imagem"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreview(null);
+                if (inputRef.current) inputRef.current.value = "";
+                onChange?.("");
+              }}
+              style={{
+                position: "absolute",
+                right: 10,
+                top: 10,
+                width: 34,
+                height: 34,
+                border: "1px solid rgba(255,255,255,.7)",
+                borderRadius: 8,
+                background: "rgba(15,23,42,.72)",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 2,
+              }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
+              </svg>
+            </button>
+          )}
+          <input
+            ref={inputRef}
+            type="file"
+            accept={ACCEPT.join(",")}
+            hidden
+            onChange={(e) => void ingest(e.target.files?.[0] ?? undefined)}
+          />
+        </>
       )}
     </div>
   );
