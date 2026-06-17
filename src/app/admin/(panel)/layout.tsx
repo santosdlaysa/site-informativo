@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminSidebar } from "@/presentation/components/admin/admin-sidebar";
 import { ForcePasswordChangeModal } from "@/presentation/components/admin/force-password-change-modal";
-import { ToastContainer, ToastRouteListener } from "@/presentation/components/admin/toast";
+import { AdminPanelClient } from "@/presentation/components/admin/admin-panel-client";
 
 /** Shell do painel: protege as rotas e injeta a navegação lateral. */
 export default async function AdminPanelLayout({
@@ -20,14 +19,10 @@ export default async function AdminPanelLayout({
   const security = await container.getUserSecurity.execute(session.user.id);
 
   return (
-    <div className="app">
-      <AdminSidebar currentUserRole={role} />
-      <main className="main">{children}</main>
-      {security?.passwordChangeRequired && <ForcePasswordChangeModal />}
-      <Suspense fallback={null}>
-        <ToastRouteListener />
-      </Suspense>
-      <ToastContainer />
-    </div>
+    <AdminPanelClient
+      role={role}
+      passwordChangeRequired={security?.passwordChangeRequired ?? false}
+      children={children}
+    />
   );
 }

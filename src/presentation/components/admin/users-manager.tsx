@@ -9,7 +9,7 @@ import {
   type UserFormState,
 } from "@/presentation/actions/user-actions";
 import { USER_ROLE_LABEL, type UserRole } from "@/core/domain/user/user-role";
-import { TrashIcon, PlusIcon, LockIcon, UsersIcon } from "../icons";
+import { TrashIcon, PlusIcon, LockIcon, UsersIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
 
 const MAX_USERS = 3;
@@ -44,6 +44,7 @@ export function UsersManager({
   currentProfile: UserProfile;
 }) {
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
+  const [editingUser, setEditingUser] = useState<UserListItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const router = useRouter();
@@ -144,6 +145,12 @@ export function UsersManager({
                     ) : (
                       <div className="act-inline">
                         <button
+                          title="Editar editor"
+                          onClick={() => setEditingUser(u)}
+                        >
+                          <EditIcon />
+                        </button>
+                        <button
                           className="danger"
                           title="Remover editor"
                           disabled={deletingId === u.id}
@@ -212,6 +219,13 @@ export function UsersManager({
         </div>
       )}
 
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+        />
+      )}
+
       {profileModalOpen && (
         <ProfileModal
           user={currentUserForModal}
@@ -219,6 +233,310 @@ export function UsersManager({
           onClose={() => setProfileModalOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+function EditUserModal({
+  user,
+  onClose,
+}: {
+  user: UserListItem;
+  onClose: () => void;
+}) {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`/api/admin/users/${user.id}`);
+        if (response.ok) {
+          const data = (await response.json()) as UserProfile;
+          setProfile(data);
+        }
+      } catch (error) {
+        pushToast("Erro ao carregar perfil do editor.", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [user.id]);
+
+  if (loading || !profile) {
+    return (
+      <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
+        <div
+          className="modal-card"
+          role="dialog"
+          aria-modal="true"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <div style={{ padding: 40, textAlign: "center", color: "#6b7280" }}>
+            Carregando...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <EditUserProfileModal user={user} profile={profile} onClose={onClose} />
+  );
+}
+
+function EditUserProfileModal({
+  user,
+  profile,
+  onClose,
+}: {
+  user: UserListItem;
+  profile: UserProfile;
+  onClose: () => void;
+}) {
+  const [passwordState, setPasswordState] = useState<UserFormState>(EMPTY_MODAL_STATE);
+  const [profileState, setProfileState] = useState<UserFormState>(EMPTY_MODAL_STATE);
+  const [passwordPending, setPasswordPending] = useState(false);
+  const [profilePending, setProfilePending] = useState(false);
+  const [editingPassword, setEditingPassword] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [name, setName] = useState(profile.name);
+  const [bio, setBio] = useState(profile.bio ?? "");
+  const [avatar, setAvatar] = useState(profile.avatar ?? "");
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (profileState.success) router.refresh();
+  }, [profileState.success, router]);
+
+  async function ingest(file: File | undefined) {
+    if (!file || !ACCEPT.includes(file.type)) return;
+    setAvatar(await fileToDataUrl(file));
+  }
+
+  async function submitProfile(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setProfilePending(true);
+    setProfileState(EMPTY_MODAL_STATE);
+
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch(`/api/admin/users/${user.id}/profile`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formData.get("name"),
+        bio: formData.get("bio") ?? "",
+        avatar: formData.get("avatar") ?? "",
+      }),
+    });
+    const result = (await response.json().catch(() => ({}))) as UserFormState;
+    setProfilePending(false);
+    if (!response.ok) {
+      setProfileState({ error: result.error ?? "Não foi possível salvar o perfil." });
+      pushToast(result.error ?? "Não foi possível salvar o perfil.", "error");
+      return;
+    }
+    setProfileState({ success: true });
+    pushToast("Perfil atualizado com sucesso.", "success");
+    router.refresh();
+    onClose();
+  }
+
+  async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPasswordPending(true);
+    setPasswordState(EMPTY_MODAL_STATE);
+
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch(`/api/admin/users/${user.id}/password`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        newPassword: formData.get("newPassword"),
+        confirmPassword: formData.get("confirmPassword"),
+      }),
+    });
+    const result = (await response.json().catch(() => ({}))) as UserFormState;
+    setPasswordPending(false);
+    if (!response.ok) {
+      setPasswordState({ error: result.error ?? "Não foi possível alterar a senha." });
+      pushToast(result.error ?? "Não foi possível alterar a senha.", "error");
+      return;
+    }
+    setPasswordState({ success: true });
+    pushToast("Senha alterada com sucesso.", "success");
+    formRef.current?.reset();
+  }
+
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <div
+        className="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-user-profile-modal-title"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="modal-head">
+          <h2 id="edit-user-profile-modal-title">Perfil do editor</h2>
+          <button type="button" className="modal-close" aria-label="Fechar" onClick={onClose}>
+            ×
+          </button>
+        </div>
+
+        {!editingProfile && !editingPassword && (
+          <div className="modal-body">
+            <div className="profile-summary">
+              <div className="profile-avatar">
+                {avatar && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatar} alt="" />
+                )}
+              </div>
+              <div>
+                <h3>{name}</h3>
+                <p>{bio.trim() || FALLBACK_BIO}</p>
+              </div>
+            </div>
+
+            <div className="profile-details">
+              <div>
+                <span>E-mail</span>
+                <strong>{user.email}</strong>
+              </div>
+              <div>
+                <span>Criado em</span>
+                <strong>{new Date(user.createdAt).toLocaleDateString("pt-BR")}</strong>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button className="btn btn-ghost" type="button" onClick={() => setEditingProfile(true)}>
+                <UsersIcon />
+                Editar foto e texto
+              </button>
+              <button className="btn btn-primary" type="button" onClick={() => setEditingPassword(true)}>
+                <LockIcon />
+                Editar senha
+              </button>
+            </div>
+          </div>
+        )}
+
+        {editingProfile && (
+          <form onSubmit={submitProfile} className="modal-body modal-body-split">
+            {profileState.error && <div className="form-error">{profileState.error}</div>}
+            <div className="field" style={{ marginBottom: 18 }}>
+              <label>Foto do autor</label>
+              <div className="profile-photo-edit">
+                <div className="profile-avatar">
+                  {avatar && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={avatar} alt="" />
+                  )}
+                </div>
+                <div>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => fileRef.current?.click()}>
+                    {avatar ? "Trocar foto" : "Enviar foto"}
+                  </button>
+                  {avatar && (
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAvatar("")}>
+                      Remover
+                    </button>
+                  )}
+                </div>
+              </div>
+              <input
+                ref={fileRef}
+                type="file"
+                accept={ACCEPT.join(",")}
+                hidden
+                onChange={(e) => void ingest(e.target.files?.[0])}
+              />
+              <input type="hidden" name="avatar" value={avatar} />
+            </div>
+
+            <div className="field" style={{ marginBottom: 18 }}>
+              <label htmlFor="editAuthorName">Nome de exibição</label>
+              <input
+                id="editAuthorName"
+                name="name"
+                className="input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="editAuthorBio">Texto do perfil</label>
+              <textarea
+                id="editAuthorBio"
+                name="bio"
+                className="textarea"
+                rows={4}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              />
+            </div>
+
+            <div className="form-actions">
+              <button className="btn btn-ghost" type="button" onClick={() => setEditingProfile(false)}>
+                Voltar
+              </button>
+              <button className="btn btn-primary" type="submit" disabled={profilePending}>
+                {profilePending ? "Salvando..." : "Salvar perfil"}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {editingPassword && (
+          <form ref={formRef} onSubmit={submitPassword} className="modal-body modal-body-split">
+            {passwordState.error && <div className="form-error">{passwordState.error}</div>}
+
+            <div className="field" style={{ marginBottom: 18 }}>
+              <label htmlFor="editUserNewPassword">Nova senha</label>
+              <input
+                id="editUserNewPassword"
+                name="newPassword"
+                className="input"
+                type="password"
+                autoComplete="new-password"
+                minLength={6}
+                required
+              />
+              <div className="hint">Use pelo menos 6 caracteres.</div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="editUserConfirmPassword">Confirmar nova senha</label>
+              <input
+                id="editUserConfirmPassword"
+                name="confirmPassword"
+                className="input"
+                type="password"
+                autoComplete="new-password"
+                minLength={6}
+                required
+              />
+            </div>
+
+            <div className="form-actions">
+              <button className="btn btn-ghost" type="button" onClick={() => setEditingPassword(false)}>
+                Voltar
+              </button>
+              <button className="btn btn-primary" type="submit" disabled={passwordPending}>
+                <LockIcon />
+                {passwordPending ? "Alterando..." : "Alterar senha"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

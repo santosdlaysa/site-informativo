@@ -19,9 +19,9 @@ import logoHorizontal from "@/assets/Logo horizontal.png";
 const NAV = [
   { href: "/admin/posts", label: "Posts", Icon: PostsIcon, roles: ["admin", "editor", "viewer"], match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
   { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/posts/novo") },
-  { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/programacao") },
-  { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/eventos") },
-  { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/calendario") },
+  { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/programacao") },
+  { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/eventos") },
+  { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/calendario") },
   { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
