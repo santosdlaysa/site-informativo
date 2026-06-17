@@ -46,6 +46,7 @@ export function UsersManager({
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
   const [editingUser, setEditingUser] = useState<UserListItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const router = useRouter();
   const isAdmin = currentUserRole === "admin";
@@ -59,10 +60,11 @@ export function UsersManager({
     createdAt: new Date(),
   };
 
-  async function handleDelete(id: string) {
+  async function handleConfirmDelete(id: string) {
     setDeletingId(id);
     const result = await deleteUserAction(id);
     setDeletingId(null);
+    setConfirmingDeleteId(null);
     if (result.error) {
       pushToast(result.error, "error");
       return;
@@ -155,7 +157,7 @@ export function UsersManager({
                           className="danger"
                           title="Remover editor"
                           disabled={deletingId === u.id}
-                          onClick={() => handleDelete(u.id)}
+                          onClick={() => setConfirmingDeleteId(u.id)}
                         >
                           <TrashIcon />
                         </button>
@@ -235,6 +237,40 @@ export function UsersManager({
           profile={currentProfile}
           onClose={() => setProfileModalOpen(false)}
         />
+      )}
+
+      {confirmingDeleteId && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={() => setConfirmingDeleteId(null)}>
+          <div
+            className="modal-card"
+            role="dialog"
+            aria-modal="true"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="modal-head">
+              <h2>Confirmar exclusão</h2>
+              <button type="button" className="modal-close" aria-label="Fechar" onClick={() => setConfirmingDeleteId(null)}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <p style={{ marginBottom: 24 }}>Tem certeza que deseja remover este editor? Esta ação não pode ser desfeita.</p>
+              <div className="form-actions">
+                <button className="btn btn-ghost" type="button" onClick={() => setConfirmingDeleteId(null)}>
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-primary danger"
+                  type="button"
+                  disabled={deletingId === confirmingDeleteId}
+                  onClick={() => handleConfirmDelete(confirmingDeleteId)}
+                >
+                  {deletingId === confirmingDeleteId ? "Removendo..." : "Remover editor"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
