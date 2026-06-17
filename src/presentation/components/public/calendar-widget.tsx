@@ -29,7 +29,15 @@ function CalendarGrid({ dates, year, month }: { dates: CalendarDateView[]; year:
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
-  const today = new Date();
+  const _p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const today = new Date(
+    +_p.find((x) => x.type === "year")!.value,
+    +_p.find((x) => x.type === "month")!.value - 1,
+    +_p.find((x) => x.type === "day")!.value,
+  );
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === month;
   const todayDay = today.getDate();
 

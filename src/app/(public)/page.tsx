@@ -13,7 +13,16 @@ import equipeImg from "@/assets/img.png";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const now = new Date();
+  const _rawNow = new Date();
+  const _p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(_rawNow);
+  const now = new Date(
+    +_p.find((x) => x.type === "year")!.value,
+    +_p.find((x) => x.type === "month")!.value - 1,
+    +_p.find((x) => x.type === "day")!.value,
+  );
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
 
