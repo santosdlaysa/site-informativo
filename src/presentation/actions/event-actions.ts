@@ -25,7 +25,7 @@ const schema = z.object({
   capacity: z.union([
     z.string().trim().length(0),
     z.string().trim().pipe(z.coerce.number().int().positive("Capacidade deve ser maior que 0"))
-  ]).optional(),
+  ]).optional().transform(v => typeof v === "number" ? v : undefined),
   coverImage: z.string().optional(),
 });
 
