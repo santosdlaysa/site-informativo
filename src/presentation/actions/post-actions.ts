@@ -172,3 +172,21 @@ export async function deletePostAction(id: string): Promise<void> {
   revalidatePath("/admin/posts");
   revalidatePath("/posts");
 }
+
+export async function deleteGalleryItemAction(
+  postId: string,
+  itemId: string,
+): Promise<PostFormState> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+
+  const post = await container.postRepository.findEntityById(postId);
+  if (!post || post.toSnapshot().authorId !== session.user.id) {
+    return { error: "Você não tem permissão para editar este post." };
+  }
+
+  await container.projectRepository.deleteGalleryItem(postId, itemId);
+  revalidatePath(`/admin/posts/${postId}/editar`);
+  revalidatePath("/posts");
+  return {};
+}

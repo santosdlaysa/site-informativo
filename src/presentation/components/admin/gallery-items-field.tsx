@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { deleteGalleryItemAction } from "@/presentation/actions/post-actions";
 import { ImageSlot } from "../image-slot";
 import { PlusIcon, TrashIcon, LinkIcon } from "../icons";
 
@@ -10,12 +11,15 @@ export interface PostOption {
 }
 
 export interface GalleryItem {
+  id?: string;
   image: string | null;
   caption: string | null;
   linkedPostId: string | null;
 }
 
 interface GalleryItemsFieldProps {
+  /** Id do post atual, presente na edição. */
+  postId?: string;
   /** Posts que podem ser vinculados aos itens da galeria. */
   postOptions: PostOption[];
   /** Itens já existentes ao editar um post. */
@@ -30,20 +34,35 @@ const emptyItem: GalleryItem = { image: null, caption: null, linkedPostId: null 
  * opcionalmente, aponta para outro post (clicar abre esse post) ou abre em
  * lightbox quando sem vínculo. Emite os itens no campo oculto `items`.
  */
-export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFieldProps) {
+export function GalleryItemsField({ postId, postOptions, initialItems }: GalleryItemsFieldProps) {
   const [items, setItems] = useState<GalleryItem[]>(initialItems ?? []);
   /** Índice do item aguardando confirmação de remoção (1º clique na lixeira). */
   const [confirming, setConfirming] = useState<number | null>(null);
   /** Último item removido, para permitir desfazer. */
   const [lastRemoved, setLastRemoved] = useState<{ item: GalleryItem; index: number } | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   function update(i: number, patch: Partial<GalleryItem>) {
     setItems((cur) => cur.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   }
-  function remove(i: number) {
+  async function remove(i: number) {
+    const item = items[i];
+    setDeleteError(null);
+
+    if (item?.id && postId) {
+      setDeletingId(item.id);
+      const result = await deleteGalleryItemAction(postId, item.id);
+      setDeletingId(null);
+      if (result.error) {
+        setDeleteError(result.error);
+        return;
+      }
+    }
+
     setItems((cur) => {
       const removed = cur[i];
-      if (removed) setLastRemoved({ item: removed, index: i });
+      if (removed && !removed.id) setLastRemoved({ item: removed, index: i });
       return cur.filter((_, idx) => idx !== i);
     });
     setConfirming(null);
@@ -79,13 +98,14 @@ export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFie
         {lastRemoved && (
           <div className="proj-undo">
             <span>
-              <TrashIcon /> Item removido. Salve o post para confirmar a exclusão.
+              <TrashIcon /> Item removido.
             </span>
             <button type="button" onClick={undoRemove}>
               Desfazer
             </button>
           </div>
         )}
+        {deleteError && <div className="form-error">{deleteError}</div>}
         {items.length > 0 && (
           <div className="proj-list">
             {items.map((it, i) => (
@@ -144,14 +164,16 @@ export function GalleryItemsField({ postOptions, initialItems }: GalleryItemsFie
                       className="confirm-yes"
                       title="Confirmar remoção"
                       onClick={() => remove(i)}
+                      disabled={deletingId === it.id}
                     >
-                      <TrashIcon /> Excluir
+                      <TrashIcon /> {deletingId === it.id ? "Excluindo..." : "Excluir"}
                     </button>
                     <button
                       type="button"
                       className="confirm-no"
                       title="Cancelar"
                       onClick={() => setConfirming(null)}
+                      disabled={deletingId === it.id}
                     >
                       Cancelar
                     </button>

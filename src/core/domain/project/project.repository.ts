@@ -22,6 +22,8 @@ export interface GalleryItemView {
 export interface ProjectRepository {
   /** Substitui toda a galeria do post pelos itens informados (transacional). */
   replaceGallery(ownerPostId: string, items: GalleryItemInput[]): Promise<void>;
+  /** Remove um item específico da galeria de um post. */
+  deleteGalleryItem(ownerPostId: string, itemId: string): Promise<void>;
   /** Itens da galeria com dados do post vinculado, ordenados por posição. */
   getGallery(ownerPostId: string): Promise<GalleryItemView[]>;
 }

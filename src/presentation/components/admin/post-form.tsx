@@ -178,7 +178,11 @@ export function PostForm({
           <input type="hidden" name="coverImage" value={cover} />
         </div>
 
-        <GalleryItemsField postOptions={postOptions ?? []} initialItems={initialItems} />
+        <GalleryItemsField
+          postId={post?.id}
+          postOptions={postOptions ?? []}
+          initialItems={initialItems}
+        />
 
         <div className="form-actions">
           <Link className="btn btn-ghost" href="/admin/posts">

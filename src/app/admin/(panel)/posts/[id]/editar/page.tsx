@@ -39,6 +39,7 @@ export default async function EditPostPage({
   const action = updatePostAction.bind(null, id);
 
   const initialItems = gallery.map((g) => ({
+    id: g.id,
     image: g.image,
     caption: g.caption,
     linkedPostId: g.linkedPostId,

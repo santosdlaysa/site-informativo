@@ -21,6 +21,10 @@ export class PrismaProjectRepository implements ProjectRepository {
     ]);
   }
 
+  async deleteGalleryItem(ownerPostId: string, itemId: string): Promise<void> {
+    await prisma.projectItem.deleteMany({ where: { id: itemId, ownerPostId } });
+  }
+
   async getGallery(ownerPostId: string): Promise<GalleryItemView[]> {
     const rows = await prisma.projectItem.findMany({
       where: { ownerPostId },
