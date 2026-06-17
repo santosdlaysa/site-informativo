@@ -22,7 +22,7 @@ const schema = z.object({
   location: z.string().trim().optional(),
   date: z.string().trim(),
   time: z.string().trim().optional(),
-  capacity: z.coerce.number().int().positive().optional(),
+  capacity: z.string().trim().optional().transform(v => v ? parseInt(v, 10) : undefined).refine(v => v === undefined || v > 0, "Capacidade deve ser maior que 0"),
   coverImage: z.string().optional(),
 });
 
