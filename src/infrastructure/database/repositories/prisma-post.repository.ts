@@ -77,6 +77,7 @@ export class PrismaPostRepository implements PostRepository {
       ...(filter.status ? { status: filter.status } : {}),
       ...(filter.type ? { type: filter.type } : {}),
       ...(filter.categorySlug ? { category: { slug: filter.categorySlug } } : {}),
+      ...(filter.authorId ? { authorId: filter.authorId } : {}),
       ...(filter.search
         ? {
             OR: [

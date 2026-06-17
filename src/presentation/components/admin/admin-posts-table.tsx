@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { PostListItem } from "@/core/domain/post/post.repository";
 import { PostStatus } from "@/core/domain/post/post-status";
+import type { UserRole } from "@/core/domain/user/user-role";
 import { ImageSlot } from "../image-slot";
 import { EditIcon, EyeIcon, TrashIcon, SearchIcon } from "../icons";
 import { formatShortDate } from "@/presentation/lib/format";
@@ -13,7 +14,15 @@ import { pushToast } from "./toast";
 
 type Tab = "todos" | "pub" | "rasc";
 
-export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[]; currentUserId: string }) {
+export function AdminPostsTable({
+  posts,
+  currentUserId,
+  currentUserRole,
+}: {
+  posts: PostListItem[];
+  currentUserId: string;
+  currentUserRole: UserRole;
+}) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("todos");
   const [query, setQuery] = useState("");
@@ -93,7 +102,12 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
               <td colSpan={5}>Nenhum post encontrado.</td>
             </tr>
           ) : (
-            filtered.map((p) => (
+            filtered.map((p) => {
+              const canManage = currentUserRole === "admin" || (
+                currentUserRole === "editor" && p.authorId === currentUserId
+              );
+
+              return (
               <tr key={p.id} style={{ opacity: pending ? 0.6 : 1 }}>
                 <td>
                   <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -117,7 +131,7 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
                 <td>{formatShortDate(p.publishedAt ?? p.createdAt)}</td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
-                    {p.authorId === currentUserId && (
+                    {canManage && (
                       <Link
                         className="act-edit"
                         href={`/admin/posts/${p.id}/editar`}
@@ -149,7 +163,7 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
                         </svg>
                       </button>
                       <div className={`kebab-menu${openMenu === p.id ? " open" : ""}`}>
-                        {p.authorId === currentUserId && (
+                        {canManage && (
                           <Link href={`/admin/posts/${p.id}/editar`} style={{ textDecoration: "none" }}>
                             <button>
                               <EditIcon /> Editar
@@ -161,7 +175,7 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
                             <EyeIcon /> Visualizar
                           </button>
                         </a>
-                        {p.authorId === currentUserId && (
+                        {canManage && (
                           <button className="danger" onClick={() => handleDelete(p.id)}>
                             <TrashIcon /> Excluir
                           </button>
@@ -171,7 +185,8 @@ export function AdminPostsTable({ posts, currentUserId }: { posts: PostListItem[
                   </div>
                 </td>
               </tr>
-            ))
+              );
+            })
           )}
         </tbody>
       </table>

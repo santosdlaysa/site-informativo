@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { UsersManager } from "@/presentation/components/admin/users-manager";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +11,7 @@ export const metadata: Metadata = { title: "Editores — Admin" };
 export default async function EditoresPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
+  if (normalizeUserRole(session.user.role) !== "admin") redirect("/admin/posts");
 
   const [users, profile] = await Promise.all([
     container.listUsers.execute(),

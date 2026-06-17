@@ -8,6 +8,7 @@ import {
   deleteUserAction,
   type UserFormState,
 } from "@/presentation/actions/user-actions";
+import { USER_ROLE_LABEL, type UserRole } from "@/core/domain/user/user-role";
 import { TrashIcon, PlusIcon, LockIcon, UsersIcon } from "../icons";
 import { pushToast } from "./toast";
 
@@ -52,6 +53,7 @@ export function UsersManager({
     id: currentProfile.id,
     name: currentProfile.name,
     email: currentProfile.email,
+    role: "admin",
     createdAt: new Date(),
   };
 
@@ -105,6 +107,7 @@ export function UsersManager({
             <tr>
               <th>Nome</th>
               <th>E-mail</th>
+              <th>Permissão</th>
               <th>Criado em</th>
               <th></th>
             </tr>
@@ -112,7 +115,7 @@ export function UsersManager({
           <tbody>
             {users.length === 0 && (
               <tr>
-                <td colSpan={4} className="empty-row">Nenhum editor cadastrado.</td>
+                <td colSpan={5} className="empty-row">Nenhum editor cadastrado.</td>
               </tr>
             )}
             {users.map((u) => {
@@ -126,6 +129,7 @@ export function UsersManager({
                     )}
                   </td>
                   <td>{u.email}</td>
+                  <td>{USER_ROLE_LABEL[u.role as UserRole]}</td>
                   <td>{new Date(u.createdAt).toLocaleDateString("pt-BR")}</td>
                   <td>
                     {isCurrentUser ? (
@@ -173,9 +177,24 @@ export function UsersManager({
                 <input className="input" name="email" type="email" placeholder="editor@exemplo.com" required />
               </div>
             </div>
-            <div className="field" style={{ marginBottom: 20 }}>
-              <label>Senha</label>
-              <input className="input" name="password" type="password" placeholder="Mínimo 6 caracteres ou teste" required />
+            <div className="row-2" style={{ marginBottom: 20 }}>
+              <div className="field">
+                <label>Permissão</label>
+                <div className="selnative">
+                  <select className="select" name="role" defaultValue="editor">
+                    <option value="admin">Administrador</option>
+                    <option value="editor">Pode editar apenas os próprios posts</option>
+                    <option value="viewer">Apenas visualizar</option>
+                  </select>
+                  <svg className="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </div>
+              </div>
+              <div className="field">
+                <label>Senha</label>
+                <input className="input" name="password" type="password" placeholder="Mínimo 6 caracteres ou teste" required />
+              </div>
             </div>
             <div className="form-actions" style={{ marginTop: 0 }}>
               <button className="btn btn-primary" type="submit" disabled={pending}>

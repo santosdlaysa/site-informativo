@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminPostsTable } from "@/presentation/components/admin/admin-posts-table";
 import { PlusIcon, EyeIcon } from "@/presentation/components/icons";
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Posts — Admin" };
 export default async function AdminPostsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
+  const role = normalizeUserRole(session.user.role);
 
   const posts = await container.listPosts.execute();
 
@@ -29,13 +31,15 @@ export default async function AdminPostsPage() {
           <Link className="btn btn-ghost" href="/" target="_blank" rel="noopener noreferrer">
             <EyeIcon /> Visualizar site
           </Link>
-          <Link className="btn btn-primary" href="/admin/posts/novo">
-            <PlusIcon /> Novo Post
-          </Link>
+          {role !== "viewer" && (
+            <Link className="btn btn-primary" href="/admin/posts/novo">
+              <PlusIcon /> Novo Post
+            </Link>
+          )}
         </div>
       </div>
 
-      <AdminPostsTable posts={posts} currentUserId={session.user.id} />
+      <AdminPostsTable posts={posts} currentUserId={session.user.id} currentUserRole={role} />
     </>
   );
 }

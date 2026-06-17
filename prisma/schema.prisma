@@ -38,7 +38,7 @@ model User {
   email        String   @unique
   passwordHash String
   passwordChangeRequired Boolean @default(false)
-  role         String   @default("admin")
+  role         String   @default("editor")
   bio          String?
   avatar       String?
   createdAt    DateTime @default(now())

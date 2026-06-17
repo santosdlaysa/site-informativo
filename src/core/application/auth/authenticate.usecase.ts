@@ -1,11 +1,12 @@
 import { UserRepository } from "@/core/domain/user/user.repository";
+import type { UserRole } from "@/core/domain/user/user-role";
 import { PasswordHasher } from "../ports/password-hasher";
 
 export interface AuthenticatedUser {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   passwordChangeRequired: boolean;
 }
 

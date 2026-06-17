@@ -5,6 +5,7 @@ import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { DomainError } from "@/core/domain/shared/errors";
+import { USER_ROLES } from "@/core/domain/user/user-role";
 
 export interface UserFormState {
   error?: string;
@@ -14,6 +15,7 @@ export interface UserFormState {
 const createSchema = z.object({
   name: z.string().trim().min(2, "O nome deve ter ao menos 2 caracteres."),
   email: z.string().trim().email("E-mail inválido."),
+  role: z.enum(USER_ROLES).default("editor"),
   password: z.string().refine(
     (value) => value === "teste" || value.length >= 6,
     "A senha deve ter ao menos 6 caracteres, exceto a senha temporária teste.",
@@ -26,10 +28,12 @@ export async function createUserAction(
 ): Promise<UserFormState> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  if (session.user.role !== "admin") return { error: "Apenas o administrador pode criar editores." };
 
   const parsed = createSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
+    role: formData.get("role") || "editor",
     password: formData.get("password"),
   });
   if (!parsed.success) {
@@ -41,6 +45,7 @@ export async function createUserAction(
       parsed.data.name,
       parsed.data.email,
       parsed.data.password,
+      parsed.data.role,
     );
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };

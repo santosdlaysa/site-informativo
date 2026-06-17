@@ -13,20 +13,22 @@ import {
   UsersIcon,
 } from "../icons";
 import { logoutAction } from "@/presentation/actions/auth-actions";
+import type { UserRole } from "@/core/domain/user/user-role";
 import logoHorizontal from "@/assets/Logo horizontal.png";
 
 const NAV = [
-  { href: "/admin/posts", label: "Posts", Icon: PostsIcon, match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
-  { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, match: (p: string) => p.startsWith("/admin/posts/novo") },
-  { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/programacao") },
-  { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, match: (p: string) => p.startsWith("/admin/eventos") },
-  { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, match: (p: string) => p.startsWith("/admin/calendario") },
-  { href: "/admin/editores", label: "Editores", Icon: UsersIcon, match: (p: string) => p.startsWith("/admin/editores") },
-  { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, match: (p: string) => p.startsWith("/admin/configuracoes") },
+  { href: "/admin/posts", label: "Posts", Icon: PostsIcon, roles: ["admin", "editor", "viewer"], match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
+  { href: "/admin/posts/novo", label: "Novo Post", Icon: NewPostIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/posts/novo") },
+  { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/programacao") },
+  { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/eventos") },
+  { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/calendario") },
+  { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/editores") },
+  { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ currentUserRole }: { currentUserRole: UserRole }) {
   const pathname = usePathname();
+  const navItems = NAV.filter((item) => item.roles.includes(currentUserRole));
 
   return (
     <aside className="sidebar">
@@ -34,7 +36,7 @@ export function AdminSidebar() {
         <Image src={logoHorizontal} alt="Raros Boa Vista" height={56} />
       </div>
       <nav className="nav">
-        {NAV.map(({ href, label, Icon, match }) => (
+        {navItems.map(({ href, label, Icon, match }) => (
           <Link key={href} href={href} className={match(pathname) ? "active" : ""}>
             <Icon />
             <span>{label}</span>

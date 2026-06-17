@@ -6,6 +6,7 @@ import {
   UserProfile,
   UserRepository,
 } from "@/core/domain/user/user.repository";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { prisma } from "../prisma";
 
 export class PrismaUserRepository implements UserRepository {
@@ -18,7 +19,7 @@ export class PrismaUserRepository implements UserRepository {
       email: user.email,
       passwordHash: user.passwordHash,
       passwordChangeRequired: user.passwordChangeRequired,
-      role: user.role,
+      role: normalizeUserRole(user.role),
     };
   }
 
@@ -31,7 +32,7 @@ export class PrismaUserRepository implements UserRepository {
       email: user.email,
       passwordHash: user.passwordHash,
       passwordChangeRequired: user.passwordChangeRequired,
-      role: user.role,
+      role: normalizeUserRole(user.role),
     };
   }
 
@@ -64,9 +65,9 @@ export class PrismaUserRepository implements UserRepository {
   async listAll(): Promise<UserListItem[]> {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, email: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
-    return users;
+    return users.map((user) => ({ ...user, role: normalizeUserRole(user.role) }));
   }
 
   async count(): Promise<number> {
@@ -80,10 +81,11 @@ export class PrismaUserRepository implements UserRepository {
         email: data.email,
         passwordHash: data.passwordHash,
         passwordChangeRequired: data.passwordChangeRequired ?? false,
+        role: data.role,
       },
-      select: { id: true, name: true, email: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
-    return user;
+    return { ...user, role: normalizeUserRole(user.role) };
   }
 
   async delete(id: string): Promise<void> {

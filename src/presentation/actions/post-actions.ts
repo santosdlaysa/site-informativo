@@ -7,6 +7,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { PostStatus } from "@/core/domain/post/post-status";
 import { DomainError } from "@/core/domain/shared/errors";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import type { GalleryItemInput } from "@/core/domain/project/project.repository";
 
 export interface PostFormState {
@@ -81,12 +82,27 @@ function parseGallery(raw: string | undefined): GalleryItemInput[] {
   }
 }
 
+function canWritePost(role: string | undefined | null): boolean {
+  const normalizedRole = normalizeUserRole(role);
+  return normalizedRole === "admin" || normalizedRole === "editor";
+}
+
+function canManagePost(
+  role: string | undefined | null,
+  currentUserId: string,
+  authorId: string,
+): boolean {
+  const normalizedRole = normalizeUserRole(role);
+  return normalizedRole === "admin" || (normalizedRole === "editor" && authorId === currentUserId);
+}
+
 export async function createPostAction(
   _prev: PostFormState,
   formData: FormData,
 ): Promise<PostFormState> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  if (!canWritePost(session.user.role)) return { error: "Você não tem permissão para criar posts." };
 
   const parsed = parse(formData);
   if (!parsed.success) {
@@ -127,7 +143,7 @@ export async function updatePostAction(
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
 
   const post = await container.postRepository.findEntityById(id);
-  if (!post || post.toSnapshot().authorId !== session.user.id) {
+  if (!post || !canManagePost(session.user.role, session.user.id, post.toSnapshot().authorId)) {
     return { error: "Você não tem permissão para editar este post." };
   }
 
@@ -166,7 +182,7 @@ export async function deletePostAction(id: string): Promise<void> {
   if (!session?.user?.id) return;
 
   const post = await container.postRepository.findEntityById(id);
-  if (!post || post.toSnapshot().authorId !== session.user.id) return;
+  if (!post || !canManagePost(session.user.role, session.user.id, post.toSnapshot().authorId)) return;
 
   await container.deletePost.execute(id);
   revalidatePath("/admin/posts");
@@ -181,7 +197,7 @@ export async function deleteGalleryItemAction(
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
 
   const post = await container.postRepository.findEntityById(postId);
-  if (!post || post.toSnapshot().authorId !== session.user.id) {
+  if (!post || !canManagePost(session.user.role, session.user.id, post.toSnapshot().authorId)) {
     return { error: "Você não tem permissão para editar este post." };
   }
 

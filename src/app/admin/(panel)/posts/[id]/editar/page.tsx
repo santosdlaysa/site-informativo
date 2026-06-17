@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { PostForm } from "@/presentation/components/admin/post-form";
 import { updatePostAction } from "@/presentation/actions/post-actions";
 
@@ -16,6 +17,7 @@ export default async function EditPostPage({
   const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
+  const role = normalizeUserRole(session.user.role);
 
   const [post, categories, posts, gallery] = await Promise.all([
     container.postRepository.findDetailById(id),
@@ -25,7 +27,7 @@ export default async function EditPostPage({
   ]);
 
   if (!post) notFound();
-  if (post.authorId !== session.user.id) notFound();
+  if (role === "viewer" || (role !== "admin" && post.authorId !== session.user.id)) notFound();
 
   const currentCategoryId =
     categories.find((c) => c.slug === post.category?.slug)?.id ?? null;

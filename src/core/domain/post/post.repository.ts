@@ -32,6 +32,7 @@ export interface ListPostsFilter {
   status?: PostStatus;
   type?: PostType;
   categorySlug?: string;
+  authorId?: string;
   search?: string;
   skip?: number;
   take?: number;

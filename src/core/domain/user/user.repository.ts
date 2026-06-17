@@ -1,10 +1,12 @@
+import type { UserRole } from "./user-role";
+
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   passwordHash: string;
   passwordChangeRequired: boolean;
-  role: string;
+  role: UserRole;
 }
 
 /** Perfil público/editável do autor exibido no painel e nos posts. */
@@ -27,12 +29,14 @@ export interface CreateUserData {
   email: string;
   passwordHash: string;
   passwordChangeRequired?: boolean;
+  role: UserRole;
 }
 
 export interface UserListItem {
   id: string;
   name: string;
   email: string;
+  role: UserRole;
   createdAt: Date;
 }
 

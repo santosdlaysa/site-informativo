@@ -1,5 +1,6 @@
 import { ConflictError, ValidationError } from "@/core/domain/shared/errors";
 import { UserListItem, UserRepository } from "@/core/domain/user/user.repository";
+import { normalizeUserRole, type UserRole } from "@/core/domain/user/user-role";
 import { PasswordHasher } from "../ports/password-hasher";
 
 const MAX_USERS = 3;
@@ -25,7 +26,12 @@ export class CreateUserUseCase {
     private readonly hasher: PasswordHasher,
   ) {}
 
-  async execute(name: string, email: string, password: string): Promise<UserListItem> {
+  async execute(
+    name: string,
+    email: string,
+    password: string,
+    role: UserRole = "editor",
+  ): Promise<UserListItem> {
     const count = (await this.users.listAll()).filter(isVisibleEditor).length;
     if (count >= MAX_USERS) {
       throw new ValidationError(`Limite de ${MAX_USERS} editores atingido.`);
@@ -40,6 +46,7 @@ export class CreateUserUseCase {
       email: email.trim().toLowerCase(),
       passwordHash,
       passwordChangeRequired: password === TEMPORARY_PASSWORD,
+      role: normalizeUserRole(role),
     });
   }
 }
