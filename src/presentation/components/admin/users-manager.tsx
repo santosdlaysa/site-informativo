@@ -38,17 +38,20 @@ export function UsersManager({
   users,
   currentUserId,
   currentProfile,
+  currentUserRole = "admin",
 }: {
   users: UserListItem[];
   currentUserId: string;
   currentProfile: UserProfile;
+  currentUserRole?: string;
 }) {
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
   const [editingUser, setEditingUser] = useState<UserListItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const router = useRouter();
-  const canAdd = users.length < MAX_USERS;
+  const isAdmin = currentUserRole === "admin";
+  const canAdd = isAdmin && users.length < MAX_USERS;
   const currentUser = users.find((u) => u.id === currentUserId) ?? null;
   const currentUserForModal: UserListItem = currentUser ?? {
     id: currentProfile.id,
@@ -142,7 +145,7 @@ export function UsersManager({
                           <UsersIcon />
                         </button>
                       </div>
-                    ) : (
+                    ) : isAdmin ? (
                       <div className="act-inline">
                         <button
                           title="Editar editor"
@@ -159,6 +162,8 @@ export function UsersManager({
                           <TrashIcon />
                         </button>
                       </div>
+                    ) : (
+                      <div className="act-inline"></div>
                     )}
                   </td>
                 </tr>
@@ -168,7 +173,7 @@ export function UsersManager({
         </table>
       </div>
 
-      {canAdd && (
+      {isAdmin && canAdd && (
         <div className="panel panel-pad">
           <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 20 }}>Adicionar editor</h2>
 
@@ -213,7 +218,7 @@ export function UsersManager({
         </div>
       )}
 
-      {!canAdd && (
+      {isAdmin && !canAdd && (
         <div className="panel panel-pad" style={{ color: "#6b7280", fontSize: 14, textAlign: "center" }}>
           Limite de {MAX_USERS} editores atingido. Remova um para adicionar outro.
         </div>

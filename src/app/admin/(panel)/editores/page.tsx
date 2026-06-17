@@ -11,8 +11,8 @@ export const metadata: Metadata = { title: "Editores — Admin" };
 export default async function EditoresPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
-  if (normalizeUserRole(session.user.role) !== "admin") redirect("/admin/posts");
 
+  const role = normalizeUserRole(session.user.role);
   const [users, profile] = await Promise.all([
     container.listUsers.execute(),
     container.getProfile.execute(session.user.id),
@@ -23,11 +23,11 @@ export default async function EditoresPage() {
       <div className="page-top">
         <div>
           <h1>Editores</h1>
-          <div className="sub">Gerencie quem pode acessar o painel (máx. 3)</div>
+          <div className="sub">{role === "admin" ? "Gerencie quem pode acessar o painel (máx. 3)" : "Veja quem está no painel"}</div>
         </div>
       </div>
 
-      <UsersManager users={users} currentUserId={session.user.id} currentProfile={profile} />
+      <UsersManager users={users} currentUserId={session.user.id} currentProfile={profile} currentUserRole={role} />
     </>
   );
 }
