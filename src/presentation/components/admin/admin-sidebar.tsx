@@ -14,7 +14,7 @@ import {
 } from "../icons";
 import { logoutAction } from "@/presentation/actions/auth-actions";
 import type { UserRole } from "@/core/domain/user/user-role";
-import logoHorizontal from "@/assets/Logo horizontal.png";
+import { CompanySwitcher } from "./company-switcher";
 
 const NAV = [
   { href: "/admin/posts", label: "Posts", Icon: PostsIcon, roles: ["admin", "editor", "viewer"], match: (p: string) => p === "/admin/posts" || (p.startsWith("/admin/posts/") && !p.endsWith("/novo")) },
@@ -26,16 +26,41 @@ const NAV = [
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
-export function AdminSidebar({ currentUserRole }: { currentUserRole: UserRole }) {
+export function AdminSidebar({
+  currentUserRole,
+  companies,
+  activeCompanyId,
+  onCompanySwitchStart,
+}: {
+  currentUserRole: UserRole;
+  companies?: { id: string; name: string; slug: string; logo?: string | null }[];
+  activeCompanyId?: string;
+  onCompanySwitchStart?: (companyName: string) => void;
+}) {
   const pathname = usePathname();
   const navItems = NAV.filter((item) => item.roles.includes(currentUserRole));
 
   return (
     <aside className="sidebar">
       <div className="brand">
-        <Image src={logoHorizontal} alt="Raros Boa Vista" height={56} />
+        <span className="sidebar-global-logo">
+          <Image
+            src="/movie-sidebar-logo.png"
+            alt="Movie"
+            width={6000}
+            height={6000}
+            priority
+          />
+        </span>
       </div>
       <nav className="nav">
+        {companies && activeCompanyId && (
+          <CompanySwitcher
+            companies={companies}
+            activeCompanyId={activeCompanyId}
+            onSwitchStart={onCompanySwitchStart}
+          />
+        )}
         {navItems.map(({ href, label, Icon, match }) => (
           <Link key={href} href={href} className={match(pathname) ? "active" : ""}>
             <Icon />

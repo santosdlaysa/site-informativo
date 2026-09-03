@@ -1,8 +1,8 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
 import { PostCard } from "@/presentation/components/public/post-card";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
 
 export const dynamic = "force-dynamic";
 

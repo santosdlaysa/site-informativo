@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
@@ -6,6 +5,7 @@ import { EVENT_FORMAT_LABEL } from "@/core/domain/event/event-format";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { formatLongDate } from "@/presentation/lib/format";
 import { hourMinute } from "@/presentation/lib/datetime";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
 
 export const dynamic = "force-dynamic";
 

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
@@ -10,6 +9,7 @@ import { PostGallery } from "@/presentation/components/public/post-gallery";
 import { badgeClass } from "@/presentation/lib/category-variant";
 import { formatLongDate } from "@/presentation/lib/format";
 import { ClockIcon } from "@/presentation/components/icons";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
 
 export const dynamic = "force-dynamic";
 

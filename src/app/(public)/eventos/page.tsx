@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { EventFormat } from "@/core/domain/event/event-format";
@@ -6,6 +5,8 @@ import { ImageSlot } from "@/presentation/components/image-slot";
 import { badgeClass } from "@/presentation/lib/category-variant";
 import { formatLongDate } from "@/presentation/lib/format";
 import { dayAndMonthAbbr, hourMinute } from "@/presentation/lib/datetime";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
+import { getActiveCompany } from "@/infrastructure/tenant";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Eventos" };
@@ -42,9 +43,10 @@ export default async function EventosPage({
   const format =
     formato === "online" ? EventFormat.Online : formato === "presencial" ? EventFormat.Presential : undefined;
 
-  const [events, categories] = await Promise.all([
+  const [events, categories, company] = await Promise.all([
     container.listEvents.execute({ format }),
     container.listCategories.execute(),
+    getActiveCompany(),
   ]);
   const variantByName = new Map(categories.map((c) => [c.name.toLowerCase(), c.variant]));
 
@@ -53,7 +55,7 @@ export default async function EventosPage({
       <section className="page-hero page-hero--brand">
         <div className="wrap">
           <h1>Eventos</h1>
-          <p>Encontros, workshops e meetups da comunidade Raros Boa Vista. Participe presencialmente ou online.</p>
+          <p>Encontros, workshops e atividades da comunidade {company?.name || "Raros Boa Vista"}. Participe presencialmente ou online.</p>
         </div>
       </section>
 

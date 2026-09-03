@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { GalleryItemView } from "@/core/domain/project/project.repository";
+import { CompanyLink as Link } from "./company-link";
 
 /**
  * Galeria de fotos do post. Itens com `linkedPostSlug` continuam navegando

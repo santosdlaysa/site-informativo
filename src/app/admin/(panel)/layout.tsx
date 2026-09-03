@@ -5,7 +5,6 @@ import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminSidebar } from "@/presentation/components/admin/admin-sidebar";
 import { ForcePasswordChangeModal } from "@/presentation/components/admin/force-password-change-modal";
 import { AdminPanelClient } from "@/presentation/components/admin/admin-panel-client";
-import { CompanySwitcher } from "@/presentation/components/admin/company-switcher";
 import { getActiveCompanyId, listCompanies } from "@/infrastructure/tenant";
 
 /** Shell do painel: protege as rotas e injeta a navegação lateral. */
@@ -25,7 +24,8 @@ export default async function AdminPanelLayout({
     <AdminPanelClient
       role={role}
       passwordChangeRequired={security?.passwordChangeRequired ?? false}
-      companySwitcher={<CompanySwitcher companies={companies} activeCompanyId={activeCompanyId} />}
+      companies={companies}
+      activeCompanyId={activeCompanyId}
     >
       {children}
     </AdminPanelClient>

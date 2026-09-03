@@ -6,6 +6,7 @@ import { container } from "@/infrastructure/container";
 import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminPostsTable } from "@/presentation/components/admin/admin-posts-table";
 import { PlusIcon, EyeIcon } from "@/presentation/components/icons";
+import { getActiveCompany } from "@/infrastructure/tenant";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Posts — Admin" };
@@ -15,7 +16,10 @@ export default async function AdminPostsPage() {
   if (!session?.user?.id) redirect("/admin/login");
   const role = normalizeUserRole(session.user.role);
 
-  const posts = await container.listPosts.execute();
+  const [posts, activeCompany] = await Promise.all([
+    container.listPosts.execute(),
+    getActiveCompany(),
+  ]);
 
   return (
     <>
@@ -28,7 +32,7 @@ export default async function AdminPostsPage() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <Link className="btn btn-ghost" href="/" target="_blank" rel="noopener noreferrer">
+          <Link className="btn btn-ghost" href={`/admin/preview?company=${encodeURIComponent(activeCompany?.slug || "raros-boa-vista")}`} target="_blank" rel="noopener noreferrer">
             <EyeIcon /> Visualizar site
           </Link>
           {role !== "viewer" && (

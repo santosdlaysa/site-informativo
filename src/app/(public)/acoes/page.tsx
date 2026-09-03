@@ -1,16 +1,19 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
 import { PostCard } from "@/presentation/components/public/post-card";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
+import { getActiveCompany } from "@/infrastructure/tenant";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Ações",
-  description:
-    "Projetos e iniciativas sociais do Raros Boa Vista / Centro Social: juventude, saúde e apoio a pessoas com doenças raras.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const company = await getActiveCompany();
+  return {
+    title: "Ações",
+    description: `Projetos e iniciativas sociais do ${company?.name || "Raros Boa Vista"}.`,
+  };
+}
 
 export default async function AcoesPage({
   searchParams,
@@ -19,13 +22,14 @@ export default async function AcoesPage({
 }) {
   const { categoria } = await searchParams;
 
-  const [posts, categories] = await Promise.all([
+  const [posts, categories, company] = await Promise.all([
     container.listPublishedPosts.execute({
       categorySlug: categoria,
       take: 24,
       type: PostType.Standard,
     }),
     container.listCategories.execute(),
+    getActiveCompany(),
   ]);
 
   return (
@@ -34,7 +38,7 @@ export default async function AcoesPage({
         <div className="wrap">
           <h1>Ações</h1>
           <p>
-            Projetos e iniciativas sociais do Raros Boa Vista. Conheça as ações que transformam a
+            Projetos e iniciativas sociais do {company?.name || "Raros Boa Vista"}. Conheça as ações que transformam a
             vida de crianças, adolescentes, jovens e suas famílias.
           </p>
         </div>

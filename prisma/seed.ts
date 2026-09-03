@@ -97,8 +97,8 @@ async function main() {
   });
   await prisma.company.upsert({
     where: { id: "segunda-empresa" },
-    update: { name: "Segunda Empresa", slug: "segunda-empresa" },
-    create: { id: "segunda-empresa", name: "Segunda Empresa", slug: "segunda-empresa" },
+    update: { name: "ADSocial", slug: "adsocial", logo: "/adsocial-logo.png", primaryColor: "#eab308", secondaryColor: "#15803d" },
+    create: { id: "segunda-empresa", name: "ADSocial", slug: "adsocial", logo: "/adsocial-logo.png", primaryColor: "#eab308", secondaryColor: "#15803d" },
   });
 
   // Usuário administrador (preservado entre execuções)
@@ -111,27 +111,65 @@ async function main() {
 
   await prisma.siteSettings.upsert({
     where: { companyId: "segunda-empresa" },
-    update: {},
-    create: { id: "segunda-empresa", companyId: "segunda-empresa" },
+    update: {
+      qsImage: "/adsocial-logo.png",
+      heroTag: "Servir, acolher e transformar",
+      heroTitle: "Construindo um futuro com mais oportunidades",
+      heroDesc: "O ADSocial atua para fortalecer comunidades, promover inclusão e transformar vidas por meio da solidariedade e do compromisso social.",
+      heroCta1Text: "Conheça nossas ações",
+      heroCta1Href: "/acoes",
+      heroCta2Text: "Sobre o ADSocial",
+      heroCta2Href: "/projeto",
+      qsTag: "Sobre o ADSocial",
+      qsTitle: "Servir, acolher e contribuir para a transformação da comunidade",
+      qsBody1: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.",
+      qsBody2: "Ao longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.",
+      qsFeature1Title: "Cuidado e inclusão",
+      qsFeature1Desc: "Ações que acolhem pessoas e fortalecem comunidades.",
+      qsFeature2Title: "União que transforma",
+      qsFeature2Desc: "Parcerias e solidariedade para criar novas possibilidades.",
+      qsRealizacao: "ADSocial",
+      qsParcerias: "Parceiros e comunidade",
+      qsFullText: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.\n\nAo longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.\n\nMais do que realizar ações, o ADSocial acredita no poder da união e das parcerias para transformar realidades. Cada projeto, atendimento e iniciativa representa uma oportunidade de estar mais perto das pessoas, oferecendo apoio, cuidado e novas possibilidades.\n\nCom uma trajetória construída sobre solidariedade, compromisso e serviço ao próximo, o ADSocial segue ampliando sua atuação e fortalecendo comunidades, com o propósito de transformar vidas e construir um futuro com mais oportunidades para todos.",
+    },
+    create: {
+      id: "segunda-empresa",
+      companyId: "segunda-empresa",
+      qsImage: "/adsocial-logo.png",
+      heroTag: "Servir, acolher e transformar",
+      heroTitle: "Construindo um futuro com mais oportunidades",
+      heroDesc: "O ADSocial atua para fortalecer comunidades, promover inclusão e transformar vidas por meio da solidariedade e do compromisso social.",
+      heroCta1Text: "Conheça nossas ações",
+      heroCta1Href: "/acoes",
+      heroCta2Text: "Sobre o ADSocial",
+      heroCta2Href: "/projeto",
+      qsTag: "Sobre o ADSocial",
+      qsTitle: "Servir, acolher e contribuir para a transformação da comunidade",
+      qsBody1: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.",
+      qsBody2: "Ao longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.",
+      qsFeature1Title: "Cuidado e inclusão",
+      qsFeature1Desc: "Ações que acolhem pessoas e fortalecem comunidades.",
+      qsFeature2Title: "União que transforma",
+      qsFeature2Desc: "Parcerias e solidariedade para criar novas possibilidades.",
+      qsRealizacao: "ADSocial",
+      qsParcerias: "Parceiros e comunidade",
+      qsFullText: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.\n\nAo longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.\n\nMais do que realizar ações, o ADSocial acredita no poder da união e das parcerias para transformar realidades. Cada projeto, atendimento e iniciativa representa uma oportunidade de estar mais perto das pessoas, oferecendo apoio, cuidado e novas possibilidades.\n\nCom uma trajetória construída sobre solidariedade, compromisso e serviço ao próximo, o ADSocial segue ampliando sua atuação e fortalecendo comunidades, com o propósito de transformar vidas e construir um futuro com mais oportunidades para todos.",
+    },
   });
-
-  // Limpeza dos dados de teste — deixa o site apenas com as ações reais.
-  await prisma.projectItem.deleteMany({});
-  await prisma.post.deleteMany({});
-  await prisma.programSession.deleteMany({});
-  await prisma.event.deleteMany({});
-  await prisma.category.deleteMany({});
 
   // Categorias relevantes
   for (const c of CATEGORIES) {
-    await prisma.category.create({ data: c });
+    const existing = await prisma.category.findFirst({ where: { slug: c.slug, companyId: "default" } });
+    if (!existing) await prisma.category.create({ data: { ...c, companyId: "default" } });
   }
-  const categories = await prisma.category.findMany();
+  const categories = await prisma.category.findMany({ where: { companyId: "default" } });
   const catId = (slug: string) => categories.find((c) => c.slug === slug)?.id ?? null;
 
   // Posts das ações (mais recente primeiro: ordem do array)
   const now = new Date();
   for (const [i, a] of ACTIONS.entries()) {
+    const existingPost = await prisma.post.findUnique({ where: { slug: a.slug }, select: { id: true } });
+    if (existingPost) continue;
     const gallery = manifest[a.images] ?? [];
     const cover = gallery[0] ?? null;
     const content = a.paragraphs.join("\n\n");

@@ -16,8 +16,10 @@ export async function selectCompanyAction(companyId: string) {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/",
+    path: "/admin",
   });
+  // Remove a versão antiga, que tinha escopo global e contaminava o site público.
+  (await cookies()).set("active-company", "", { maxAge: 0, path: "/" });
   revalidatePath("/", "layout");
   revalidatePath("/admin", "layout");
 }

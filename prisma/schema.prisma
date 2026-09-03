@@ -220,6 +220,9 @@ model Company {
   id        String   @id
   name      String
   slug      String   @unique
+  logo      String?
+  primaryColor   String?
+  secondaryColor String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

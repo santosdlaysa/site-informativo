@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
@@ -7,13 +6,18 @@ import { PostCard } from "@/presentation/components/public/post-card";
 import { ImageSlot } from "@/presentation/components/image-slot";
 import { formatLongDate } from "@/presentation/lib/format";
 import { dayAndMonthAbbr, hourMinute } from "@/presentation/lib/datetime";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
+import { getActiveCompany } from "@/infrastructure/tenant";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Busca",
-  description: "Encontre posts, ações e eventos do Raros Boa Vista.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const company = await getActiveCompany();
+  return {
+    title: "Busca",
+    description: `Encontre posts, ações e eventos do ${company?.name || "Raros Boa Vista"}.`,
+  };
+}
 
 export default async function BuscaPage({
   searchParams,
@@ -23,12 +27,14 @@ export default async function BuscaPage({
   const { q } = await searchParams;
   const search = q?.trim() || undefined;
 
-  const [posts, events] = search
-    ? await Promise.all([
+  const [content, company] = await Promise.all([
+    search ? Promise.all([
         container.listPublishedPosts.execute({ search, take: 24, type: PostType.Standard }),
         container.listEvents.execute({ search }),
-      ])
-    : [[], []];
+      ]) : Promise.resolve([[], []] as const),
+    getActiveCompany(),
+  ]);
+  const [posts, events] = content;
 
   const total = posts.length + events.length;
 
@@ -37,7 +43,7 @@ export default async function BuscaPage({
       <section className="page-hero page-hero--brand">
         <div className="wrap">
           <h1>Busca</h1>
-          <p>Procure por posts, ações e eventos do Raros Boa Vista.</p>
+          <p>Procure por posts, ações e eventos do {company?.name || "Raros Boa Vista"}.</p>
           <form className="busca-form" action="/busca" method="get" role="search">
             <svg className="busca-form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />

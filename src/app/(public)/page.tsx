@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { container } from "@/infrastructure/container";
 import { PostType } from "@/core/domain/post/post-status";
@@ -9,6 +8,7 @@ import { CalendarWidget } from "@/presentation/components/public/calendar-widget
 import { TodayCalendarBar } from "@/presentation/components/public/today-calendar-bar";
 import { formatLongDate } from "@/presentation/lib/format";
 import equipeImg from "@/assets/img.png";
+import { CompanyLink as Link } from "@/presentation/components/public/company-link";
 
 export const dynamic = "force-dynamic";
 

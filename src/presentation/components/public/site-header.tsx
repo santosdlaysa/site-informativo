@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import logoHorizontal from "@/assets/Logo horizontal.png";
+import { CompanyLink, useCompanyPath } from "./company-link";
 
 const LINKS = [
   { href: "/", label: "Home" },
@@ -14,16 +14,19 @@ const LINKS = [
   { href: "/eventos", label: "Eventos" },
 ];
 
-export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export function SiteHeader({ isLoggedIn = false, company }: { isLoggedIn?: boolean; company?: { name: string; logo?: string | null } | null }) {
   const pathname = usePathname();
   const router = useRouter();
+  const companyPath = useCompanyPath();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    const target = companyPath(href);
+    return href === "/" ? pathname === target : pathname.startsWith(target);
+  };
 
   // Fecha o menu mobile e a busca ao navegar para outra página.
   useEffect(() => {
@@ -40,28 +43,31 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
-    router.push(`/busca?q=${encodeURIComponent(q)}`);
+    router.push(companyPath(`/busca?q=${encodeURIComponent(q)}`));
     setSearchOpen(false);
   }
 
   return (
     <header className="site-header">
       <div className="wrap nav">
-        <Link className="brand" href="/" aria-label="Raros Boa Vista — início">
-          <Image
-            className="brand-logo"
-            src={logoHorizontal}
-            alt="Raros Boa Vista"
-            priority
-            height={38}
-          />
-        </Link>
+        <CompanyLink className="brand" href="/" aria-label={`${company?.name || "Site"} — início`}>
+          {company?.logo ? (
+            <img
+              className="brand-logo brand-logo--company"
+              src={company.logo}
+              alt={company.name}
+              style={{ width: "auto", height: 58, maxWidth: 220, objectFit: "contain" }}
+            />
+          ) : (
+            <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" priority width={320} height={38} style={{ width: "auto", height: 38, maxWidth: "100%", objectFit: "contain" }} />
+          )}
+        </CompanyLink>
         <ul className="menu">
           {LINKS.map((l) => (
             <li key={l.href}>
-              <Link className={isActive(l.href) ? "active" : ""} href={l.href}>
+              <CompanyLink className={isActive(l.href) ? "active" : ""} href={l.href}>
                 {l.label}
-              </Link>
+              </CompanyLink>
             </li>
           ))}
         </ul>
@@ -115,13 +121,13 @@ export function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           <ul>
             {LINKS.map((l) => (
               <li key={l.href}>
-                <Link
+                <CompanyLink
                   className={isActive(l.href) ? "active" : ""}
                   href={l.href}
                   onClick={() => setMenuOpen(false)}
                 >
                   {l.label}
-                </Link>
+                </CompanyLink>
               </li>
             ))}
           </ul>

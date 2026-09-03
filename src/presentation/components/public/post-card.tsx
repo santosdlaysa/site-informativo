@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { PostListItem } from "@/core/domain/post/post.repository";
 import { ImageSlot } from "../image-slot";
 import { badgeClass } from "@/presentation/lib/category-variant";
 import { formatLongDate } from "@/presentation/lib/format";
+import { CompanyLink as Link } from "./company-link";
 
 export function PostCard({ post }: { post: PostListItem }) {
   return (

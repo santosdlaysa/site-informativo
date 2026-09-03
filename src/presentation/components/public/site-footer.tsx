@@ -27,7 +27,9 @@ const SOCIAL_ICONS = {
   ),
 } as const;
 
-export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
+export function SiteFooter({ settings, company }: { settings: SiteSettingsData; company?: { name: string; logo?: string | null } | null }) {
+  const companyName = company?.name || "Raros Boa Vista";
+  const isAdsocial = companyName === "ADSocial";
   const socials: { key: keyof typeof SOCIAL_ICONS; label: string; href: string }[] = [
     { key: "facebook", label: "Facebook", href: settings.socialFacebook },
     { key: "twitter", label: "Twitter", href: settings.socialTwitter },
@@ -41,29 +43,37 @@ export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
         <div className="footer-contact" id="contato">
           <div className="fc-about">
             <span className="brand">
-              <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={32} />
+              {company?.logo ? (
+                <img className="brand-logo" src={company.logo} alt={company.name} style={{ width: "auto", height: 32, maxWidth: "100%", objectFit: "contain" }} />
+              ) : (
+                <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={32} width={220} style={{ width: "auto", height: 32, maxWidth: "100%", objectFit: "contain" }} />
+              )}
             </span>
             <p>
-              O Centro Social Raros Boa Vista promove capacitação, inclusão digital e
-              desenvolvimento artístico de crianças, adolescentes e jovens em Roraima,
-              fortalecendo vínculos e gerando redes de apoio para a comunidade.
+              {isAdsocial
+                ? "O ADSocial promove assistência social, educação, cultura, saúde, inclusão e desenvolvimento para transformar comunidades."
+                : "O Centro Social Raros Boa Vista promove capacitação, inclusão digital e desenvolvimento artístico de crianças, adolescentes e jovens em Roraima, fortalecendo vínculos e redes de apoio para a comunidade."}
             </p>
           </div>
           <div className="fc-col">
             <h4>Contato</h4>
-            <a href="mailto:adsocial.projetoacdg@gmail.com">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="m3 7 9 6 9-6" />
-              </svg>{" "}
-              adsocial.projetoacdg@gmail.com
-            </a>
-            <a href="tel:+5595981238294">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z" />
-              </svg>{" "}
-              (95) 98123-8294
-            </a>
+            {isAdsocial && (
+              <>
+                <a href="mailto:adsocial.projetoacdg@gmail.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m3 7 9 6 9-6" />
+                  </svg>{" "}
+                  adsocial.projetoacdg@gmail.com
+                </a>
+                <a href="tel:+5595981238294">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z" />
+                  </svg>{" "}
+                  (95) 98123-8294
+                </a>
+              </>
+            )}
             <span className="fc-loc">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
@@ -95,9 +105,13 @@ export function SiteFooter({ settings }: { settings: SiteSettingsData }) {
 
         <div className="footer-bottom">
           <span className="brand">
-            <Image className="brand-logo" src={logoHorizontal} alt="Raros Boa Vista" height={26} />
+            {company?.logo ? (
+              <img className="brand-logo" src={company.logo} alt={companyName} style={{ width: "auto", height: 26, objectFit: "contain" }} />
+            ) : (
+              <Image className="brand-logo" src={logoHorizontal} alt={companyName} height={26} />
+            )}
           </span>
-          <span>© 2026 Raros Boa Vista. Todos os direitos reservados.</span>
+          <span>© 2026 {companyName}. Todos os direitos reservados.</span>
         </div>
       </div>
     </footer>
