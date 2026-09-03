@@ -336,3 +336,27 @@ a{text-decoration:none;color:inherit;}
 .toast-msg{flex:1;line-height:1.4;}
 .toast-close{display:flex;align-items:center;background:none;border:none;cursor:pointer;color:inherit;opacity:.5;padding:2px;flex:none;}
 .toast-close:hover{opacity:1;}
+.main-company-switcher {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 20px;
+}
+
+.company-switcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #526174;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.company-switcher select {
+  min-width: 190px;
+  border: 1px solid #d8e0ea;
+  border-radius: 8px;
+  background: #fff;
+  color: #172337;
+  padding: 9px 12px;
+  font: inherit;
+}

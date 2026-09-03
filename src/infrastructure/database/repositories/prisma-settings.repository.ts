@@ -1,10 +1,12 @@
 import { prisma } from "@/infrastructure/database/prisma";
 import type { SettingsRepository } from "@/core/domain/settings/settings.repository";
 import { DEFAULT_SETTINGS, type SiteSettingsData } from "@/core/domain/settings/site-settings";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 export class PrismaSettingsRepository implements SettingsRepository {
   async get(): Promise<SiteSettingsData> {
-    const row = await prisma.siteSettings.findUnique({ where: { id: "default" } });
+    const companyId = await getActiveCompanyId();
+    const row = await prisma.siteSettings.findUnique({ where: { companyId } });
     if (!row) return { ...DEFAULT_SETTINGS };
     return {
       heroBgImage: row.heroBgImage ?? null,
@@ -52,9 +54,10 @@ export class PrismaSettingsRepository implements SettingsRepository {
   }
 
   async update(data: Partial<SiteSettingsData>): Promise<void> {
+    const companyId = await getActiveCompanyId();
     await prisma.siteSettings.upsert({
-      where: { id: "default" },
-      create: { id: "default", ...DEFAULT_SETTINGS, ...data },
+      where: { companyId },
+      create: { id: companyId === "default" ? "default" : undefined, companyId, ...DEFAULT_SETTINGS, ...data },
       update: data,
     });
   }

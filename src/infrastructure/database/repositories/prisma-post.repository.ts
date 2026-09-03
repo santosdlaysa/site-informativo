@@ -8,6 +8,7 @@ import {
 } from "@/core/domain/post/post.repository";
 import { prisma } from "../prisma";
 import { PostMapper } from "../mappers/post.mapper";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 const relationsInclude = {
   author: { select: { id: true, name: true, bio: true, avatar: true } },
@@ -17,41 +18,42 @@ const relationsInclude = {
 export class PrismaPostRepository implements PostRepository {
   async save(post: Post): Promise<void> {
     const data = PostMapper.toPersistence(post);
+    const companyId = await getActiveCompanyId();
     await prisma.post.upsert({
       where: { id: post.id },
-      create: data,
-      update: data,
+      create: { ...data, companyId },
+      update: { ...data, companyId },
     });
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.post.delete({ where: { id } });
+    await prisma.post.deleteMany({ where: { id, companyId: await getActiveCompanyId() } });
   }
 
   async findEntityById(id: string): Promise<Post | null> {
-    const row = await prisma.post.findUnique({ where: { id } });
+    const row = await prisma.post.findFirst({ where: { id, companyId: await getActiveCompanyId() } });
     return row ? PostMapper.toDomain(row) : null;
   }
 
   async slugExists(slug: string, ignoreId?: string): Promise<boolean> {
     const found = await prisma.post.findFirst({
-      where: { slug, ...(ignoreId ? { NOT: { id: ignoreId } } : {}) },
+      where: { slug, companyId: await getActiveCompanyId(), ...(ignoreId ? { NOT: { id: ignoreId } } : {}) },
       select: { id: true },
     });
     return found !== null;
   }
 
   async findDetailBySlug(slug: string): Promise<PostDetail | null> {
-    const row = await prisma.post.findUnique({
-      where: { slug },
+    const row = await prisma.post.findFirst({
+      where: { slug, companyId: await getActiveCompanyId() },
       include: relationsInclude,
     });
     return row ? PostMapper.toDetail(row) : null;
   }
 
   async findDetailById(id: string): Promise<PostDetail | null> {
-    const row = await prisma.post.findUnique({
-      where: { id },
+    const row = await prisma.post.findFirst({
+      where: { id, companyId: await getActiveCompanyId() },
       include: relationsInclude,
     });
     return row ? PostMapper.toDetail(row) : null;
@@ -59,7 +61,7 @@ export class PrismaPostRepository implements PostRepository {
 
   async list(filter: ListPostsFilter = {}): Promise<PostListItem[]> {
     const rows = await prisma.post.findMany({
-      where: this.buildWhere(filter),
+      where: { ...this.buildWhere(filter), companyId: await getActiveCompanyId() },
       include: relationsInclude,
       orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
       skip: filter.skip,
@@ -69,7 +71,7 @@ export class PrismaPostRepository implements PostRepository {
   }
 
   async count(filter: ListPostsFilter = {}): Promise<number> {
-    return prisma.post.count({ where: this.buildWhere(filter) });
+    return prisma.post.count({ where: { ...this.buildWhere(filter), companyId: await getActiveCompanyId() } });
   }
 
   private buildWhere(filter: ListPostsFilter): Prisma.PostWhereInput {

@@ -8,16 +8,18 @@ import type { UserRole } from "@/core/domain/user/user-role";
 export function AdminPanelClient({
   role,
   passwordChangeRequired,
+  companySwitcher,
   children,
 }: {
   role: UserRole;
   passwordChangeRequired: boolean;
+  companySwitcher?: React.ReactNode;
   children?: React.ReactNode;
 }) {
   return (
     <div className="app">
       <AdminSidebar currentUserRole={role} />
-      <main className="main">{children}</main>
+      <main className="main"><div className="main-company-switcher">{companySwitcher}</div>{children}</main>
       {passwordChangeRequired && <ForcePasswordChangeModal />}
       <ToastRouteListener />
       <ToastContainer />

@@ -88,12 +88,31 @@ async function main() {
   const password = process.env.ADMIN_PASSWORD;
   const name = process.env.ADMIN_NAME ?? "Admin";
 
+  // Empresas atendidas pelo mesmo painel. O conteúdo antigo fica vinculado à
+  // empresa padrão; a segunda empresa serve como ponto de partida para o novo site.
+  await prisma.company.upsert({
+    where: { id: "default" },
+    update: { name: "Raros Boa Vista", slug: "raros-boa-vista" },
+    create: { id: "default", name: "Raros Boa Vista", slug: "raros-boa-vista" },
+  });
+  await prisma.company.upsert({
+    where: { id: "segunda-empresa" },
+    update: { name: "Segunda Empresa", slug: "segunda-empresa" },
+    create: { id: "segunda-empresa", name: "Segunda Empresa", slug: "segunda-empresa" },
+  });
+
   // Usuário administrador (preservado entre execuções)
   const passwordHash = await bcrypt.hash(password, 10);
   const admin = await prisma.user.upsert({
     where: { email },
     update: {},
-    create: { email, name, passwordHash, role: "admin" },
+    create: { email, name, passwordHash, role: "admin", companyId: "default" },
+  });
+
+  await prisma.siteSettings.upsert({
+    where: { companyId: "segunda-empresa" },
+    update: {},
+    create: { companyId: "segunda-empresa" },
   });
 
   // Limpeza dos dados de teste — deixa o site apenas com as ações reais.

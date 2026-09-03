@@ -4,6 +4,7 @@ import { EventFormat } from "@/core/domain/event/event-format";
 import { EventRepository, EventView } from "@/core/domain/event/event.repository";
 import { Slug } from "@/core/domain/post/slug";
 import { prisma } from "../prisma";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 type RowWithCategory = PrismaEvent & { category: PrismaCategory | null };
 
@@ -43,6 +44,7 @@ function toView(row: RowWithCategory): EventView {
 export class PrismaEventRepository implements EventRepository {
   async save(event: Event): Promise<void> {
     const s = event.toSnapshot();
+    const companyId = await getActiveCompanyId();
     const data = {
       id: s.id,
       title: s.title,
@@ -56,22 +58,23 @@ export class PrismaEventRepository implements EventRepository {
       capacity: s.capacity,
       createdAt: s.createdAt,
       updatedAt: s.updatedAt,
+      companyId,
     };
     await prisma.event.upsert({ where: { id: s.id }, create: data, update: data });
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.event.delete({ where: { id } });
+    await prisma.event.deleteMany({ where: { id, companyId: await getActiveCompanyId() } });
   }
 
   async findById(id: string): Promise<Event | null> {
-    const row = await prisma.event.findUnique({ where: { id } });
+    const row = await prisma.event.findFirst({ where: { id, companyId: await getActiveCompanyId() } });
     return row ? toDomain(row) : null;
   }
 
   async slugExists(slug: string, ignoreId?: string): Promise<boolean> {
     const found = await prisma.event.findFirst({
-      where: { slug, ...(ignoreId ? { NOT: { id: ignoreId } } : {}) },
+      where: { slug, companyId: await getActiveCompanyId(), ...(ignoreId ? { NOT: { id: ignoreId } } : {}) },
       select: { id: true },
     });
     return found !== null;
@@ -79,7 +82,7 @@ export class PrismaEventRepository implements EventRepository {
 
   async list(filter: { format?: EventFormat; search?: string } = {}): Promise<EventView[]> {
     const rows = await prisma.event.findMany({
-      where: {
+      where: { companyId: await getActiveCompanyId(),
         ...(filter.format ? { format: filter.format } : {}),
         ...(filter.search
           ? {
@@ -98,8 +101,8 @@ export class PrismaEventRepository implements EventRepository {
   }
 
   async findViewBySlug(slug: string): Promise<EventView | null> {
-    const row = await prisma.event.findUnique({
-      where: { slug },
+    const row = await prisma.event.findFirst({
+      where: { slug, companyId: await getActiveCompanyId() },
       include: { category: true },
     });
     return row ? toView(row) : null;

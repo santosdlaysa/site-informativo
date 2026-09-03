@@ -82,11 +82,9 @@ async function main() {
 
   // 1) Categorias (upsert por slug)
   for (const c of CATEGORIES) {
-    await prisma.category.upsert({
-      where: { slug: c.slug },
-      update: { name: c.name, variant: c.variant },
-      create: c,
-    });
+    const existing = await prisma.category.findFirst({ where: { slug: c.slug, companyId: "default" } });
+    if (existing) await prisma.category.update({ where: { id: existing.id }, data: { name: c.name, variant: c.variant } });
+    else await prisma.category.create({ data: { ...c, companyId: "default" } });
   }
   const cats = await prisma.category.findMany();
   const catId = (slug: string) => cats.find((c) => c.slug === slug)?.id ?? null;

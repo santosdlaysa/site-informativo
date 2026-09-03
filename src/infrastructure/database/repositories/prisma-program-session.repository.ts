@@ -6,6 +6,7 @@ import {
 } from "@/core/domain/program/program-session.repository";
 import { SessionStatus } from "@/core/domain/program/session-status";
 import { prisma } from "../prisma";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 type RowWithCategory = PrismaSession & { category: PrismaCategory | null };
 
@@ -45,6 +46,7 @@ function toView(row: RowWithCategory): SessionView {
 export class PrismaProgramSessionRepository implements ProgramSessionRepository {
   async save(session: ProgramSession): Promise<void> {
     const s = session.toSnapshot();
+    const companyId = await getActiveCompanyId();
     const data = {
       id: s.id,
       title: s.title,
@@ -58,21 +60,23 @@ export class PrismaProgramSessionRepository implements ProgramSessionRepository 
       link: s.link,
       createdAt: s.createdAt,
       updatedAt: s.updatedAt,
+      companyId,
     };
     await prisma.programSession.upsert({ where: { id: s.id }, create: data, update: data });
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.programSession.delete({ where: { id } });
+    await prisma.programSession.deleteMany({ where: { id, companyId: await getActiveCompanyId() } });
   }
 
   async findById(id: string): Promise<ProgramSession | null> {
-    const row = await prisma.programSession.findUnique({ where: { id } });
+    const row = await prisma.programSession.findFirst({ where: { id, companyId: await getActiveCompanyId() } });
     return row ? toDomain(row) : null;
   }
 
   async list(): Promise<SessionView[]> {
     const rows = await prisma.programSession.findMany({
+      where: { companyId: await getActiveCompanyId() },
       orderBy: { startsAt: "asc" },
       include: { category: true },
     });

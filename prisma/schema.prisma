@@ -43,14 +43,16 @@ model User {
   avatar       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
 
   posts Post[]
 }
 
 model Category {
   id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
+  name      String
+  slug      String
   // chave da variante visual do badge (news | tec | saude | tut | eventos)
   variant   String   @default("tec")
   createdAt DateTime @default(now())
@@ -58,6 +60,9 @@ model Category {
   posts    Post[]
   sessions ProgramSession[]
   events   Event[]
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
+
 }
 
 model Post {
@@ -73,6 +78,8 @@ model Post {
   publishedAt DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
@@ -115,6 +122,8 @@ model ProgramSession {
   link        String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
 
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
@@ -167,6 +176,8 @@ model SiteSettings {
   socialLinkedin  String @default("")
   socialInstagram String @default("")
   updatedAt    DateTime @updatedAt
+  companyId    String   @unique @default("default")
+  company      Company  @relation(fields: [companyId], references: [id])
 }
 
 model Event {
@@ -181,6 +192,8 @@ model Event {
   capacity    Int?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
 
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
@@ -197,6 +210,24 @@ model CalendarDate {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  companyId String @default("default")
+  company   Company @relation(fields: [companyId], references: [id])
 
   @@index([date])
+}
+
+model Company {
+  id        String   @id
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users         User[]
+  categories    Category[]
+  posts         Post[]
+  sessions      ProgramSession[]
+  events        Event[]
+  calendarDates CalendarDate[]
+  siteSettings  SiteSettings?
 }
