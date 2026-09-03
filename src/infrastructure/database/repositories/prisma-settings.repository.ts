@@ -57,7 +57,7 @@ export class PrismaSettingsRepository implements SettingsRepository {
     const companyId = await getActiveCompanyId();
     await prisma.siteSettings.upsert({
       where: { companyId },
-      create: { id: companyId === "default" ? "default" : undefined, companyId, ...DEFAULT_SETTINGS, ...data },
+      create: { id: companyId, companyId, ...DEFAULT_SETTINGS, ...data },
       update: data,
     });
   }

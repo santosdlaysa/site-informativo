@@ -112,7 +112,7 @@ async function main() {
   await prisma.siteSettings.upsert({
     where: { companyId: "segunda-empresa" },
     update: {},
-    create: { companyId: "segunda-empresa" },
+    create: { id: "segunda-empresa", companyId: "segunda-empresa" },
   });
 
   // Limpeza dos dados de teste — deixa o site apenas com as ações reais.
