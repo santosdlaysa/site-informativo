@@ -175,6 +175,8 @@ model SiteSettings {
   socialTwitter   String @default("")
   socialLinkedin  String @default("")
   socialInstagram String @default("")
+  transparencyTitle String @default("Portal da Transparência")
+  transparencyDescription String @default("Acompanhe documentos, relatórios e informações institucionais do ADSocial.")
   updatedAt    DateTime @updatedAt
   companyId    String   @unique @default("default")
   company      Company  @relation(fields: [companyId], references: [id])
@@ -233,4 +235,26 @@ model Company {
   events        Event[]
   calendarDates CalendarDate[]
   siteSettings  SiteSettings?
+  transparencyDocuments TransparencyDocument[]
+}
+
+model TransparencyDocument {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  category      String
+  referenceYear Int?
+  fileName      String
+  mimeType      String
+  fileData      Bytes
+  fileSize      Int
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, published])
+  @@index([referenceYear])
 }

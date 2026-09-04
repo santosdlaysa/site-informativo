@@ -11,6 +11,7 @@ import {
   SettingsIcon,
   LogoutIcon,
   UsersIcon,
+  DocumentIcon,
 } from "../icons";
 import { logoutAction } from "@/presentation/actions/auth-actions";
 import type { UserRole } from "@/core/domain/user/user-role";
@@ -22,6 +23,7 @@ const NAV = [
   { href: "/admin/programacao", label: "Programação", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/programacao") },
   { href: "/admin/eventos", label: "Eventos", Icon: EventIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/eventos") },
   { href: "/admin/calendario", label: "Calendário", Icon: CalendarIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/calendario") },
+  { href: "/admin/transparencia", label: "Portal da Transparência", Icon: DocumentIcon, roles: ["admin", "editor"], company: "adsocial", match: (p: string) => p.startsWith("/admin/transparencia") },
   { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
@@ -38,7 +40,8 @@ export function AdminSidebar({
   onCompanySwitchStart?: (companyName: string) => void;
 }) {
   const pathname = usePathname();
-  const navItems = NAV.filter((item) => item.roles.includes(currentUserRole));
+  const activeCompany = companies?.find((company) => company.id === activeCompanyId);
+  const navItems = NAV.filter((item) => item.roles.includes(currentUserRole) && (!("company" in item) || item.company === activeCompany?.slug));
 
   return (
     <aside className="sidebar">

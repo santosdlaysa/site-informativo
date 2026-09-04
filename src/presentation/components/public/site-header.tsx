@@ -14,13 +14,16 @@ const LINKS = [
   { href: "/eventos", label: "Eventos" },
 ];
 
-export function SiteHeader({ isLoggedIn = false, company }: { isLoggedIn?: boolean; company?: { name: string; logo?: string | null } | null }) {
+export function SiteHeader({ isLoggedIn = false, company }: { isLoggedIn?: boolean; company?: { name: string; slug: string; logo?: string | null } | null }) {
   const pathname = usePathname();
   const router = useRouter();
   const companyPath = useCompanyPath();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const links = company?.slug === "adsocial"
+    ? [...LINKS, { href: "/transparencia", label: "Portal da Transparência" }]
+    : LINKS;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const isActive = (href: string) => {
@@ -63,9 +66,9 @@ export function SiteHeader({ isLoggedIn = false, company }: { isLoggedIn?: boole
           )}
         </CompanyLink>
         <ul className="menu">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <li key={l.href}>
-              <CompanyLink className={isActive(l.href) ? "active" : ""} href={l.href}>
+              <CompanyLink className={`${isActive(l.href) ? "active" : ""}${l.href === "/transparencia" ? " menu-portal-link" : ""}`} href={l.href}>
                 {l.label}
               </CompanyLink>
             </li>
@@ -119,10 +122,10 @@ export function SiteHeader({ isLoggedIn = false, company }: { isLoggedIn?: boole
       {menuOpen && (
         <nav className="mobile-menu" aria-label="Menu principal">
           <ul>
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <li key={l.href}>
                 <CompanyLink
-                  className={isActive(l.href) ? "active" : ""}
+                  className={`${isActive(l.href) ? "active" : ""}${l.href === "/transparencia" ? " menu-portal-link" : ""}`}
                   href={l.href}
                   onClick={() => setMenuOpen(false)}
                 >
