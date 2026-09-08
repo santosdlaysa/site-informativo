@@ -4,35 +4,38 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 import { createContext, useContext } from "react";
 
-const CompanySlugContext = createContext("raros-boa-vista");
+const CompanyContext = createContext({ slug: "raros-boa-vista", useSlugPrefix: true });
 
 export function CompanyPathProvider({
   slug,
+  useSlugPrefix = true,
   children,
 }: {
   slug: string;
+  useSlugPrefix?: boolean;
   children: React.ReactNode;
 }) {
-  return <CompanySlugContext.Provider value={slug}>{children}</CompanySlugContext.Provider>;
+  return <CompanyContext.Provider value={{ slug, useSlugPrefix }}>{children}</CompanyContext.Provider>;
 }
 
-export function withCompanyPath(slug: string, href: string) {
+export function withCompanyPath(slug: string, href: string, useSlugPrefix = true) {
   if (!href.startsWith("/") || href.startsWith("//")) return href;
+  if (!useSlugPrefix) return href;
   if (href === `/${slug}` || href.startsWith(`/${slug}/`) || href.startsWith(`/${slug}?`)) return href;
   return `/${slug}${href === "/" ? "" : href}`;
 }
 
 export function useCompanyPath() {
-  const slug = useContext(CompanySlugContext);
-  return (href: string) => withCompanyPath(slug, href);
+  const { slug, useSlugPrefix } = useContext(CompanyContext);
+  return (href: string) => withCompanyPath(slug, href, useSlugPrefix);
 }
 
 export function CompanyLink({ href, ...props }: ComponentProps<typeof Link>) {
-  const slug = useContext(CompanySlugContext);
+  const { slug, useSlugPrefix } = useContext(CompanyContext);
   const companyHref =
     typeof href === "string"
-      ? withCompanyPath(slug, href)
-      : { ...href, pathname: href.pathname ? withCompanyPath(slug, href.pathname) : href.pathname };
+      ? withCompanyPath(slug, href, useSlugPrefix)
+      : { ...href, pathname: href.pathname ? withCompanyPath(slug, href.pathname, useSlugPrefix) : href.pathname };
 
   return <Link href={companyHref} {...props} />;
 }

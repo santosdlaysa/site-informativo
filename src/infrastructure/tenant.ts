@@ -17,8 +17,11 @@ export async function getActiveCompanyId(): Promise<string> {
   }
   const cookieStore = await cookies();
   const value = cookieStore.get(ACTIVE_COMPANY_COOKIE)?.value ?? cookieStore.get(PUBLIC_COMPANY_COOKIE)?.value;
-  if (!value) return DEFAULT_COMPANY_ID;
-  const company = await prisma.company.findUnique({ where: { id: value }, select: { id: true } });
+  const publicSlug = cookieStore.get(PUBLIC_COMPANY_SLUG_COOKIE)?.value;
+  if (!value && !publicSlug) return DEFAULT_COMPANY_ID;
+  const company = value
+    ? await prisma.company.findUnique({ where: { id: value }, select: { id: true } })
+    : await prisma.company.findUnique({ where: { slug: publicSlug! }, select: { id: true } });
   return company?.id ?? DEFAULT_COMPANY_ID;
 }
 

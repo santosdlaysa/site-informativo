@@ -2,6 +2,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { prisma } from "@/infrastructure/database/prisma";
 import { PUBLIC_COMPANY_COOKIE, PUBLIC_COMPANY_SLUG_COOKIE } from "@/infrastructure/tenant";
 import { NextRequest, NextResponse } from "next/server";
+import { getCompanyDomain, isAdminHostname } from "@/infrastructure/site-domains";
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -15,7 +16,11 @@ export async function GET(request: NextRequest) {
     : null;
   if (!company) return NextResponse.redirect(new URL("/", request.url));
 
-  const response = NextResponse.redirect(new URL(`/${company.slug}`, request.url));
+  const companyDomain = getCompanyDomain(company.slug);
+  const destination = companyDomain && isAdminHostname(request.headers.get("host"))
+    ? `https://${companyDomain}/`
+    : new URL(`/${company.slug}`, request.url);
+  const response = NextResponse.redirect(destination);
   // Remove cookies antigos da primeira versão multiempresa. Eles eram globais
   // e podiam sobrescrever a empresa escolhida no preview público.
   response.cookies.set("active-company", "", { maxAge: 0, path: "/" });

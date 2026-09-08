@@ -102,7 +102,7 @@ export function TransparencyManager({
           <h1>Portal da Transparência</h1>
           <div className="sub">Edite a apresentação e publique documentos do ADSocial</div>
         </div>
-        <a href="/adsocial/transparencia" target="_blank" rel="noreferrer" className="btn">
+        <a href="https://adsocialoficial.org/transparencia" target="_blank" rel="noreferrer" className="btn">
           Ver página pública
         </a>
       </div>

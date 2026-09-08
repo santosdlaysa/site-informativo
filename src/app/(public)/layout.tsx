@@ -6,6 +6,7 @@ import { SiteFooter } from "@/presentation/components/public/site-footer";
 import { CompanyPathProvider } from "@/presentation/components/public/company-link";
 import { getActiveCompany } from "@/infrastructure/tenant";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const company = await getActiveCompany();
@@ -25,13 +26,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const [session, settings, company] = await Promise.all([
+  const [session, settings, company, requestHeaders] = await Promise.all([
     auth(),
     container.getSettings.execute(),
     getActiveCompany(),
+    headers(),
   ]);
+  const usesCompanyDomain = requestHeaders.get("x-company-domain-routing") === "1";
   return (
-    <CompanyPathProvider slug={company?.slug || "raros-boa-vista"}>
+    <CompanyPathProvider slug={company?.slug || "raros-boa-vista"} useSlugPrefix={!usesCompanyDomain}>
       <div className={`company-public-theme company-public-theme--${company?.slug || "raros-boa-vista"}`} style={{
         "--company-primary": company?.primaryColor || "#703cc0",
         "--company-secondary": company?.secondaryColor || "#267ce8",
