@@ -14,6 +14,8 @@ export const metadata: Metadata = { title: "Configurações — Admin" };
 export default async function AdminSettingsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/admin/login");
+  // As configurações do site são exclusivas do administrador.
+  if (normalizeUserRole(session.user.role) !== "admin") redirect("/admin/posts");
 
   const settings = await container.getSettings.execute();
 

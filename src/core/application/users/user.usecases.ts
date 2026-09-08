@@ -3,7 +3,6 @@ import { UserListItem, UserRepository } from "@/core/domain/user/user.repository
 import { normalizeUserRole, type UserRole } from "@/core/domain/user/user-role";
 import { PasswordHasher } from "../ports/password-hasher";
 
-const MAX_USERS = 3;
 const TEMPORARY_PASSWORD = "teste";
 const HIDDEN_EDITOR_EMAILS = new Set(["admin@meublog", "admin@meublog.com"]);
 
@@ -43,11 +42,6 @@ export class CreateUserUseCase {
     role: UserRole = "editor",
     companyId: string,
   ): Promise<UserListItem> {
-    const count = (await this.users.listAll(companyId)).filter(isVisibleEditor).length;
-    if (count >= MAX_USERS) {
-      throw new ValidationError(`Limite de ${MAX_USERS} editores atingido.`);
-    }
-
     const existing = await this.users.findByEmail(email.trim().toLowerCase());
     if (existing) throw new ConflictError("Já existe um editor com este e-mail.");
 

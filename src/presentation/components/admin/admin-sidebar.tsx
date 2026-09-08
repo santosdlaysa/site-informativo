@@ -26,7 +26,7 @@ const NAV = [
   { href: "/admin/transparencia", label: "Transparência", Icon: DocumentIcon, roles: ["admin", "editor"], company: "adsocial", match: (p: string) => p.startsWith("/admin/transparencia") },
   { href: "/admin/editores", label: "Editores", Icon: UsersIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/editores") },
   { href: "/admin/usuarios", label: "Usuários", Icon: UsersIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/usuarios") },
-  { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin", "editor"], match: (p: string) => p.startsWith("/admin/configuracoes") },
+  { href: "/admin/configuracoes", label: "Configurações", Icon: SettingsIcon, roles: ["admin"], match: (p: string) => p.startsWith("/admin/configuracoes") },
 ];
 
 export function AdminSidebar({

@@ -3,18 +3,29 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 
 export interface SettingsFormState {
   error?: string;
   success?: boolean;
 }
 
+/** As configurações do site são exclusivas do administrador. */
+async function requireAdmin(): Promise<SettingsFormState | null> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  if (normalizeUserRole(session.user.role) !== "admin") {
+    return { error: "Apenas o administrador pode alterar as configurações do site." };
+  }
+  return null;
+}
+
 export async function updateHeroSettingsAction(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const session = await auth();
-  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  const denied = await requireAdmin();
+  if (denied) return denied;
 
   const get = (key: string) => (formData.get(key) as string | null) ?? "";
 
@@ -46,8 +57,8 @@ export async function updateQuemSomosAction(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const session = await auth();
-  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  const denied = await requireAdmin();
+  if (denied) return denied;
 
   const get = (key: string) => (formData.get(key) as string | null) ?? "";
 
@@ -83,8 +94,8 @@ export async function updateRedesSociaisAction(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const session = await auth();
-  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  const denied = await requireAdmin();
+  if (denied) return denied;
 
   const get = (key: string) => ((formData.get(key) as string | null) ?? "").trim();
 
@@ -104,8 +115,8 @@ export async function updateContactSettingsAction(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const session = await auth();
-  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+  const denied = await requireAdmin();
+  if (denied) return denied;
 
   const contactEmail = ((formData.get("contactEmail") as string | null) ?? "").trim();
   const contactPhone = ((formData.get("contactPhone") as string | null) ?? "").trim();

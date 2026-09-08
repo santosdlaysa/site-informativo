@@ -13,7 +13,6 @@ import { TrashIcon, PlusIcon, LockIcon, UsersIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
 import { CollapsiblePanel } from "./collapsible-panel";
 
-const MAX_USERS = 3;
 const INITIAL: UserFormState = {};
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
 const EMPTY_MODAL_STATE: UserFormState = {};
@@ -52,7 +51,7 @@ export function UsersManager({
   const [addingUser, setAddingUser] = useState(false);
   const router = useRouter();
   const isAdmin = currentUserRole === "admin";
-  const canAdd = isAdmin && users.length < MAX_USERS;
+  const canAdd = isAdmin;
   const currentUser = users.find((u) => u.id === currentUserId) ?? null;
   const currentUserForModal: UserListItem = currentUser ?? {
     id: currentProfile.id,
@@ -109,7 +108,7 @@ export function UsersManager({
       <div className="panel">
         <div className="panel-head">
           <h2>Editores cadastrados</h2>
-          <span className="count">{users.length} / {MAX_USERS}</span>
+          <span className="count">{users.length} {users.length === 1 ? "editor" : "editores"}</span>
         </div>
 
         <table className="tbl">
@@ -229,12 +228,6 @@ export function UsersManager({
             </div>
           </form>
         </CollapsiblePanel>
-      )}
-
-      {isAdmin && !canAdd && (
-        <div className="panel panel-pad" style={{ color: "#6b7280", fontSize: 14, textAlign: "center" }}>
-          Limite de {MAX_USERS} editores atingido. Remova um para adicionar outro.
-        </div>
       )}
 
       {editingUser && (

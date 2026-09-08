@@ -26,7 +26,7 @@ export default async function EditoresPage() {
       <div className="page-top">
         <div>
           <h1>Editores</h1>
-          <div className="sub">{role === "admin" ? "Gerencie quem pode acessar o painel (máx. 3)" : "Veja quem está no painel"}</div>
+          <div className="sub">{role === "admin" ? "Gerencie quem pode acessar o painel" : "Veja quem está no painel"}</div>
         </div>
       </div>
 

@@ -14,9 +14,6 @@ export interface UserFormState {
   success?: boolean;
 }
 
-/** Mesmo limite aplicado pelo CreateUserUseCase. */
-const MAX_USERS_PER_COMPANY = 3;
-
 const createSchema = z.object({
   name: z.string().trim().min(2, "O nome deve ter ao menos 2 caracteres."),
   email: z.string().trim().email("E-mail inválido."),
@@ -105,15 +102,6 @@ export async function updateUserCompaniesAction(userId: string, companyIds: stri
   if (!user) return { error: "Usuário não encontrado." };
   if (companies.length !== requested.length) return { error: "Site não encontrado." };
 
-  const current = new Set([user.companyId, ...user.companyAccesses.map((access) => access.companyId)]);
-  for (const company of companies) {
-    if (current.has(company.id)) continue;
-    const total = await countUsersWithAccess(company.id);
-    if (total >= MAX_USERS_PER_COMPANY) {
-      return { error: `O ${company.name} já tem ${MAX_USERS_PER_COMPANY} usuários.` };
-    }
-  }
-
   const ids = companies.map((company) => company.id);
   await prisma.$transaction([
     prisma.userCompanyAccess.deleteMany({ where: { userId, companyId: { notIn: ids } } }),
@@ -133,12 +121,6 @@ export async function updateUserCompaniesAction(userId: string, companyIds: stri
   return { success: true };
 }
 
-/** Quantos usuários já acessam um site (site padrão ou acesso extra). */
-async function countUsersWithAccess(companyId: string): Promise<number> {
-  return prisma.user.count({
-    where: { OR: [{ companyId }, { companyAccesses: { some: { companyId } } }] },
-  });
-}
 
 export async function deleteUserAction(id: string): Promise<UserFormState> {
   const session = await auth();
