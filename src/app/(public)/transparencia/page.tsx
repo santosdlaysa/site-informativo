@@ -24,18 +24,11 @@ export default async function TransparencyPage() {
 
   return (
     <main className="transparency-page">
-      <section className="transparency-hero">
-        <div className="wrap transparency-hero-inner">
-          <div className="transparency-seal" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 21h18M5 21V10M19 21V10M3 10l9-7 9 7M9 14v3M15 14v3" />
-            </svg>
-          </div>
-          <div>
-            <span className="transparency-eyebrow">Acesso à informação</span>
-            <h1>{settings.transparencyTitle}</h1>
-            <p>{settings.transparencyDescription}</p>
-          </div>
+      <section className="page-hero page-hero--brand">
+        <div className="wrap">
+          <span className="eyebrow">Acesso à informação</span>
+          <h1>{settings.transparencyTitle}</h1>
+          <p>{settings.transparencyDescription}</p>
         </div>
       </section>
 

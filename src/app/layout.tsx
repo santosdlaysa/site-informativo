@@ -10,10 +10,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  // Cada site público aplica seu próprio nome e template no layout interno.
-  title: "Raros Boa Vista",
+  // Metadados neutros da plataforma: cada site público aplica seu próprio nome e
+  // template no layout interno, e o painel faz o mesmo em /admin.
+  title: "Movie",
   description:
-    "O Centro Social Raros Boa Vista promove capacitação, inclusão digital e desenvolvimento artístico de crianças, adolescentes e jovens em Roraima, fortalecendo vínculos e gerando redes de apoio para a comunidade.",
+    "Plataforma Movie para gestão dos sites institucionais: posts, eventos, projetos, programação e transparência.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
