@@ -43,6 +43,7 @@ import {
   DeleteUserUseCase,
   GetUserSecurityUseCase,
   ListUsersUseCase,
+  ListAllUsersUseCase,
   UpdateOwnPasswordUseCase,
 } from "@/core/application/users/user.usecases";
 
@@ -107,6 +108,7 @@ export const container = {
   updateSettings: new UpdateSettingsUseCase(settingsRepository),
   // gestão de editores
   listUsers: new ListUsersUseCase(userRepository),
+  listAllUsers: new ListAllUsersUseCase(userRepository),
   createUser: new CreateUserUseCase(userRepository, passwordHasher),
   deleteUser: new DeleteUserUseCase(userRepository),
   getUserSecurity: new GetUserSecurityUseCase(userRepository),

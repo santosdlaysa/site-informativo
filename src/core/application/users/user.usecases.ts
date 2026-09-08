@@ -20,6 +20,16 @@ export class ListUsersUseCase {
   }
 }
 
+/** Lista os usuários de todas as empresas (tela "Usuários", só para admin). */
+export class ListAllUsersUseCase {
+  constructor(private readonly users: UserRepository) {}
+
+  async execute(): Promise<UserListItem[]> {
+    const users = await this.users.listAll();
+    return users.filter(isVisibleEditor);
+  }
+}
+
 export class CreateUserUseCase {
   constructor(
     private readonly users: UserRepository,
