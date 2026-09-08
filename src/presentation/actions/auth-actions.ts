@@ -38,7 +38,7 @@ export async function loginAction(
 
     const user = await prisma.user.findUnique({
       where: { email: String(email).trim().toLowerCase() },
-      select: { companyId: true, role: true },
+      select: { companyId: true, role: true, companyAccesses: { select: { companyId: true } } },
     });
     if (!user) return { error: "Usuário não possui empresa vinculada." };
 
@@ -51,9 +51,10 @@ export async function loginAction(
       });
       if (!company) return { error: "Site não encontrado." };
       // Administradores acessam qualquer empresa (já podem trocar pelo painel);
-      // os demais só entram pelo site ao qual estão vinculados.
+      // os demais entram pelos sites liberados no cadastro.
       const isAdmin = normalizeUserRole(user.role) === "admin";
-      if (company.id !== user.companyId && !isAdmin) {
+      const allowedCompanyIds = new Set([user.companyId, ...user.companyAccesses.map((access) => access.companyId)]);
+      if (!allowedCompanyIds.has(company.id) && !isAdmin) {
         await signOut({ redirect: false });
         return { error: `Este usuário não tem acesso ao painel do ${company.name}.` };
       }

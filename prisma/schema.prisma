@@ -43,10 +43,27 @@ model User {
   avatar       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  // Site padrão do usuário (onde ele entra ao logar).
   companyId String @default("default")
   company   Company @relation(fields: [companyId], references: [id])
 
+  // Sites que o usuário pode acessar. Vazio = apenas o site padrão.
+  companyAccesses UserCompanyAccess[]
+
   posts Post[]
+}
+
+/** Acesso de um usuário a um site (permite acessar mais de uma empresa). */
+model UserCompanyAccess {
+  userId    String
+  companyId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, companyId])
+  @@index([companyId])
 }
 
 model Category {
@@ -231,6 +248,7 @@ model Company {
   updatedAt DateTime @updatedAt
 
   users         User[]
+  userAccesses  UserCompanyAccess[]
   categories    Category[]
   posts         Post[]
   sessions      ProgramSession[]

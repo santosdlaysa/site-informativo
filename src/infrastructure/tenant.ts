@@ -1,5 +1,6 @@
 import { cookies, headers } from "next/headers";
 import { prisma } from "./database/prisma";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 
 // Seleção exclusiva do painel. O site público principal permanece na empresa
 // padrão até possuir um domínio/rota própria para cada empresa.
@@ -36,6 +37,39 @@ export async function getCompanyFromRequestSlug() {
 
 export async function listCompanies() {
   return prisma.company.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, slug: true, logo: true, primaryColor: true, secondaryColor: true } });
+}
+
+const COMPANY_SELECT = { id: true, name: true, slug: true, logo: true, primaryColor: true, secondaryColor: true } as const;
+
+/** Ids dos sites que o usuário pode acessar (site padrão + acessos extras). */
+export async function getUserCompanyIds(userId: string): Promise<string[]> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { companyId: true, companyAccesses: { select: { companyId: true } } },
+  });
+  if (!user) return [];
+  return [...new Set([user.companyId, ...user.companyAccesses.map((access) => access.companyId)])];
+}
+
+/** Sites disponíveis para o usuário no painel. Administradores acessam todos. */
+export async function listAccessibleCompanies(userId: string, role?: string | null) {
+  if (normalizeUserRole(role ?? "editor") === "admin") return listCompanies();
+  const ids = await getUserCompanyIds(userId);
+  if (ids.length === 0) return [];
+  return prisma.company.findMany({ where: { id: { in: ids } }, orderBy: { name: "asc" }, select: COMPANY_SELECT });
+}
+
+export async function userCanAccessCompany(userId: string, role: string | null | undefined, companyId: string) {
+  if (normalizeUserRole(role ?? "editor") === "admin") return true;
+  return (await getUserCompanyIds(userId)).includes(companyId);
+}
+
+/** Site ativo do usuário: o selecionado, se ele puder acessá-lo; senão o padrão. */
+export async function getEffectiveCompanyId(userId: string, role?: string | null): Promise<string> {
+  const active = await getActiveCompanyId();
+  if (await userCanAccessCompany(userId, role, active)) return active;
+  const ids = await getUserCompanyIds(userId);
+  return ids[0] ?? DEFAULT_COMPANY_ID;
 }
 
 export async function getActiveCompany() {

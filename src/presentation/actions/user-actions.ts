@@ -34,13 +34,20 @@ export async function createUserAction(
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
   if (session.user.role !== "admin") return { error: "Apenas o administrador pode criar editores." };
-  // A tela "Usuários" escolhe o site no formulário; nas demais vale a empresa ativa.
-  const requestedCompanyId = String(formData.get("companyId") ?? "").trim();
+  // A tela "Usuários" escolhe os sites no formulário; nas demais vale a empresa ativa.
+  const requestedCompanyIds = formData.getAll("companyIds").map((value) => String(value).trim()).filter(Boolean);
   let companyId = await getActiveCompanyId();
-  if (requestedCompanyId) {
-    const company = await prisma.company.findUnique({ where: { id: requestedCompanyId }, select: { id: true } });
-    if (!company) return { error: "Site não encontrado." };
-    companyId = company.id;
+  let accessCompanyIds: string[] = [];
+  if (requestedCompanyIds.length > 0) {
+    const found = await prisma.company.findMany({
+      where: { id: { in: requestedCompanyIds } },
+      orderBy: { name: "asc" },
+      select: { id: true },
+    });
+    if (found.length !== new Set(requestedCompanyIds).size) return { error: "Site não encontrado." };
+    accessCompanyIds = found.map((company) => company.id);
+    // O primeiro site marcado vira o padrão (onde o usuário entra ao logar).
+    companyId = accessCompanyIds[0] ?? companyId;
   }
 
   const parsed = createSchema.safeParse({
@@ -53,8 +60,9 @@ export async function createUserAction(
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
   }
 
+  let created;
   try {
-    await container.createUser.execute(
+    created = await container.createUser.execute(
       parsed.data.name,
       parsed.data.email,
       parsed.data.password,
@@ -66,35 +74,70 @@ export async function createUserAction(
     throw error;
   }
 
+  const accesses = accessCompanyIds.length > 0 ? accessCompanyIds : [companyId];
+  await prisma.userCompanyAccess.createMany({
+    data: accesses.map((id) => ({ userId: created.id, companyId: id })),
+    skipDuplicates: true,
+  });
+
   revalidatePath("/admin/editores");
   revalidatePath("/admin/usuarios");
   return { success: true };
 }
 
-/** Move um usuário para outro site (usado pelo seletor da tela "Usuários"). */
-export async function updateUserCompanyAction(userId: string, companyId: string): Promise<UserFormState> {
+/** Define em quais sites o usuário entra (seletor da tela "Usuários"). */
+export async function updateUserCompaniesAction(userId: string, companyIds: string[]): Promise<UserFormState> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
-  if (session.user.role !== "admin") return { error: "Apenas o administrador pode alterar o site do usuário." };
-  if (userId === session.user.id) return { error: "Você não pode alterar o site da sua própria conta." };
+  if (session.user.role !== "admin") return { error: "Apenas o administrador pode alterar os sites do usuário." };
+  if (userId === session.user.id) return { error: "Você não pode alterar os sites da sua própria conta." };
 
-  const [user, company] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { id: true, companyId: true } }),
-    prisma.company.findUnique({ where: { id: companyId }, select: { id: true, name: true } }),
+  const requested = [...new Set(companyIds.map((id) => id.trim()).filter(Boolean))];
+  if (requested.length === 0) return { error: "Selecione pelo menos um site." };
+
+  const [user, companies] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, companyId: true, companyAccesses: { select: { companyId: true } } },
+    }),
+    prisma.company.findMany({ where: { id: { in: requested } }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
   ]);
   if (!user) return { error: "Usuário não encontrado." };
-  if (!company) return { error: "Site não encontrado." };
-  if (user.companyId === company.id) return { success: true };
+  if (companies.length !== requested.length) return { error: "Site não encontrado." };
 
-  const total = await prisma.user.count({ where: { companyId: company.id } });
-  if (total >= MAX_USERS_PER_COMPANY) {
-    return { error: `O ${company.name} já tem ${MAX_USERS_PER_COMPANY} usuários.` };
+  const current = new Set([user.companyId, ...user.companyAccesses.map((access) => access.companyId)]);
+  for (const company of companies) {
+    if (current.has(company.id)) continue;
+    const total = await countUsersWithAccess(company.id);
+    if (total >= MAX_USERS_PER_COMPANY) {
+      return { error: `O ${company.name} já tem ${MAX_USERS_PER_COMPANY} usuários.` };
+    }
   }
 
-  await prisma.user.update({ where: { id: userId }, data: { companyId: company.id } });
+  const ids = companies.map((company) => company.id);
+  await prisma.$transaction([
+    prisma.userCompanyAccess.deleteMany({ where: { userId, companyId: { notIn: ids } } }),
+    prisma.userCompanyAccess.createMany({
+      data: ids.map((companyId) => ({ userId, companyId })),
+      skipDuplicates: true,
+    }),
+    // O site padrão precisa continuar entre os liberados.
+    prisma.user.update({
+      where: { id: userId },
+      data: { companyId: ids.includes(user.companyId) ? user.companyId : ids[0] },
+    }),
+  ]);
+
   revalidatePath("/admin/usuarios");
   revalidatePath("/admin/editores");
   return { success: true };
+}
+
+/** Quantos usuários já acessam um site (site padrão ou acesso extra). */
+async function countUsersWithAccess(companyId: string): Promise<number> {
+  return prisma.user.count({
+    where: { OR: [{ companyId }, { companyAccesses: { some: { companyId } } }] },
+  });
 }
 
 export async function deleteUserAction(id: string): Promise<UserFormState> {

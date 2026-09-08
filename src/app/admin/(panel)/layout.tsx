@@ -4,7 +4,7 @@ import { container } from "@/infrastructure/container";
 import { prisma } from "@/infrastructure/database/prisma";
 import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminPanelClient } from "@/presentation/components/admin/admin-panel-client";
-import { getActiveCompanyId, listCompanies } from "@/infrastructure/tenant";
+import { getActiveCompanyId, listAccessibleCompanies } from "@/infrastructure/tenant";
 
 /** Shell do painel: protege as rotas e injeta a navegação lateral. */
 export default async function AdminPanelLayout({
@@ -30,8 +30,12 @@ export default async function AdminPanelLayout({
   ]);
   if (!user) redirect("/admin/login");
 
-  const companies = role === "admin" ? await listCompanies() : [user.company];
-  const activeCompanyId = role === "admin" ? await getActiveCompanyId() : user.companyId;
+  // Cada usuário vê os sites que pode acessar; o admin vê todos.
+  const companies = await listAccessibleCompanies(session.user.id, role);
+  const cookieCompanyId = await getActiveCompanyId();
+  const activeCompanyId = companies.some((company) => company.id === cookieCompanyId)
+    ? cookieCompanyId
+    : user.companyId;
 
   return (
     <AdminPanelClient

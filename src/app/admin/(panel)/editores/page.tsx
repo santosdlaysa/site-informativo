@@ -4,7 +4,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { UsersManager } from "@/presentation/components/admin/users-manager";
-import { getActiveCompanyId } from "@/infrastructure/tenant";
+import { getEffectiveCompanyId } from "@/infrastructure/tenant";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Editores — Admin" };
@@ -14,7 +14,7 @@ export default async function EditoresPage() {
   if (!session?.user?.id) redirect("/admin/login");
 
   const role = normalizeUserRole(session.user.role);
-  const companyId = role === "admin" ? await getActiveCompanyId() : session.user.companyId;
+  const companyId = await getEffectiveCompanyId(session.user.id, role);
   if (!companyId) redirect("/admin/login");
   const [users, profile] = await Promise.all([
     container.listUsers.execute(companyId),

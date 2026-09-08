@@ -7,7 +7,7 @@ import { USER_ROLE_LABEL, type UserRole } from "@/core/domain/user/user-role";
 import {
   createUserAction,
   deleteAnyUserAction,
-  updateUserCompanyAction,
+  updateUserCompaniesAction,
   type UserFormState,
 } from "@/presentation/actions/user-actions";
 import { CollapsiblePanel } from "./collapsible-panel";
@@ -21,6 +21,7 @@ export type ManagedUser = {
   email: string;
   role: UserRole;
   companyId: string;
+  companyIds: string[];
   createdAt: string;
 };
 
@@ -28,7 +29,10 @@ export type ManagedCompany = { id: string; name: string; slug: string; logo?: st
 
 const INITIAL: UserFormState = {};
 
-/** Seletor de site no formato de switch segmentado. */
+/**
+ * Switch de sites: cada site é um botão que liga/desliga o acesso.
+ * O usuário pode acessar um, vários ou todos os sites.
+ */
 function CompanySwitch({
   companies,
   value,
@@ -38,30 +42,43 @@ function CompanySwitch({
   size = "md",
 }: {
   companies: ManagedCompany[];
-  value: string;
-  onChange: (companyId: string) => void;
+  value: string[];
+  onChange: (companyIds: string[]) => void;
   name?: string;
   disabled?: boolean;
   size?: "md" | "sm";
 }) {
+  function toggle(companyId: string) {
+    const next = value.includes(companyId)
+      ? value.filter((id) => id !== companyId)
+      : [...value, companyId];
+    // Pelo menos um site precisa continuar marcado.
+    if (next.length === 0) return;
+    onChange(companies.filter((company) => next.includes(company.id)).map((company) => company.id));
+  }
+
   return (
     <div className={`site-switch${size === "sm" ? " site-switch--sm" : ""}`} role="group">
-      {name && <input type="hidden" name={name} value={value} />}
-      {companies.map((company) => (
-        <button
-          key={company.id}
-          type="button"
-          className={company.id === value ? "is-active" : ""}
-          disabled={disabled}
-          aria-pressed={company.id === value}
-          onClick={() => onChange(company.id)}
-        >
-          <span className="site-switch-logo">
-            <Image src={company.logo || favicon} alt="" width={18} height={18} unoptimized={!!company.logo} />
-          </span>
-          {company.name}
-        </button>
-      ))}
+      {name && value.map((companyId) => <input key={companyId} type="hidden" name={name} value={companyId} />)}
+      {companies.map((company) => {
+        const active = value.includes(company.id);
+        return (
+          <button
+            key={company.id}
+            type="button"
+            className={active ? "is-active" : ""}
+            disabled={disabled}
+            aria-pressed={active}
+            onClick={() => toggle(company.id)}
+          >
+            <span className="site-switch-logo">
+              <Image src={company.logo || favicon} alt="" width={18} height={18} unoptimized={!!company.logo} />
+            </span>
+            {company.name}
+            {active && <span className="site-switch-check" aria-hidden="true">✓</span>}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -78,7 +95,7 @@ export function AdminUsersManager({
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createUserAction, INITIAL);
   const [creating, setCreating] = useState(false);
-  const [newUserCompanyId, setNewUserCompanyId] = useState(companies[0]?.id ?? "");
+  const [newUserCompanyIds, setNewUserCompanyIds] = useState<string[]>(companies[0] ? [companies[0].id] : []);
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -90,16 +107,16 @@ export function AdminUsersManager({
     if (state.error) pushToast(state.error, "error");
   }, [state, router]);
 
-  async function changeCompany(user: ManagedUser, companyId: string) {
-    if (companyId === user.companyId) return;
+  async function changeCompanies(user: ManagedUser, companyIds: string[]) {
     setSavingUserId(user.id);
-    const result = await updateUserCompanyAction(user.id, companyId);
+    const result = await updateUserCompaniesAction(user.id, companyIds);
     setSavingUserId(null);
     if (result.error) {
       pushToast(result.error, "error");
+      router.refresh();
       return;
     }
-    pushToast("Site do usuário atualizado.", "success");
+    pushToast("Sites do usuário atualizados.", "success");
     router.refresh();
   }
 
@@ -129,15 +146,15 @@ export function AdminUsersManager({
         {state.error && <div className="form-error">{state.error}</div>}
         <form action={formAction}>
           <div className="field" style={{ marginBottom: 18 }}>
-            <label>Site que este usuário acessa</label>
+            <label>Sites que este usuário acessa</label>
             <CompanySwitch
               companies={companies}
-              value={newUserCompanyId}
-              onChange={setNewUserCompanyId}
-              name="companyId"
+              value={newUserCompanyIds}
+              onChange={setNewUserCompanyIds}
+              name="companyIds"
               disabled={pending}
             />
-            <div className="hint">O acesso vale apenas para o site escolhido, exceto para administradores.</div>
+            <div className="hint">Marque um ou mais sites. Administradores acessam todos, independentemente da escolha.</div>
           </div>
 
           <div className="row-2" style={{ marginBottom: 18 }}>
@@ -193,7 +210,7 @@ export function AdminUsersManager({
             <tr>
               <th>Usuário</th>
               <th>Permissão</th>
-              <th>Site que acessa</th>
+              <th>Sites que acessa</th>
               <th>Criado em</th>
               <th style={{ width: 64 }}><span className="sr-only">Ações</span></th>
             </tr>
@@ -217,12 +234,13 @@ export function AdminUsersManager({
                   <td>
                     <CompanySwitch
                       companies={companies}
-                      value={user.companyId}
-                      onChange={(companyId) => void changeCompany(user, companyId)}
+                      value={user.companyIds}
+                      onChange={(companyIds) => void changeCompanies(user, companyIds)}
                       disabled={isCurrentUser || savingUserId === user.id}
                       size="sm"
                     />
-                    {isCurrentUser && <div className="t-sub">Não é possível mudar o seu próprio site.</div>}
+                    {isCurrentUser && <div className="t-sub">Não é possível mudar os seus próprios sites.</div>}
+                    {user.role === "admin" && !isCurrentUser && <div className="t-sub">Administrador acessa todos os sites.</div>}
                   </td>
                   <td>{new Date(user.createdAt).toLocaleDateString("pt-BR")}</td>
                   <td className="act-cell">
