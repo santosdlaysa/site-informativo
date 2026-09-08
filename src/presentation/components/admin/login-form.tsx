@@ -13,12 +13,15 @@ export function LoginForm() {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(loginAction, initial);
   const [showPass, setShowPass] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  const loading = pending || redirecting;
 
   // Redireciona automaticamente após login bem-sucedido
   useEffect(() => {
     if (state.success) {
+      setRedirecting(true);
       // Limpa campos sensíveis antes de redirecionar
       if (emailInputRef.current) emailInputRef.current.value = "";
       if (passwordInputRef.current) passwordInputRef.current.value = "";
@@ -33,7 +36,7 @@ export function LoginForm() {
 
   return (
     <div className="auth-screen auth-center">
-      <form className="login-card" action={formAction} autoComplete="off">
+      <form className="login-card" action={formAction} autoComplete="off" aria-busy={loading}>
         <div className="login-logo">
           <Image
             className="brand-logo"
@@ -64,7 +67,7 @@ export function LoginForm() {
               placeholder="seu@email.com"
               required
               autoComplete="off"
-              disabled={pending}
+              disabled={loading}
             />
           </div>
         </div>
@@ -84,7 +87,7 @@ export function LoginForm() {
               placeholder="••••••••"
               required
               autoComplete="off"
-              disabled={pending}
+              disabled={loading}
             />
             <button
               type="button"
@@ -98,10 +101,19 @@ export function LoginForm() {
           </div>
         </div>
 
-        <button className="btn btn-primary btn-block" type="submit" disabled={pending} style={{ marginTop: 6 }}>
-          {pending ? "Entrando..." : "Entrar no painel"}
+        <button className="btn btn-primary btn-block" type="submit" disabled={loading} style={{ marginTop: 6 }}>
+          {loading ? "Entrando..." : "Entrar no painel"}
         </button>
       </form>
+      {loading && (
+        <div className="company-loading-overlay" role="status" aria-live="assertive" aria-label="Entrando no painel">
+          <div className="company-loading-card">
+            <span className="company-loading-spinner" aria-hidden="true" />
+            <strong>Entrando no painel</strong>
+            <span>Aguarde enquanto preparamos seu acesso.</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
