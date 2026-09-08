@@ -7,6 +7,7 @@ import {
   type SettingsFormState,
 } from "@/presentation/actions/settings-actions";
 import { pushToast } from "./toast";
+import { CollapsiblePanel, PanelSummary, PanelSummaryItem } from "./collapsible-panel";
 
 const initial: SettingsFormState = {};
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
@@ -28,10 +29,14 @@ async function fileToDataUrl(file: File): Promise<string> {
 export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData }) {
   const [state, formAction, pending] = useActionState(updateQuemSomosAction, initial);
   const [qsImage, setQsImage] = useState<string>(settings.qsImage ?? "");
+  const [editing, setEditing] = useState(false);
   const qsInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (state.success) pushToast("Seção Quem Somos salva com sucesso.", "success");
+    if (state.success) {
+      pushToast("Seção Quem Somos salva com sucesso.", "success");
+      setEditing(false);
+    }
     if (state.error) pushToast(state.error, "error");
   }, [state]);
 
@@ -74,12 +79,45 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
     setPartners((prev) => prev.map((p, i) => (i === index ? "" : p)));
   }, []);
 
+  // Ao fechar sem salvar, descarta as imagens escolhidas e volta aos valores salvos.
+  function toggleEditing(open: boolean) {
+    if (!open) {
+      setQsImage(settings.qsImage ?? "");
+      setRealizacao([
+        settings.qsRealizacaoLogo ?? "",
+        settings.qsRealizacaoLogo2 ?? "",
+        settings.qsRealizacaoLogo3 ?? "",
+        settings.qsRealizacaoLogo4 ?? "",
+      ]);
+      setPartners([
+        settings.qsPartner1 ?? "",
+        settings.qsPartner2 ?? "",
+        settings.qsPartner3 ?? "",
+        settings.qsPartner4 ?? "",
+      ]);
+    }
+    setEditing(open);
+  }
+
   return (
-    <form action={formAction} className="panel">
-      <div className="panel-head">
-        <h2>Seção &quot;Quem Somos&quot;</h2>
-      </div>
-      <div className="panel-pad">
+    <CollapsiblePanel
+      title={'Seção "Quem Somos"'}
+      actionLabel="Editar seção"
+      open={editing}
+      onOpenChange={toggleEditing}
+      summary={
+        <PanelSummary>
+          <PanelSummaryItem label="Tag / etiqueta" value={settings.qsTag} />
+          <PanelSummaryItem label="Título" value={settings.qsTitle} />
+          <PanelSummaryItem label="Primeiro parágrafo" value={settings.qsBody1} multiline />
+          <div className="panel-summary-grid">
+            <PanelSummaryItem label="Destaque 1" value={settings.qsFeature1Title} />
+            <PanelSummaryItem label="Destaque 2" value={settings.qsFeature2Title} />
+          </div>
+        </PanelSummary>
+      }
+    >
+      <form action={formAction}>
         {state.error && <div className="form-error">{state.error}</div>}
         <p style={{ margin: "0 0 24px", color: "var(--muted)", fontSize: 14 }}>
           Textos e foto exibidos na seção &quot;Quem Somos&quot; da página inicial.
@@ -240,11 +278,14 @@ export function QuemSomosSettingsForm({ settings }: { settings: SiteSettingsData
         </div>
 
         <div className="form-actions">
+          <button className="btn btn-ghost" type="button" disabled={pending} onClick={() => toggleEditing(false)}>
+            Cancelar
+          </button>
           <button className="btn btn-primary" type="submit" disabled={pending}>
             {pending ? "Salvando..." : "Salvar alterações"}
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </CollapsiblePanel>
   );
 }

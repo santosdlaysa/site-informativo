@@ -37,7 +37,7 @@ export default async function PublicLayout({ children }: { children: React.React
         "--company-secondary": company?.secondaryColor || "#267ce8",
       } as React.CSSProperties}>
         <SiteHeader isLoggedIn={!!session?.user?.id} company={company} />
-        {children}
+        <div className="site-main">{children}</div>
         <SiteFooter settings={settings} company={company} />
       </div>
     </CompanyPathProvider>

@@ -25,6 +25,7 @@ export const authConfig = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.companyId = user.companyId;
         token.passwordChangeRequired = user.passwordChangeRequired;
       }
       return token;
@@ -33,6 +34,7 @@ export const authConfig = {
       if (session.user) {
         if (typeof token.id === "string") session.user.id = token.id;
         if (typeof token.role === "string") session.user.role = token.role;
+        if (typeof token.companyId === "string") session.user.companyId = token.companyId;
         if (typeof token.passwordChangeRequired === "boolean") {
           session.user.passwordChangeRequired = token.passwordChangeRequired;
         }

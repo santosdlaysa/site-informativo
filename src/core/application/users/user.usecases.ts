@@ -14,8 +14,8 @@ function isVisibleEditor(user: UserListItem): boolean {
 export class ListUsersUseCase {
   constructor(private readonly users: UserRepository) {}
 
-  async execute(): Promise<UserListItem[]> {
-    const users = await this.users.listAll();
+  async execute(companyId: string): Promise<UserListItem[]> {
+    const users = await this.users.listAll(companyId);
     return users.filter(isVisibleEditor);
   }
 }
@@ -31,8 +31,9 @@ export class CreateUserUseCase {
     email: string,
     password: string,
     role: UserRole = "editor",
+    companyId: string,
   ): Promise<UserListItem> {
-    const count = (await this.users.listAll()).filter(isVisibleEditor).length;
+    const count = (await this.users.listAll(companyId)).filter(isVisibleEditor).length;
     if (count >= MAX_USERS) {
       throw new ValidationError(`Limite de ${MAX_USERS} editores atingido.`);
     }
@@ -47,6 +48,7 @@ export class CreateUserUseCase {
       passwordHash,
       passwordChangeRequired: password === TEMPORARY_PASSWORD,
       role: normalizeUserRole(role),
+      companyId,
     });
   }
 }
@@ -54,12 +56,16 @@ export class CreateUserUseCase {
 export class DeleteUserUseCase {
   constructor(private readonly users: UserRepository) {}
 
-  async execute(id: string, currentUserId: string, currentUserRole: string): Promise<void> {
+  async execute(id: string, currentUserId: string, currentUserRole: string, companyId: string): Promise<void> {
     if (currentUserRole !== "admin") {
       throw new ValidationError("Apenas o administrador pode remover editores.");
     }
     if (id === currentUserId) {
       throw new ValidationError("Você não pode remover sua própria conta.");
+    }
+    const target = await this.users.findById(id);
+    if (!target || target.companyId !== companyId) {
+      throw new ValidationError("Usuário não encontrado nesta empresa.");
     }
     await this.users.delete(id);
   }

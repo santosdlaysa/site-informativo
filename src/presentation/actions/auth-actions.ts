@@ -1,11 +1,15 @@
 "use server";
 
 import { AuthError } from "next-auth";
+import { cookies } from "next/headers";
 import { signIn, signOut } from "@/infrastructure/auth/auth";
+import { prisma } from "@/infrastructure/database/prisma";
+import { ACTIVE_COMPANY_COOKIE } from "@/infrastructure/tenant";
 
 export interface LoginState {
   error?: string;
   success?: boolean;
+  redirectTo?: string;
 }
 
 /** Server action de login - nunca retorna dados sensíveis */
@@ -29,8 +33,20 @@ export async function loginAction(
       redirect: false, // Evita exposição na URL
     });
 
-    // Se chegou aqui, sucesso - retorna apenas flag, não dados
-    return { success: true };
+    const user = await prisma.user.findUnique({
+      where: { email: String(email).trim().toLowerCase() },
+      select: { companyId: true },
+    });
+    if (!user) return { error: "Usuário não possui empresa vinculada." };
+
+    (await cookies()).set(ACTIVE_COMPANY_COOKIE, user.companyId, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/admin",
+    });
+
+    return { success: true, redirectTo: "/admin/posts" };
   } catch (error) {
     // Nunca expor detalhes sobre qual campo está errado (email existe? senha incorreta?)
     // Isso previne enumeration attacks

@@ -7,6 +7,7 @@ export interface AuthUser {
   passwordHash: string;
   passwordChangeRequired: boolean;
   role: UserRole;
+  companyId: string;
 }
 
 /** Perfil público/editável do autor exibido no painel e nos posts. */
@@ -30,6 +31,7 @@ export interface CreateUserData {
   passwordHash: string;
   passwordChangeRequired?: boolean;
   role: UserRole;
+  companyId: string;
 }
 
 export interface UserListItem {
@@ -37,6 +39,7 @@ export interface UserListItem {
   name: string;
   email: string;
   role: UserRole;
+  companyId: string;
   createdAt: Date;
 }
 
@@ -47,7 +50,7 @@ export interface UserRepository {
   findProfileById(id: string): Promise<UserProfile | null>;
   updateProfile(id: string, data: UpdateProfileData): Promise<void>;
   updatePassword(id: string, passwordHash: string): Promise<void>;
-  listAll(): Promise<UserListItem[]>;
+  listAll(companyId?: string): Promise<UserListItem[]>;
   count(): Promise<number>;
   create(data: CreateUserData): Promise<UserListItem>;
   delete(id: string): Promise<void>;

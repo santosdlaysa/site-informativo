@@ -46,11 +46,17 @@ export function AdminSessionForm({
   categories,
   isEdit = false,
   initial,
+  onSuccess,
+  onCancel,
 }: {
   action: Action;
   categories: CategoryOption[];
   isEdit?: boolean;
   initial?: SessionFormInitial;
+  /** Chamado após cadastrar com sucesso (usado para fechar o formulário na lista). */
+  onSuccess?: () => void;
+  /** Quando informado, o botão secundário fecha o formulário em vez de apenas limpar. */
+  onCancel?: () => void;
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -61,9 +67,10 @@ export function AdminSessionForm({
       formRef.current?.reset();
       pushToast("Sessão cadastrada com sucesso.", "success");
       router.refresh();
+      onSuccess?.();
     }
     if (state.error) pushToast(state.error, "error");
-  }, [state, isEdit, router]);
+  }, [state, isEdit, router, onSuccess]);
 
   return (
     <>
@@ -154,6 +161,10 @@ export function AdminSessionForm({
         <div className="form-actions">
           {isEdit ? (
             <button className="btn btn-ghost" type="button" onClick={() => router.push("/admin/programacao")}>
+              Cancelar
+            </button>
+          ) : onCancel ? (
+            <button className="btn btn-ghost" type="button" onClick={onCancel}>
               Cancelar
             </button>
           ) : (

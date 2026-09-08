@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { prisma } from "@/infrastructure/database/prisma";
 import { normalizeUserRole } from "@/core/domain/user/user-role";
-import { AdminSidebar } from "@/presentation/components/admin/admin-sidebar";
-import { ForcePasswordChangeModal } from "@/presentation/components/admin/force-password-change-modal";
 import { AdminPanelClient } from "@/presentation/components/admin/admin-panel-client";
 import { getActiveCompanyId, listCompanies } from "@/infrastructure/tenant";
 
@@ -17,8 +16,22 @@ export default async function AdminPanelLayout({
   if (!session?.user?.id) redirect("/admin/login");
   const role = normalizeUserRole(session.user.role);
 
-  const security = await container.getUserSecurity.execute(session.user.id);
-  const [companies, activeCompanyId] = await Promise.all([listCompanies(), getActiveCompanyId()]);
+  const [security, user] = await Promise.all([
+    container.getUserSecurity.execute(session.user.id),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        companyId: true,
+        company: {
+          select: { id: true, name: true, slug: true, logo: true, primaryColor: true, secondaryColor: true },
+        },
+      },
+    }),
+  ]);
+  if (!user) redirect("/admin/login");
+
+  const companies = role === "admin" ? await listCompanies() : [user.company];
+  const activeCompanyId = role === "admin" ? await getActiveCompanyId() : user.companyId;
 
   return (
     <AdminPanelClient

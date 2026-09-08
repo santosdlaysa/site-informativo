@@ -130,6 +130,8 @@ async function main() {
       qsFeature2Desc: "Parcerias e solidariedade para criar novas possibilidades.",
       qsRealizacao: "ADSocial",
       qsParcerias: "Parceiros e comunidade",
+      contactEmail: "adsocial.projetoacdg@gmail.com",
+      contactPhone: "(95) 98123-8294",
       qsFullText: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.\n\nAo longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.\n\nMais do que realizar ações, o ADSocial acredita no poder da união e das parcerias para transformar realidades. Cada projeto, atendimento e iniciativa representa uma oportunidade de estar mais perto das pessoas, oferecendo apoio, cuidado e novas possibilidades.\n\nCom uma trajetória construída sobre solidariedade, compromisso e serviço ao próximo, o ADSocial segue ampliando sua atuação e fortalecendo comunidades, com o propósito de transformar vidas e construir um futuro com mais oportunidades para todos.",
     },
     create: {
@@ -153,6 +155,8 @@ async function main() {
       qsFeature2Desc: "Parcerias e solidariedade para criar novas possibilidades.",
       qsRealizacao: "ADSocial",
       qsParcerias: "Parceiros e comunidade",
+      contactEmail: "adsocial.projetoacdg@gmail.com",
+      contactPhone: "(95) 98123-8294",
       qsFullText: "O ADSocial nasceu em 28 de janeiro de 1963 com o compromisso de servir, acolher e contribuir para a transformação da comunidade.\n\nAo longo dos anos, essa missão tem se fortalecido por meio de ações voltadas às necessidades de diferentes públicos, oferecendo assistência social, apoio educacional, atividades culturais, iniciativas de saúde e projetos que promovem inclusão e desenvolvimento.\n\nMais do que realizar ações, o ADSocial acredita no poder da união e das parcerias para transformar realidades. Cada projeto, atendimento e iniciativa representa uma oportunidade de estar mais perto das pessoas, oferecendo apoio, cuidado e novas possibilidades.\n\nCom uma trajetória construída sobre solidariedade, compromisso e serviço ao próximo, o ADSocial segue ampliando sua atuação e fortalecendo comunidades, com o propósito de transformar vidas e construir um futuro com mais oportunidades para todos.",
     },
   });

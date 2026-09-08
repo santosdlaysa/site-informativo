@@ -32,11 +32,17 @@ export function AdminEventForm({
   categories,
   isEdit = false,
   initial,
+  onSuccess,
+  onCancel,
 }: {
   action: Action;
   categories: CategoryOption[];
   isEdit?: boolean;
   initial?: EventFormInitial;
+  /** Chamado após cadastrar com sucesso (usado para fechar o formulário na lista). */
+  onSuccess?: () => void;
+  /** Quando informado, o botão secundário fecha o formulário em vez de apenas limpar. */
+  onCancel?: () => void;
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -51,9 +57,10 @@ export function AdminEventForm({
       setResetKey((k) => k + 1);
       pushToast("Evento cadastrado com sucesso.", "success");
       router.refresh();
+      onSuccess?.();
     }
     if (state.error) pushToast(state.error, "error");
-  }, [state, isEdit, router]);
+  }, [state, isEdit, router, onSuccess]);
 
   return (
     <>
@@ -138,6 +145,10 @@ export function AdminEventForm({
         <div className="form-actions">
           {isEdit ? (
             <button className="btn btn-ghost" type="button" onClick={() => router.push("/admin/eventos")}>
+              Cancelar
+            </button>
+          ) : onCancel ? (
+            <button className="btn btn-ghost" type="button" onClick={onCancel}>
               Cancelar
             </button>
           ) : (

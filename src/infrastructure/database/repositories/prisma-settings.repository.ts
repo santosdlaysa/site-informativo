@@ -50,6 +50,8 @@ export class PrismaSettingsRepository implements SettingsRepository {
       socialTwitter: row.socialTwitter,
       socialLinkedin: row.socialLinkedin,
       socialInstagram: row.socialInstagram,
+      contactEmail: row.contactEmail,
+      contactPhone: row.contactPhone,
       transparencyTitle: row.transparencyTitle,
       transparencyDescription: row.transparencyDescription,
     };

@@ -7,6 +7,7 @@ import {
   type SettingsFormState,
 } from "@/presentation/actions/settings-actions";
 import { pushToast } from "./toast";
+import { CollapsiblePanel, PanelSummary, PanelSummaryItem } from "./collapsible-panel";
 
 const initial: SettingsFormState = {};
 const ACCEPT = ["image/png", "image/jpeg", "image/webp", "image/avif"];
@@ -28,12 +29,22 @@ async function fileToDataUrl(file: File): Promise<string> {
 export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
   const [state, formAction, pending] = useActionState(updateHeroSettingsAction, initial);
   const [bgImage, setBgImage] = useState<string>(settings.heroBgImage ?? "");
+  const [editing, setEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (state.success) pushToast("Cabeçalho da home salvo com sucesso.", "success");
+    if (state.success) {
+      pushToast("Cabeçalho da home salvo com sucesso.", "success");
+      setEditing(false);
+    }
     if (state.error) pushToast(state.error, "error");
   }, [state]);
+
+  // Ao fechar sem salvar, descarta a imagem escolhida e volta ao valor salvo.
+  function toggleEditing(open: boolean) {
+    if (!open) setBgImage(settings.heroBgImage ?? "");
+    setEditing(open);
+  }
 
   const ingest = useCallback(async (file: File | undefined) => {
     if (!file || !ACCEPT.includes(file.type)) return;
@@ -41,11 +52,24 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
   }, []);
 
   return (
-    <form action={formAction} className="panel">
-      <div className="panel-head">
-        <h2>Cabeçalho da home</h2>
-      </div>
-      <div className="panel-pad">
+    <CollapsiblePanel
+      title="Cabeçalho da home"
+      actionLabel="Editar cabeçalho"
+      open={editing}
+      onOpenChange={toggleEditing}
+      summary={
+        <PanelSummary>
+          <PanelSummaryItem label="Tag / etiqueta" value={settings.heroTag} />
+          <PanelSummaryItem label="Título principal" value={settings.heroTitle} multiline />
+          <PanelSummaryItem label="Descrição" value={settings.heroDesc} multiline />
+          <div className="panel-summary-grid">
+            <PanelSummaryItem label="Botão 1" value={settings.heroCta1Text} />
+            <PanelSummaryItem label="Botão 2" value={settings.heroCta2Text} />
+          </div>
+        </PanelSummary>
+      }
+    >
+      <form action={formAction}>
         {state.error && <div className="form-error">{state.error}</div>}
         <p style={{ margin: "0 0 24px", color: "var(--muted)", fontSize: 14 }}>
           Edite os textos e a imagem de fundo do banner principal da página inicial.
@@ -148,11 +172,14 @@ export function HeroSettingsForm({ settings }: { settings: SiteSettingsData }) {
         ))}
 
         <div className="form-actions">
+          <button className="btn btn-ghost" type="button" disabled={pending} onClick={() => toggleEditing(false)}>
+            Cancelar
+          </button>
           <button className="btn btn-primary" type="submit" disabled={pending}>
             {pending ? "Salvando..." : "Salvar alterações"}
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </CollapsiblePanel>
   );
 }

@@ -99,3 +99,24 @@ export async function updateRedesSociaisAction(
   revalidatePath("/admin/configuracoes");
   return { success: true };
 }
+
+export async function updateContactSettingsAction(
+  _prev: SettingsFormState,
+  formData: FormData,
+): Promise<SettingsFormState> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
+
+  const contactEmail = ((formData.get("contactEmail") as string | null) ?? "").trim();
+  const contactPhone = ((formData.get("contactPhone") as string | null) ?? "").trim();
+
+  if (contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+    return { error: "Informe um e-mail válido." };
+  }
+
+  await container.updateSettings.execute({ contactEmail, contactPhone });
+
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/configuracoes");
+  return { success: true };
+}

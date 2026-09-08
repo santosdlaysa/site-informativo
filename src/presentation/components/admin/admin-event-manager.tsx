@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createEventAction, deleteEventAction } from "@/presentation/actions/event-actions";
 import { AdminEventForm } from "./admin-event-form";
+import { CollapsiblePanel } from "./collapsible-panel";
 import type { CategoryOption } from "./admin-session-form";
 import { TrashIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
@@ -25,6 +27,8 @@ export function AdminEventManager({
   categories: CategoryOption[];
 }) {
   const router = useRouter();
+  const [creating, setCreating] = useState(false);
+  const closeCreate = useCallback(() => setCreating(false), []);
 
   async function handleDelete(id: string) {
     if (!confirm("Excluir este evento?")) return;
@@ -46,14 +50,21 @@ export function AdminEventManager({
         </div>
       </div>
 
-      <div className="panel" style={{ marginBottom: 28 }}>
-        <div className="panel-head">
-          <h2>Novo evento</h2>
-        </div>
-        <div className="panel-pad">
-          <AdminEventForm action={createEventAction} categories={categories} />
-        </div>
-      </div>
+      <CollapsiblePanel
+        title="Novo evento"
+        actionLabel="Cadastrar evento"
+        actionIcon="plus"
+        open={creating}
+        onOpenChange={setCreating}
+        style={{ marginBottom: 28 }}
+      >
+        <AdminEventForm
+          action={createEventAction}
+          categories={categories}
+          onSuccess={closeCreate}
+          onCancel={closeCreate}
+        />
+      </CollapsiblePanel>
 
       <div className="panel">
         <div className="panel-head">

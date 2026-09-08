@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { prisma } from "@/infrastructure/database/prisma";
 import { USER_ROLES } from "@/core/domain/user/user-role";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 export async function GET(
   _request: Request,
@@ -15,10 +16,11 @@ export async function GET(
   if (session.user.role !== "admin") {
     return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
   }
+  const companyId = await getActiveCompanyId();
 
   const { id } = await params;
-  const user = await prisma.user.findUnique({
-    where: { id },
+  const user = await prisma.user.findFirst({
+    where: { id, companyId },
     select: { id: true, name: true, email: true, bio: true, avatar: true, role: true },
   });
 
@@ -40,6 +42,7 @@ export async function PATCH(
   if (session.user.role !== "admin") {
     return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
   }
+  const companyId = await getActiveCompanyId();
 
   const { id } = await params;
   const body = await request.json();
@@ -51,6 +54,14 @@ export async function PATCH(
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Dados inválidos." }, { status: 400 });
+  }
+
+  const existing = await prisma.user.findFirst({
+    where: { id, companyId },
+    select: { id: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Usuário não encontrado." }, { status: 404 });
   }
 
   const user = await prisma.user.update({

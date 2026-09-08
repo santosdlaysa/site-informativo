@@ -20,6 +20,7 @@ export class PrismaUserRepository implements UserRepository {
       passwordHash: user.passwordHash,
       passwordChangeRequired: user.passwordChangeRequired,
       role: normalizeUserRole(user.role),
+      companyId: user.companyId,
     };
   }
 
@@ -33,6 +34,7 @@ export class PrismaUserRepository implements UserRepository {
       passwordHash: user.passwordHash,
       passwordChangeRequired: user.passwordChangeRequired,
       role: normalizeUserRole(user.role),
+      companyId: user.companyId,
     };
   }
 
@@ -62,10 +64,11 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
-  async listAll(): Promise<UserListItem[]> {
+  async listAll(companyId?: string): Promise<UserListItem[]> {
     const users = await prisma.user.findMany({
+      where: companyId ? { companyId } : undefined,
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, companyId: true, createdAt: true },
     });
     return users.map((user) => ({ ...user, role: normalizeUserRole(user.role) }));
   }
@@ -82,8 +85,9 @@ export class PrismaUserRepository implements UserRepository {
         passwordHash: data.passwordHash,
         passwordChangeRequired: data.passwordChangeRequired ?? false,
         role: data.role,
+        companyId: data.companyId,
       },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, companyId: true, createdAt: true },
     });
     return { ...user, role: normalizeUserRole(user.role) };
   }

@@ -6,6 +6,7 @@ import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
 import { DomainError } from "@/core/domain/shared/errors";
 import { USER_ROLES } from "@/core/domain/user/user-role";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 export interface UserFormState {
   error?: string;
@@ -29,6 +30,7 @@ export async function createUserAction(
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
   if (session.user.role !== "admin") return { error: "Apenas o administrador pode criar editores." };
+  const companyId = await getActiveCompanyId();
 
   const parsed = createSchema.safeParse({
     name: formData.get("name"),
@@ -46,6 +48,7 @@ export async function createUserAction(
       parsed.data.email,
       parsed.data.password,
       parsed.data.role,
+      companyId,
     );
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
@@ -60,9 +63,10 @@ export async function deleteUserAction(id: string): Promise<UserFormState> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Sessão expirada. Entre novamente." };
   if (session.user.role !== "admin") return { error: "Apenas o administrador pode remover editores." };
+  const companyId = await getActiveCompanyId();
 
   try {
-    await container.deleteUser.execute(id, session.user.id, session.user.role ?? "editor");
+    await container.deleteUser.execute(id, session.user.id, session.user.role ?? "editor", companyId);
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
     throw error;

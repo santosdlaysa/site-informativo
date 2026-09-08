@@ -175,6 +175,8 @@ model SiteSettings {
   socialTwitter   String @default("")
   socialLinkedin  String @default("")
   socialInstagram String @default("")
+  contactEmail    String @default("")
+  contactPhone    String @default("")
   transparencyTitle String @default("Portal da Transparência")
   transparencyDescription String @default("Acompanhe documentos, relatórios e informações institucionais do ADSocial.")
   updatedAt    DateTime @updatedAt

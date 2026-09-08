@@ -49,7 +49,6 @@ export function CompanySwitcher({
       <button type="button" className="company-switcher-trigger" onClick={() => setOpen((value) => !value)} disabled={pending} aria-expanded={open}>
         <span className="company-switcher-icon"><Image src={activeCompany.logo || favicon} alt="" width={23} height={23} unoptimized={!!activeCompany.logo} /></span>
         <span className="company-switcher-copy">
-          <small>Gerenciando</small>
           <strong>{pending ? "Carregando…" : activeCompany.name}</strong>
         </span>
         {pending ? <span className="company-switcher-spinner" aria-label="Carregando" /> : <span className="company-switcher-arrow" aria-hidden="true" />}

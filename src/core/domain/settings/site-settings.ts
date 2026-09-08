@@ -40,6 +40,8 @@ export interface SiteSettingsData {
   socialTwitter: string;
   socialLinkedin: string;
   socialInstagram: string;
+  contactEmail: string;
+  contactPhone: string;
   transparencyTitle: string;
   transparencyDescription: string;
 }
@@ -97,6 +99,8 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   socialTwitter: "",
   socialLinkedin: "",
   socialInstagram: "",
+  contactEmail: "",
+  contactPhone: "",
   transparencyTitle: "Portal da Transparência",
   transparencyDescription: "Acompanhe documentos, relatórios e informações institucionais do ADSocial.",
 };

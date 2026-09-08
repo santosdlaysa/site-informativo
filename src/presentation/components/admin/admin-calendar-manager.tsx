@@ -9,6 +9,7 @@ import {
 } from "@/presentation/actions/calendar-actions";
 import { TrashIcon } from "../icons";
 import { pushToast } from "./toast";
+import { CollapsiblePanel } from "./collapsible-panel";
 
 export interface CalendarDateRowVM {
   id: string;
@@ -24,6 +25,7 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
   const [state, formAction, pending] = useActionState(createCalendarDateAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const [page, setPage] = useState(1);
+  const [creating, setCreating] = useState(false);
 
   const [search, setSearch] = useState("");
 
@@ -44,6 +46,7 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
       formRef.current?.reset();
       pushToast("Data cadastrada com sucesso!", "success");
       router.refresh();
+      setCreating(false);
     }
     if (state.error) {
       pushToast(state.error, "error");
@@ -70,45 +73,47 @@ export function AdminCalendarManager({ dates }: { dates: CalendarDateRowVM[] }) 
         </div>
       </div>
 
-      <div className="panel" style={{ marginBottom: 28 }}>
-        <div className="panel-head">
-          <h2>Nova data comemorativa</h2>
-        </div>
-        <div className="panel-pad">
-          <form ref={formRef} action={formAction}>
-            <div className="row-2">
-              <div className="field">
-                <label htmlFor="title">Nome da data</label>
-                <input
-                  id="title"
-                  name="title"
-                  className="input"
-                  type="text"
-                  placeholder="Ex.: Dia Mundial das Doenças Raras"
-                  required
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="date">Data</label>
-                <input
-                  id="date"
-                  name="date"
-                  className="input"
-                  type="text"
-                  placeholder="dd/mm/aaaa"
-                  required
-                />
-              </div>
+      <CollapsiblePanel
+        title="Nova data comemorativa"
+        actionLabel="Cadastrar data"
+        actionIcon="plus"
+        open={creating}
+        onOpenChange={setCreating}
+        style={{ marginBottom: 28 }}
+      >
+        <form ref={formRef} action={formAction}>
+          <div className="row-2">
+            <div className="field">
+              <label htmlFor="title">Nome da data</label>
+              <input
+                id="title"
+                name="title"
+                className="input"
+                type="text"
+                placeholder="Ex.: Dia Mundial das Doenças Raras"
+                required
+              />
             </div>
-            <div className="form-actions">
-              <button className="btn btn-ghost" type="reset">Limpar</button>
-              <button className="btn btn-primary" type="submit" disabled={pending}>
-                {pending ? "Salvando..." : "Cadastrar data"}
-              </button>
+            <div className="field">
+              <label htmlFor="date">Data</label>
+              <input
+                id="date"
+                name="date"
+                className="input"
+                type="text"
+                placeholder="dd/mm/aaaa"
+                required
+              />
             </div>
-          </form>
-        </div>
-      </div>
+          </div>
+          <div className="form-actions">
+            <button className="btn btn-ghost" type="button" onClick={() => setCreating(false)}>Cancelar</button>
+            <button className="btn btn-primary" type="submit" disabled={pending}>
+              {pending ? "Salvando..." : "Cadastrar data"}
+            </button>
+          </div>
+        </form>
+      </CollapsiblePanel>
 
       <div className="panel">
         <div className="panel-head">

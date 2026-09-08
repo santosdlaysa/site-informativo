@@ -16,7 +16,7 @@ export default async function AdminTransparencyPage() {
     prisma.transparencyDocument.findMany({
       where: { companyId: company.id },
       orderBy: [{ referenceYear: "desc" }, { createdAt: "desc" }],
-      select: { id: true, title: true, description: true, category: true, referenceYear: true, fileName: true, fileSize: true },
+      select: { id: true, title: true, description: true, referenceYear: true, fileName: true, fileSize: true },
     }),
   ]);
   return <TransparencyManager title={settings.transparencyTitle} description={settings.transparencyDescription} documents={documents} />;

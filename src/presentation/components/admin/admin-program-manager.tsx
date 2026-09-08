@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSessionAction, deleteSessionAction } from "@/presentation/actions/program-actions";
 import { AdminSessionForm, type CategoryOption } from "./admin-session-form";
+import { CollapsiblePanel } from "./collapsible-panel";
 import { TrashIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
 
@@ -25,6 +27,8 @@ export function AdminProgramManager({
   categories: CategoryOption[];
 }) {
   const router = useRouter();
+  const [creating, setCreating] = useState(false);
+  const closeCreate = useCallback(() => setCreating(false), []);
 
   async function handleDelete(id: string) {
     if (!confirm("Excluir esta sessão?")) return;
@@ -46,14 +50,21 @@ export function AdminProgramManager({
         </div>
       </div>
 
-      <div className="panel" style={{ marginBottom: 28 }}>
-        <div className="panel-head">
-          <h2>Nova sessão</h2>
-        </div>
-        <div className="panel-pad">
-          <AdminSessionForm action={createSessionAction} categories={categories} />
-        </div>
-      </div>
+      <CollapsiblePanel
+        title="Nova sessão"
+        actionLabel="Cadastrar sessão"
+        actionIcon="plus"
+        open={creating}
+        onOpenChange={setCreating}
+        style={{ marginBottom: 28 }}
+      >
+        <AdminSessionForm
+          action={createSessionAction}
+          categories={categories}
+          onSuccess={closeCreate}
+          onCancel={closeCreate}
+        />
+      </CollapsiblePanel>
 
       <div className="panel">
         <div className="panel-head">

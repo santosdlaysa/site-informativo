@@ -25,10 +25,11 @@ export function LoginForm() {
 
       // Aguarda um frame para garantir que os campos foram limpos
       requestAnimationFrame(() => {
-        router.push("/admin/posts");
+        router.replace(state.redirectTo ?? "/admin/posts");
+        router.refresh();
       });
     }
-  }, [state.success, router]);
+  }, [state.success, state.redirectTo, router]);
 
   return (
     <div className="auth-screen auth-center">

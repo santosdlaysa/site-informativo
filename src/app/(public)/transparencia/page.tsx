@@ -17,17 +17,10 @@ export default async function TransparencyPage() {
     container.getSettings.execute(),
     prisma.transparencyDocument.findMany({
       where: { companyId: company.id, published: true },
-      orderBy: [{ referenceYear: "desc" }, { category: "asc" }, { createdAt: "desc" }],
-      select: { id: true, title: true, description: true, category: true, referenceYear: true, fileName: true, fileSize: true, mimeType: true, updatedAt: true },
+      orderBy: [{ referenceYear: "desc" }, { createdAt: "desc" }],
+      select: { id: true, title: true, description: true, referenceYear: true, fileName: true, fileSize: true, mimeType: true, updatedAt: true },
     }),
   ]);
-
-  const groups = documents.reduce((result, document) => {
-    const current = result.get(document.category) ?? [];
-    current.push(document);
-    result.set(document.category, current);
-    return result;
-  }, new Map<string, typeof documents>());
 
   return (
     <main className="transparency-page">
@@ -47,44 +40,32 @@ export default async function TransparencyPage() {
       </section>
 
       <section className="wrap transparency-content">
-        <div className="transparency-summary">
-          <div><strong>{documents.length}</strong><span>{documents.length === 1 ? "documento disponível" : "documentos disponíveis"}</span></div>
-          <p>Consulte e baixe os arquivos públicos disponibilizados pelo ADSocial.</p>
-        </div>
-
         {documents.length === 0 ? (
           <div className="transparency-empty">
             <h2>Nenhum documento publicado</h2>
             <p>Os documentos de transparência aparecerão aqui assim que forem disponibilizados.</p>
           </div>
         ) : (
-          <div className="transparency-groups">
-            {Array.from(groups.entries()).map(([category, items]) => (
-              <section className="transparency-group" key={category}>
-                <div className="transparency-group-title"><h2>{category}</h2><span>{items.length}</span></div>
-                <div className="transparency-documents">
-                  {items.map((document) => (
-                    <article className="transparency-document" key={document.id}>
-                      <div className="transparency-document-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
-                      </div>
-                      <div className="transparency-document-body">
-                        <div className="transparency-document-meta">
-                          {document.referenceYear && <span>Ano {document.referenceYear}</span>}
-                          <span>{fileLabel(document.mimeType, document.fileName)}</span>
-                          <span>{formatFileSize(document.fileSize)}</span>
-                        </div>
-                        <h3>{document.title}</h3>
-                        {document.description && <p>{document.description}</p>}
-                      </div>
-                      <a className="transparency-download" href={`/api/transparencia/${document.id}`} target="_blank" rel="noreferrer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-                        <span>Abrir arquivo</span>
-                      </a>
-                    </article>
-                  ))}
+          <div className="transparency-documents">
+            {documents.map((document) => (
+              <article className="transparency-document" key={document.id}>
+                <div className="transparency-document-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
                 </div>
-              </section>
+                <div className="transparency-document-body">
+                  <div className="transparency-document-meta">
+                    {document.referenceYear && <span>Ano {document.referenceYear}</span>}
+                    <span>{fileLabel(document.mimeType, document.fileName)}</span>
+                    <span>{formatFileSize(document.fileSize)}</span>
+                  </div>
+                  <h3>{document.title}</h3>
+                  {document.description && <p>{document.description}</p>}
+                </div>
+                <a className="transparency-download" href={`/api/transparencia/${document.id}`} target="_blank" rel="noreferrer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                  <span>Abrir arquivo</span>
+                </a>
+              </article>
             ))}
           </div>
         )}

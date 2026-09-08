@@ -11,6 +11,7 @@ import {
 import { USER_ROLE_LABEL, type UserRole, USER_ROLES } from "@/core/domain/user/user-role";
 import { TrashIcon, PlusIcon, LockIcon, UsersIcon, EditIcon } from "../icons";
 import { pushToast } from "./toast";
+import { CollapsiblePanel } from "./collapsible-panel";
 
 const MAX_USERS = 3;
 const INITIAL: UserFormState = {};
@@ -48,6 +49,7 @@ export function UsersManager({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [addingUser, setAddingUser] = useState(false);
   const router = useRouter();
   const isAdmin = currentUserRole === "admin";
   const canAdd = isAdmin && users.length < MAX_USERS;
@@ -57,6 +59,7 @@ export function UsersManager({
     name: currentProfile.name,
     email: currentProfile.email,
     role: "admin",
+    companyId: "",
     createdAt: new Date(),
   };
 
@@ -74,9 +77,12 @@ export function UsersManager({
   }
 
   useEffect(() => {
-    if (state.success) pushToast("Editor criado com sucesso.", "success");
+    if (state.success) {
+      pushToast("Editor criado com sucesso.", "success");
+      setAddingUser(false);
+      router.refresh();
+    }
     if (state.error) pushToast(state.error, "error");
-    if (state.success) router.refresh();
   }, [state, router]);
 
   return (
@@ -174,9 +180,13 @@ export function UsersManager({
       </div>
 
       {isAdmin && canAdd && (
-        <div className="panel panel-pad">
-          <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 20 }}>Adicionar editor</h2>
-
+        <CollapsiblePanel
+          title="Adicionar editor"
+          actionLabel="Adicionar editor"
+          actionIcon="plus"
+          open={addingUser}
+          onOpenChange={setAddingUser}
+        >
           {state.error && <div className="form-error">{state.error}</div>}
           <form action={formAction}>
             <div className="row-2" style={{ marginBottom: 18 }}>
@@ -209,13 +219,16 @@ export function UsersManager({
               </div>
             </div>
             <div className="form-actions" style={{ marginTop: 0 }}>
+              <button className="btn btn-ghost" type="button" disabled={pending} onClick={() => setAddingUser(false)}>
+                Cancelar
+              </button>
               <button className="btn btn-primary" type="submit" disabled={pending}>
                 <PlusIcon />
                 {pending ? "Criando..." : "Criar editor"}
               </button>
             </div>
           </form>
-        </div>
+        </CollapsiblePanel>
       )}
 
       {isAdmin && !canAdd && (

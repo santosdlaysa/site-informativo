@@ -3,7 +3,9 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { container } from "@/infrastructure/container";
+import { prisma } from "@/infrastructure/database/prisma";
 import { DomainError } from "@/core/domain/shared/errors";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 const schema = z.object({
   name: z.string().trim().min(2, "O nome deve ter ao menos 2 caracteres."),
@@ -22,8 +24,17 @@ export async function PATCH(
   if (session.user.role !== "admin") {
     return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
   }
+  const companyId = await getActiveCompanyId();
 
   const { id } = await params;
+
+  const target = await prisma.user.findFirst({
+    where: { id, companyId },
+    select: { id: true },
+  });
+  if (!target) {
+    return NextResponse.json({ error: "Usuário não encontrado." }, { status: 404 });
+  }
 
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {

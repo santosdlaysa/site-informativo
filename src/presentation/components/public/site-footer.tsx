@@ -36,6 +36,9 @@ export function SiteFooter({ settings, company }: { settings: SiteSettingsData; 
     { key: "linkedin", label: "LinkedIn", href: settings.socialLinkedin },
     { key: "instagram", label: "Instagram", href: settings.socialInstagram },
   ];
+  const contactEmail = settings.contactEmail.trim();
+  const contactPhone = settings.contactPhone.trim();
+  const phoneHref = contactPhone.replace(/[^\d+]/g, "");
 
   return (
     <footer className="site-footer">
@@ -57,22 +60,22 @@ export function SiteFooter({ settings, company }: { settings: SiteSettingsData; 
           </div>
           <div className="fc-col">
             <h4>Contato</h4>
-            {isAdsocial && (
-              <>
-                <a href="mailto:adsocial.projetoacdg@gmail.com">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="5" width="18" height="14" rx="2" />
-                    <path d="m3 7 9 6 9-6" />
-                  </svg>{" "}
-                  adsocial.projetoacdg@gmail.com
-                </a>
-                <a href="tel:+5595981238294">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z" />
-                  </svg>{" "}
-                  (95) 98123-8294
-                </a>
-              </>
+            {contactEmail && (
+              <a href={`mailto:${contactEmail}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>{" "}
+                {contactEmail}
+              </a>
+            )}
+            {contactPhone && (
+              <a href={`tel:${phoneHref}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z" />
+                </svg>{" "}
+                {contactPhone}
+              </a>
             )}
             <span className="fc-loc">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

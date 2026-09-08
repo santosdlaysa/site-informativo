@@ -22,10 +22,12 @@ const ALLOWED_TYPES = new Set([
 ]);
 const ALLOWED_EXTENSIONS = new Set(["pdf", "doc", "docx", "xls", "xlsx", "csv", "jpg", "jpeg", "png"]);
 
+// Os documentos não são separados por categoria: o campo do banco fica com o valor padrão.
+const DEFAULT_CATEGORY = "Documentos";
+
 const fieldsSchema = z.object({
   title: z.string().trim().min(3, "Informe um título com pelo menos 3 caracteres.").max(180),
   description: z.string().trim().max(1000).optional(),
-  category: z.string().trim().min(2, "Informe a categoria.").max(80),
   referenceYear: z.union([z.literal(""), z.coerce.number().int().min(1900).max(2200)]).optional(),
 });
 
@@ -89,7 +91,7 @@ export async function createTransparencyDocumentAction(
         companyId,
         title: parsed.data.title,
         description: parsed.data.description || null,
-        category: parsed.data.category,
+        category: DEFAULT_CATEGORY,
         referenceYear: parsed.data.referenceYear === "" ? null : parsed.data.referenceYear,
         published: true,
         fileName: file.name,
@@ -116,7 +118,7 @@ export async function updateTransparencyDocumentAction(id: string, formData: For
     data: {
       title: parsed.title,
       description: parsed.description || null,
-      category: parsed.category,
+      category: DEFAULT_CATEGORY,
       referenceYear: parsed.referenceYear === "" ? null : parsed.referenceYear,
       published: true,
       ...(file ? {

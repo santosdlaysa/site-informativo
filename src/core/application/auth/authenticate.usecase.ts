@@ -7,6 +7,7 @@ export interface AuthenticatedUser {
   name: string;
   email: string;
   role: UserRole;
+  companyId: string;
   passwordChangeRequired: boolean;
 }
 
@@ -33,6 +34,7 @@ export class AuthenticateUseCase {
       name: user.name,
       email: user.email,
       role: user.role,
+      companyId: user.companyId,
       passwordChangeRequired: user.passwordChangeRequired,
     };
   }

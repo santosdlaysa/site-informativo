@@ -4,6 +4,7 @@ import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { BcryptPasswordHasher } from "@/infrastructure/auth/bcrypt-password-hasher";
 import { prisma } from "@/infrastructure/database/prisma";
+import { getActiveCompanyId } from "@/infrastructure/tenant";
 
 const schema = z
   .object({
@@ -26,8 +27,17 @@ export async function PATCH(
   if (session.user.role !== "admin") {
     return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
   }
+  const companyId = await getActiveCompanyId();
 
   const { id } = await params;
+
+  const target = await prisma.user.findFirst({
+    where: { id, companyId },
+    select: { id: true },
+  });
+  if (!target) {
+    return NextResponse.json({ error: "Usuário não encontrado." }, { status: 404 });
+  }
 
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
