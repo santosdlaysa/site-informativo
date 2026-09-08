@@ -10,10 +10,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Raros Boa Vista",
-    template: "%s — Raros Boa Vista",
-  },
+  // Cada site público aplica seu próprio nome e template no layout interno.
+  title: "Raros Boa Vista",
   description:
     "O Centro Social Raros Boa Vista promove capacitação, inclusão digital e desenvolvimento artístico de crianças, adolescentes e jovens em Roraima, fortalecendo vínculos e gerando redes de apoio para a comunidade.",
 };

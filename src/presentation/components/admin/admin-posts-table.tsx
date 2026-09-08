@@ -18,10 +18,12 @@ export function AdminPostsTable({
   posts,
   currentUserId,
   currentUserRole,
+  publicSiteUrl,
 }: {
   posts: PostListItem[];
   currentUserId: string;
   currentUserRole: UserRole;
+  publicSiteUrl: string;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("todos");
@@ -170,7 +172,7 @@ export function AdminPostsTable({
                             </button>
                           </Link>
                         )}
-                        <a href={`/posts/${p.slug}`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                        <a href={`${publicSiteUrl}/posts/${p.slug}`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                           <button>
                             <EyeIcon /> Visualizar
                           </button>

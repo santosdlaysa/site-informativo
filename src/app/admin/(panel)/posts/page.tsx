@@ -7,6 +7,7 @@ import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { AdminPostsTable } from "@/presentation/components/admin/admin-posts-table";
 import { PlusIcon, EyeIcon } from "@/presentation/components/icons";
 import { getActiveCompany } from "@/infrastructure/tenant";
+import { getCompanyDomain } from "@/infrastructure/site-domains";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Posts — Admin" };
@@ -20,6 +21,10 @@ export default async function AdminPostsPage() {
     container.listPosts.execute(),
     getActiveCompany(),
   ]);
+  const publicDomain = activeCompany ? getCompanyDomain(activeCompany.slug) : null;
+  const publicSiteUrl = publicDomain
+    ? `https://${publicDomain}`
+    : `/${activeCompany?.slug || "raros-boa-vista"}`;
 
   return (
     <>
@@ -43,7 +48,12 @@ export default async function AdminPostsPage() {
         </div>
       </div>
 
-      <AdminPostsTable posts={posts} currentUserId={session.user.id} currentUserRole={role} />
+      <AdminPostsTable
+        posts={posts}
+        currentUserId={session.user.id}
+        currentUserRole={role}
+        publicSiteUrl={publicSiteUrl}
+      />
     </>
   );
 }
