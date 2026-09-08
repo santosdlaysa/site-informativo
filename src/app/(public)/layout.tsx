@@ -21,7 +21,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: isAdsocial
       ? "O ADSocial promove assistência social, educação, cultura, saúde, inclusão e desenvolvimento para transformar comunidades."
       : "O Centro Social Raros Boa Vista promove capacitação, inclusão e desenvolvimento, fortalecendo vínculos e redes de apoio.",
-    icons: company?.logo ? { icon: company.logo } : undefined,
   };
 }
 
