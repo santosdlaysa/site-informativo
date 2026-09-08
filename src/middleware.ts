@@ -17,6 +17,21 @@ export async function middleware(request: NextRequest) {
   const segments = pathname.split("/").filter(Boolean);
   const companySlug = segments[0];
 
+  // Login por empresa: /<empresa>/admin/login identifica o site antes de entrar.
+  // O restante do painel continua vivendo em /admin, protegido pelo authMiddleware.
+  if (companySlug && COMPANY_SLUGS.has(companySlug) && segments[1] === "admin") {
+    const rest = segments.slice(2);
+    const destination = request.nextUrl.clone();
+    if (rest.length !== 1 || rest[0] !== "login") {
+      destination.pathname = `/admin${rest.length ? `/${rest.join("/")}` : ""}`;
+      return NextResponse.redirect(destination);
+    }
+    destination.pathname = "/admin/login";
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-company-slug", companySlug);
+    return NextResponse.rewrite(destination, { request: { headers: requestHeaders } });
+  }
+
   if (companySlug && COMPANY_SLUGS.has(companySlug)) {
     const destination = request.nextUrl.clone();
     destination.pathname = `/${segments.slice(1).join("/")}` || "/";

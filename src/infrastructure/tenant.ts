@@ -21,6 +21,19 @@ export async function getActiveCompanyId(): Promise<string> {
   return company?.id ?? DEFAULT_COMPANY_ID;
 }
 
+/**
+ * Empresa indicada pela URL da requisição (ex.: /adsocial/admin/login), sem
+ * considerar cookies. Usada na tela de login para identificar o site de destino.
+ */
+export async function getCompanyFromRequestSlug() {
+  const slug = (await headers()).get("x-company-slug");
+  if (!slug) return null;
+  return prisma.company.findUnique({
+    where: { slug },
+    select: { id: true, name: true, slug: true, logo: true },
+  });
+}
+
 export async function listCompanies() {
   return prisma.company.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, slug: true, logo: true, primaryColor: true, secondaryColor: true } });
 }

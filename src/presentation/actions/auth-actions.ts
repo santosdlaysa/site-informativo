@@ -4,6 +4,7 @@ import { AuthError } from "next-auth";
 import { cookies } from "next/headers";
 import { signIn, signOut } from "@/infrastructure/auth/auth";
 import { prisma } from "@/infrastructure/database/prisma";
+import { normalizeUserRole } from "@/core/domain/user/user-role";
 import { ACTIVE_COMPANY_COOKIE } from "@/infrastructure/tenant";
 
 export interface LoginState {
@@ -19,6 +20,8 @@ export async function loginAction(
 ): Promise<LoginState> {
   const email = formData.get("email");
   const password = formData.get("password");
+  // Preenchido quando o login foi aberto por /<empresa>/admin/login.
+  const companySlug = String(formData.get("companySlug") ?? "").trim();
 
   // Validação básica
   if (!email || !password) {
@@ -35,11 +38,29 @@ export async function loginAction(
 
     const user = await prisma.user.findUnique({
       where: { email: String(email).trim().toLowerCase() },
-      select: { companyId: true },
+      select: { companyId: true, role: true },
     });
     if (!user) return { error: "Usuário não possui empresa vinculada." };
 
-    (await cookies()).set(ACTIVE_COMPANY_COOKIE, user.companyId, {
+    let activeCompanyId = user.companyId;
+
+    if (companySlug) {
+      const company = await prisma.company.findUnique({
+        where: { slug: companySlug },
+        select: { id: true, name: true },
+      });
+      if (!company) return { error: "Site não encontrado." };
+      // Administradores acessam qualquer empresa (já podem trocar pelo painel);
+      // os demais só entram pelo site ao qual estão vinculados.
+      const isAdmin = normalizeUserRole(user.role) === "admin";
+      if (company.id !== user.companyId && !isAdmin) {
+        await signOut({ redirect: false });
+        return { error: `Este usuário não tem acesso ao painel do ${company.name}.` };
+      }
+      activeCompanyId = company.id;
+    }
+
+    (await cookies()).set(ACTIVE_COMPANY_COOKIE, activeCompanyId, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
